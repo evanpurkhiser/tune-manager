@@ -9,20 +9,21 @@ FILE_TYPES = ('aif', 'mp3')
 PATH_REPLACMENTS = {
     '[\*\?\|:"<>]': '',
     '[\x00-\x1f]':  '_',
-    '[\\\\/]': '-',
-    '\.$':     '',
-    '^\.':     '',
-    '\s+$':    '',
-    '^\s+':    '',
+    '[\\\\/]':      '-',
+    '\.$':          '',
+    '^\.':          '',
+    '\s+$':         '',
+    '^\s+':         '',
 }
 
-def determine_path(track):
-    """Determine the filename and path of a track based on it's tags"""
 
+def determine_path(track):
+    """Determine the filename and path of a track based on it's tags
+    """
     path_components = []
     name_components = []
 
-    ### Construct track directory names
+    # Construct track directory names
     #
     # {publisher}/[{catalog_number}] {album}/Disc {disc}/
     #
@@ -35,9 +36,9 @@ def determine_path(track):
     path_components.append(track.publisher or '[+no-label]')
 
     # Second directory is the album name and catalog number
-    if track.album and track.catalog_id:
-        path_components.append('[{}] {}'.format(track.catalog_id, track.album))
-    elif track.album and not track.catalog_id:
+    if track.album and track.release:
+        path_components.append('[{}] {}'.format(track.release, track.album))
+    elif track.album and not track.release:
         path_components.append('[--] {}'.format(track.album))
     else:
         path_components.append(track.album or '[+singles]')
@@ -46,12 +47,12 @@ def determine_path(track):
     if track.disc.total > 1:
         path_components.append('Disc {}'.format(track.disc.number))
 
-    ### Construct track filename
+    # Construct track filename
     #
-    # {track.number}. [{catalog_id}] [{initial_key}] {artist} - {title}
+    # {track.number}. [{release}] [{key}] {artist} - {title}
     #
     #  - Exclude track number (and trailing dot) if track is a single
-    #  - Exclude initial key (with enclosing brackets) unless available
+    #  - Exclude key (with enclosing brackets) unless available
     #  - Exclude catalog number (with enclosing brackets) if track is a single
     #
 
@@ -60,27 +61,29 @@ def determine_path(track):
         name_components.append('{0:02}.'.format(track.track.number))
 
     # If this track is a single and has a catalog number include it
-    if not track.album and track.catalog_id:
-        name_components.append('[{}]'.format(track.catalog_id))
+    if not track.album and track.release:
+        name_components.append('[{}]'.format(track.release))
 
-    # Include initial key of the track if available
-    name_components.append('[{}]'.format(track.initial_key or '--'))
+    # Include key of the track if available
+    name_components.append('[{}]'.format(track.key or '--'))
 
     # Finally artist and title of the track
     name_components.append('{} - {}'.format(track.artist, track.title))
 
-    ### Construct the logical path
+    # Construct the logical path
     path_components.append(' '.join(name_components))
 
     # Remove special characters from components
-    for p, r in PATH_REPLACMENTS.iteritems():
+    for p, r in PATH_REPLACMENTS.items():
         path_components = [re.sub(p, r, c) for c in path_components]
 
     # Convert to full path
     return os.path.join(*path_components) + os.path.splitext(track.file_path)[1]
 
+
 def collect_files(paths, recursive=False):
-    """Collect paths to all supported media files given a list of directories"""
+    """Collect paths to all supported media files given a list of directories
+    """
     types = FILE_TYPES
     files = set()
 

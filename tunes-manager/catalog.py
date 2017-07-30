@@ -1,194 +1,136 @@
 import hashlib
-import itertools
-import re
+import os
 import sqlalchemy
+import sqlalchemy.orm.exc
+import watchdog.observers
 
-import utils.file
-import mediafile
 import db
-
-# Create database things
-db.init(sqlalchemy.create_engine('sqlite:///database.db'))
-
-print(db.Track)
+import mediafile
+import utils.file
 
 
-def mediafile_to_track(mediafile):
+class MetadataIndexer(object):
+    """Sync file libray to a database backed catalog
+    """
+    def __init__(self, library_path, session):
+        # Normalize library path
+        library_path = os.path.realpath(library_path)
+
+        self.library_path = library_path
+        self.session = session
+
+    def reindex(self):
+        """Reindex new or changed tracks.
+        """
+        files = utils.file.collect_files([self.library_path], recursive=True)
+
+        # Query {file_path: mtime} mappings
+        query  = self.session.query(db.Track.file_path, db.Track.mtime)
+        mtimes = {t.file_path: t.mtime for t in query.all()}
+
+        for path in files:
+            path = os.path.realpath(path)
+            last_mtime = os.path.getmtime(path)
+
+            short_path = utils.file.track_path(path, self.library_path)
+
+            # Track is unchanged
+            if short_path in mtimes and mtimes[short_path] == last_mtime:
+                continue
+
+            self.add_or_update(path)
+
+        self.session.commit()
+
+    def watch_collection(self):
+        """Watch all files for changes in the collection.
+        """
+        handler = _CatalogWatchHandler(self)
+
+        watcher = watchdog.observers.Observer()
+        watcher.schedule(handler, self.library_path, recursive=True)
+        watcher.start()
+
+    def add_or_update(self, path):
+        """Add or update a libray track in the catalog.
+
+        It's important to note, that if a track has both changed paths and
+        changed metadata, the path and file checksum will no longer match, thus
+        the trac will be added as a *new* item in the catalog.
+        """
+        media = mediafile.MediaFile(path)
+        track = mediafile_to_track(media, self.library_path)
+
+        # Get ID of the track with matching path or MD5
+        track_filter = sqlalchemy.or_(
+            db.Track.file_path == track.file_path,
+            db.Track.file_hash == track.file_hash
+        )
+
+        try:
+            old_track = self.session.query(db.Track).filter(track_filter).one()
+            track.id = old_track.id
+        except sqlalchemy.orm.exc.NoResultFound:
+            pass
+
+        self.session.merge(track)
+
+
+class _CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
+    """Watchdog catalog file change handler
+    """
+    def __init__(self, indexer):
+        self.indexer = indexer
+
+    def dispatch(self, event):
+        super().dispatch(event)
+        self.indexer.session.commit()
+
+    def on_created(self, event):
+        media = mediafile.MediaFile(event.src_path)
+        track = mediafile_to_track(media, self.indexer.library_path)
+
+        self.indexersession.add(track)
+
+    def on_modified(self, event):
+        self.indexer.add_or_update(event.src_path)
+
+    def on_moved(self, event):
+        library_path = self.indexer.library_path
+
+        src = utils.file.track_path(event.src_path, library_path)
+        dst = utils.file.track_path(event.dest_path, library_path)
+
+        track = self.session.query(db.Track).filter(db.Track.file_path == src)
+
+        track.file_path = dst
+
+
+def mediafile_to_track(media, library_path):
     """Converts a MediaFile object into a Track object
     """
-    path = mediafile.track_path
+    path = media.file_path
 
     with open(path, 'rb') as track_file:
         file_hash = hashlib.md5(track_file.read()).hexdigest()
 
     # Compute artwork hash
-    artwork  = mediafile.mg_file.tags.getall('APIC')
+    artwork  = media.mg_file.tags.getall('APIC')
     art_hash = None
 
     if len(artwork) > 0:
         art_hash = hashlib.md5(artwork[0].data).hexdigest()
 
-    track = db.Track(file_hash)
+    track = db.Track()
 
-    track.file_path = path
+    track.mtime = os.path.getmtime(path)
+    track.file_path = utils.file.track_path(path, library_path)
     track.file_hash = file_hash
     track.artwork_hash = art_hash
 
-    # Insert metadata into the database
     # Columns are gathered as a direct mapping from attributes in the MediaFile
-    # object from the columns in the table.
+    # object to the columns in the track model.
+    for k in (k for k in dir(media) if hasattr(track, k)):
+        setattr(track, k, str(getattr(media, k)))
 
-    keys = [ c.name for c in tracks.c if hasattr(mediafile, c.name) ]
-    data = { k: str(getattr(track, k)) for k in keys }
-
-    data
-    data['artwork_hash'] = art_hash
-
-    tracks.insert(data).execute()
-
-
-# Load all metadata into the database
-LIBRARY = '/Users/evan/Music/TracksLocal'
-
-files = utils.file.collect_files([LIBRARY], recursive=true)
-
-for track_path  in files:
-  mediafile = mediafile.MediaFile(track_path)
-
-
-
-  # Compute file hash
-  with open(track_path, 'rb') as track_file:
-    file_hash = hashlib.md5(track_file.read()).hexdigest()
-
-  # Compute artwork hash
-  artwork  = track.mg_file.tags.getall('APIC')
-  art_hash = None
-
-  if len(artwork) > 0:
-    art_hash = hashlib.md5(artwork[0].data).hexdigest()
-
-  # Insert metadata into the database
-  # Columns are gathered as a direct mapping from attributes in the MediaFile
-  # object from the columns in the table.
-  keys = [ c.name for c in tracks.c if hasattr(track, c.name) ]
-  data = { k: str(getattr(track, k)) for k in keys }
-
-  data['file_hash']    = file_hash
-  data['artwork_hash'] = art_hash
-
-  tracks.insert(data).execute()
-
-
-# Replace vs variants
-vs_regex = re.compile('[Vv][Ss]\.?')
-
-cols = [
-  tracks.c.artist,
-  tracks.c.remixer,
-  tracks.c.title,
-]
-
-col_names = [ c.name for c in cols ]
-
-for t in tracks.select().execute():
-  print(t)
-
-
-  for t in tracks.select().where(or_(*filters)).execute():
-    media_file = mediafile.MediaFile(t[tracks.c.file_path])
-
-    for c in col_names:
-      val = getattr(media_file, c)
-
-      if not val: continue
-
-      for bad_item in items:
-        replaced = val.replace(bad_item, good_item)
-        if replaced == val: continue
-
-        confirm = input('{} -> {} ?'.format(val, replaced))
-        if confirm != 'y': continue
-
-        setattr(media_file, c, replaced)
-        media_file.save()
-
-
-
-
-# EXTRA WORK
-# Split artists, titles, and remixer
-split_regex = re.compile('(?:,| [Vv][Ss]\.?| &| Ft\.) ')
-
-all_tracks = tracks.select().execute()
-artists  = [ a[tracks.c.artist]  for a in all_tracks ]
-artists += [ a[tracks.c.remixer] for a in all_tracks ]
-
-artists = [ split_regex.split(a) for a in artists ]
-artists = list(itertools.chain(*artists))
-
-# Sort case insensitive
-artists = sorted(set(artists), key=lambda s: s.lower())
-artists = []
-
-for _, group in itertools.groupby(artists, lambda a: a.lower()):
-  items = list(group)
-
-  if len(items) == 1: continue
-
-  print(items)
-
-  good_index = int(input('Preference?: '))
-  good_item  = items[good_index]
-
-  del items[good_index]
-
-  # These columns have artist names in them
-  cols = [
-    tracks.c.artist,
-    tracks.c.remixer,
-    tracks.c.title,
-  ]
-
-  col_names = [ c.name for c in cols ]
-
-  filters = [ or_(*[c.like('%{}%'.format(a)) for c in cols]) for a in items ]
-
-  for t in tracks.select().where(or_(*filters)).execute():
-    media_file = mediafile.MediaFile(t[tracks.c.file_path])
-
-    for c in col_names:
-      val = getattr(media_file, c)
-
-      if not val: continue
-
-      for bad_item in items:
-        replaced = val.replace(bad_item, good_item)
-        if replaced == val: continue
-
-        confirm = input('{} -> {} ?'.format(val, replaced))
-        if confirm != 'y': continue
-
-        setattr(media_file, c, replaced)
-        media_file.save()
-
-  print('')
-
-#  for t in tracks.select().where(filters).execute():
-#    print(t[])
-
-
-
-
-#counted_artists = collections.Counter(artists)
-#
-#counted_artists_lower = collections.Counter([ a.lower() for a in artists])
-#
-#for artist, count in counted_artists.most_common():
-#  if counted_artists_lower[artist.lower()] == count:
-#    continue
-#
-#  suggestions = difflib.get_close_matches(artist, list(counted_artists))
-
-#  print('{}: {}'.format(artist, suggestions))
-
+    return track

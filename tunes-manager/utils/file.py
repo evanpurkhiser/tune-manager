@@ -81,6 +81,18 @@ def determine_path(track):
     return os.path.join(*path_parts) + os.path.splitext(track.file_path)[1]
 
 
+def track_path(path, library_path):
+    """Normalize track path by removing the library path
+    """
+    if not path.startswith(library_path):
+        raise RuntimeError('Track path is not within the library')
+
+    library_path = os.path.normpath(library_path)
+
+    # Account for the leading slash
+    return path[len(library_path) + 1:]
+
+
 def collect_files(paths, recursive=False):
     """Collect paths to all supported media files given a list of directories
     """

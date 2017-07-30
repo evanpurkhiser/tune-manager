@@ -107,8 +107,8 @@ class MediaFile(object):
     key          = TextField(ID3.TKEY)
     year         = TextField(ID3.TDRC)
     genre        = TextField(ID3.TCON)
-    track_number = SizeField(ID3.TRCK)
-    disc_number  = SizeField(ID3.TPOS)
+    track        = SizeField(ID3.TRCK)
+    disc         = SizeField(ID3.TPOS)
 
     def __init__(self, filename):
         self.file_path = os.path.realpath(filename)

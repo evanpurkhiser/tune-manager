@@ -2,6 +2,7 @@ import os.path
 import mutagen
 import mutagen.id3 as ID3
 
+
 class TextField(object):
     """A plain-text field stored in the mutagen tags"""
 
@@ -19,7 +20,7 @@ class TextField(object):
 
     def __set__(self, media_file, value):
         """Set the field in the mutagen file"""
-        frame = self.frame_type(encoding = 3, text = value)
+        frame = self.frame_type(encoding=3, text=value)
         media_file.mg_file[self.frame_name] = frame
 
     def __delete__(self, media_file):
@@ -31,8 +32,8 @@ class SizeField(TextField):
     """A size field stored in the mutagen tags
 
     A size field consists of a 'number' and 'total'. These properties are
-    unpacked from the raw plain-text field delimited by a slash. When this field
-    is accessed a Size object will be returned with `number` and `total`
+    unpacked from the raw plain-text field delimited by a slash. When this
+    field is accessed a Size object will be returned with `number` and `total`
     properites. These properties may be modified and field will be re-packed
     appropriately.
     """
@@ -41,7 +42,8 @@ class SizeField(TextField):
         @classmethod
         def unpack(self, value, **kwargs):
             """Construct a Size object by unpacking the values from a string"""
-            if not value: return self(value, **kwargs)
+            if not value:
+                return self(value, **kwargs)
 
             # Ensure a list of exactly two integers
             try:
@@ -56,7 +58,7 @@ class SizeField(TextField):
             self.__dict__['writeback'] = writeback
             self.__dict__['packed'] = raw
             self.__dict__['number'] = number
-            self.__dict__['total']  = total
+            self.__dict__['total'] = total
 
         def __setattr__(self, name, value):
             self.__dict__[name] = value
@@ -68,12 +70,12 @@ class SizeField(TextField):
                 return ''
 
             return '{number:0{width}}/{total}'.format(
-                number = self.number,
-                total  = self.total,
-                width  = len(str(self.total)))
+                number=self.number,
+                total=self.total,
+                width=len(str(self.total)))
 
         __repr__ = pack
-        __str__  = pack
+        __str__ = pack
 
         def sync(self):
             """Update the mutagen tag with the formatted size"""
@@ -85,8 +87,10 @@ class SizeField(TextField):
         value = super(SizeField, self).__get__(media_file, owner)
 
         # Setup the writeback function to update the field on change
-        writeback = lambda value: self.__set__(media_file, value)
-        return self.Size.unpack(value, writeback = writeback)
+        def writeback(value):
+            self.__set__(media_file, value)
+
+        return self.Size.unpack(value, writeback=writeback)
 
 
 class MediaFile(object):

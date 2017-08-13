@@ -1,0 +1,209 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700");
+@import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+
+* { box-sizing: border-box; }
+
+body, html, #root {
+  margin: 0;
+  font-family: "Open Sans";
+  color: #4a585f;
+  height: 100%;
+}
+
+.app {
+  height: 100%;
+
+  > header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 15px;
+    z-index: 2;
+    background: #fff;
+  }
+
+  > header h1 {
+    margin: 0;
+    margin-bottom: 4px;
+    font-size: 20px;
+  }
+}
+
+.field-heading {
+  margin-top: 20px;
+  margin-bottom: 5px;
+  user-select: none;
+  cursor: default;
+}
+
+.track-groups {
+  margin: 15px;
+  margin-top: 120px;
+}
+
+.track-listing,
+.field-heading {
+  display: flex;
+  font-family: "Open Sans Condensed";
+  font-size: 12px;
+  line-height: 24px;
+  border-bottom: 1px solid #d2d6d8;
+  color: #757c80;
+}
+
+.track-listing:last-child {
+  border-bottom: none;
+}
+
+.field {
+  padding: 0 6px;
+  border-left: 1px solid #d2d6d8;
+
+  &:first-child {
+    border-left: none;
+  }
+}
+
+.track-listing .field {
+  height: 32px;
+  padding: 3px 6px;
+  position: relative;
+
+  &:not(.marked) {
+    line-height: 28px;
+  }
+}
+
+.field.marked {
+  transition: color 200ms ease-in-out;
+
+  &.valid:after   { background: #a8ffa4;  }
+  &.invalid:after { background: #ffa4a4;  }
+  &.warning:after { background: #ffce97; }
+
+  &:after {
+    content: '';
+    display: block;
+    height: 3px;
+    width: calc(100% - 12px);
+    bottom: 3px;
+    background: #f7f7f7;
+    position: absolute;
+  }
+}
+
+/* Field headings */
+$field-sizes: (
+  file-path: 180px,
+  artwork:   33px,
+  artist:    220px,
+  album:     300px,
+  remixer:   160px,
+  publisher: 150px,
+  release:   100px,
+  year:      40px,
+  genre:     80px,
+  track:     45px,
+  disc:      45px,
+  bpm:       50px,
+  key:       35px,
+  actions:   30px,
+);
+
+@each $name, $width in $field-sizes {
+  .#{$name} { width: $width; }
+}
+
+.title {
+  flex-grow: 1;
+}
+
+.artwork,
+.release,
+.year,
+.genre,
+.track,
+.disc,
+.bpm,
+.key {
+  text-align: center;
+}
+
+.selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  input { cursor: pointer; }
+}
+
+.file-path,
+.key {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.filed-heading .artwork,
+.track-listing .artwork {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+/* Track listings */
+.track-groups,
+.track-groups ol {
+  padding: 0;
+  list-style: none;
+}
+
+.track-groups .listing-name {
+  cursor: pointer;
+  font-family: "Open Sans Condensed";
+  margin: 14px 6px;
+  font-size: 13px;
+  display: inline-block;
+
+  &.root-listing:after {
+    content: 'import root';
+    color: #dfe4e6;
+  }
+
+  ol.path-parts,
+  &.root-listing:after {
+    margin-left: 6px;
+  }
+
+  input {
+    cursor: pointer;
+    vertical-align: bottom;
+  }
+}
+
+ol.path-parts {
+  display: inline-block;
+}
+
+ol.path-parts li {
+  display: inline-block;
+
+  &:not(:last-child):after {
+    content: '—';
+    padding: 0 6px;
+    color: #dfe4e6;
+  }
+}
+
+.empty-artwork {
+  height: 26px;
+  width: 26px;
+  background: #f7f7f7;
+  border-radius: 2px;
+
+  &:after {
+    font-family: FontAwesome;
+    content: '\f03e';
+    color: #ddd;
+  }
+}

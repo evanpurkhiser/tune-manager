@@ -1,3 +1,4 @@
+import { arrayMove } from 'react-sortable-hoc'
 import { createStore } from 'redux';
 
 import * as lodash from 'lodash';
@@ -71,6 +72,11 @@ function reducer(oldState = initialState, action) {
     break;
   }
 
+  case actions.REORDER_GROUPS: {
+    const { oldIndex, newIndex } = action.indicies;
+    state.trackTree = arrayMove(state.trackTree, oldIndex, newIndex);
+    break;
+  }
 
 
   }

@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux'
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import classNames from 'classnames'
 import * as lodash from 'lodash';
 
@@ -68,8 +69,8 @@ const PathParts = ({ parts }) => <ol className="path-parts">
 /**
  * Track grouping
  */
-let TrackGrouping = p => {
-  let toggleGroup = toggle => {
+let TrackGroup = p => {
+  const toggleGroup = toggle => {
     p.dispatch(action.toggleTracks(toggle, p.tracks));
   }
 
@@ -80,15 +81,18 @@ let TrackGrouping = p => {
     'root-listing': pathParts.length === 0,
   })
 
-  return <li>
-    <label className={classes}>
-      <input type="checkbox"
-        onChange={e => toggleGroup(e.target.checked)}
-        checked={p.allSelected} />
-      <PathParts parts={pathParts} />
-    </label>
+  const GroupHeading = SortableHandle(_ => <label className={classes}>
+    <span className="drag-handle" />
+    <input type="checkbox"
+      onChange={e => toggleGroup(e.target.checked)}
+      checked={p.allSelected} />
+    <PathParts parts={pathParts} />
+  </label>);
+
+  return <li className="track-group">
+    <GroupHeading />
     <ol>
-      {p.tracks.map(t => <TrackItem key={t} id={t} />)}
+      {p.tracks.map((t, i) => <TrackItem index={i} key={t} id={t} />)}
     </ol>
   </li>;
 }
@@ -97,17 +101,20 @@ const mapTrackGroupingState = (s, props) => ({
   allSelected: lodash.difference(props.tracks, s.selectedTracks).length === 0,
 });
 
-TrackGrouping = connect(mapTrackGroupingState)(TrackGrouping);
+TrackGroup = connect(mapTrackGroupingState)(TrackGroup);
+TrackGroup = SortableElement(TrackGroup)
 
 /**
- * Editor
+ * Track group listings
  */
-let Editor = props => <ol className="editor track-groups">
-  {props.trackTree.map(g => <TrackGrouping key={g.id} {...g} />)}
+let TrackGroups = props => <ol className="editor track-groups">
+  {props.trackTree.map((g, i) => <TrackGroup index={i} key={g.id} {...g} />)}
 </ol>;
 
 const mapEditorState = ({ trackTree }) => ({ trackTree });
-Editor = connect(mapEditorState)(Editor);
+
+TrackGroups = connect(mapEditorState)(TrackGroups);
+TrackGroups = SortableContainer(TrackGroups);
 
 /**
  * The main application
@@ -122,7 +129,13 @@ let App = p => <div className="app">
       onCheck={e => p.dispatch(action.toggleAllTracks(e.target.checked))}
       checked={p.allSelected} />
   </header>
-  <Editor />
+  <TrackGroups
+    useDragHandle={true}
+    lockToContainerEdges={true}
+    lockAxis="y"
+    pressDelay={80}
+    helperClass="group-reordering"
+    onSortEnd={indicies => p.dispatch(action.reorderGroups(indicies))} />
 </div>;
 
 const mapAppState = s => ({

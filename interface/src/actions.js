@@ -1,7 +1,8 @@
 export const REPLACE_TRACKS = 'REPLACE_TRACKS';
 
-export const TOGGLE_ALL_TRACKS   = 'TOGGLE_ALL_TRACKS';
-export const TOGGLE_TRACKS       = 'TOGGLE_TRACKS';
+export const TOGGLE_ALL_TRACKS = 'TOGGLE_ALL_TRACKS';
+export const TOGGLE_TRACKS     = 'TOGGLE_TRACKS';
+export const REORDER_GROUPS    = 'REORDER_GROUPS';
 
 export const replaceTracks = tracks => ({
   type:    REPLACE_TRACKS,
@@ -19,3 +20,7 @@ export const toggleTracks = (toggle, tracks) => ({
   tracks: tracks,
 });
 
+export const reorderGroups = indicies => ({
+  type: REORDER_GROUPS,
+  indicies,
+});

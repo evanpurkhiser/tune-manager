@@ -6,7 +6,7 @@ export const REORDER_GROUPS    = 'REORDER_GROUPS';
 
 export const replaceTracks = tracks => ({
   type:    REPLACE_TRACKS,
-  payload: tracks,
+  tracks,
 });
 
 export const toggleAllTracks = toggle => ({

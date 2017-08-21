@@ -54,9 +54,9 @@ function reducer(oldState = initialState, action) {
 
   switch (action.type) {
   case actions.REPLACE_TRACKS: {
-    state.tracks = lodash.keyBy(action.payload, t => t.id)
+    state.tracks = lodash.keyBy(action.tracks, t => t.id);
     state.tracksPristine = { ...state.tracks };
-    state.trackTree = computeTrackTree(action.payload);
+    state.trackTree = computeTrackTree(action.tracks);
     break;
   }
 

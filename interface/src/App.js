@@ -4,7 +4,7 @@ import { SortableContainer, SortableElement, SortableHandle } from 'react-sortab
 import classNames from 'classnames'
 import * as lodash from 'lodash';
 
-import './App.css';
+import './assets/App.css';
 import FieldHeadings from './components/FieldHeadings'
 import * as Field from './Fields'
 import * as action from './actions';

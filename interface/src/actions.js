@@ -10,14 +10,14 @@ export const replaceTracks = tracks => ({
 });
 
 export const toggleAllTracks = toggle => ({
-  type:   TOGGLE_ALL_TRACKS,
-  toggle: toggle,
+  type: TOGGLE_ALL_TRACKS,
+  toggle,
 });
 
 export const toggleTracks = (toggle, tracks) => ({
-  type:   TOGGLE_TRACKS,
-  toggle: toggle,
-  tracks: tracks,
+  type: TOGGLE_TRACKS,
+  toggle,
+  tracks,
 });
 
 export const reorderGroups = indicies => ({

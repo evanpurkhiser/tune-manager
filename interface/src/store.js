@@ -41,11 +41,12 @@ const initialState = {
   selectedTracks: [],
 
   // knownValues contains various lists of known values of fields that exist
-  // in the current library database.
+  // in the current library database. We also keep a cached normalized mapping
+  // of their normal form (lower case) to the actual value.
   knownValues: {
-    artists:    [],
-    publishers: [],
-    genres:     [],
+    artists:    { clean: [], normal: {} },
+    publishers: { clean: [], normal: {} },
+    genres:     { clean: [], normal: {} },
   },
 };
 
@@ -57,6 +58,11 @@ function reducer(oldState = initialState, action) {
     state.tracks = lodash.keyBy(action.tracks, t => t.id);
     state.tracksPristine = { ...state.tracks };
     state.trackTree = computeTrackTree(action.tracks);
+    break;
+  }
+
+  case actions.REPLACE_KNOWNS: {
+    state.knownValues = normalizeKnownValues(action.knowns);
     break;
   }
 
@@ -110,7 +116,24 @@ function computeTrackTree(tracks) {
   }));
 }
 
-
+/**
+ * Normalize a known values object where each value list is transformed into a
+ * map of the normalized lowercase of the item mapping to the cased version.
+ *
+ *   const knowns = { artists: [ 'DJ Sy' ] };
+ *   normalizeKnownValues(known)
+ *
+ *   => {
+ *        clean:  { artists: [ 'DJ Sy' ] },
+ *        normal: { artists: { 'dj sy': 'DJ Sy' } },
+ *      }
+ */
+function normalizeKnownValues(knowns) {
+  return lodash.mapValues(knowns, k => ({
+    clean:  k,
+    normal: lodash.keyBy(k, v => v.toLowerCase()),
+  }));
+}
 
 const reduxDevtools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
 

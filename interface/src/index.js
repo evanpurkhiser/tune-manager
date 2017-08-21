@@ -12,6 +12,10 @@ fetch('http://localhost:5000/listing').then(r => r.json()).then(tracks => {
   store.dispatch(actions.replaceTracks(camelize(tracks)))
 });
 
+fetch('http://localhost:5000/known_values').then(r => r.json()).then(knowns => {
+  store.dispatch(actions.replaceKnowns(camelize(knowns)))
+});
+
 const providedApp = <Provider store={store}>
   <App />
 </Provider>;

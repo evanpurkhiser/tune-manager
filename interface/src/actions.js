@@ -5,6 +5,8 @@ export const TOGGLE_ALL_TRACKS = 'TOGGLE_ALL_TRACKS';
 export const TOGGLE_TRACKS     = 'TOGGLE_TRACKS';
 export const REORDER_GROUPS    = 'REORDER_GROUPS';
 
+export const MODIFY_FIELD = 'MODIFY_FIELD';
+
 export const replaceTracks = tracks => ({
   type:    REPLACE_TRACKS,
   tracks,
@@ -29,4 +31,11 @@ export const toggleTracks = (toggle, tracks) => ({
 export const reorderGroups = indicies => ({
   type: REORDER_GROUPS,
   indicies,
+});
+
+export const modifyField = (focusedTrackID, field, value) => ({
+  type: MODIFY_FIELD,
+  focusedTrackID,
+  field,
+  value,
 });

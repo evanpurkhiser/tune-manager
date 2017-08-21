@@ -10,8 +10,10 @@ import * as Field from './Fields'
 import * as action from './actions';
 
 let TrackItem = p => {
-
-
+  const fieldProps = {
+    track:    p.track,
+    dispatch: p.dispatch,
+  }
 
   return <li className="track-listing">
     <div className="field selector">
@@ -20,47 +22,32 @@ let TrackItem = p => {
         checked={p.selected} />
     </div>
 
+    <Field.FileName    { ...fieldProps } />
+    <Field.Artwork     { ...fieldProps } />
+    <Field.Artist      { ...fieldProps } knownValues={p.knownValues} />
+    <Field.Title       { ...fieldProps } />
+    <Field.Remixer     { ...fieldProps } knownValues={p.knownValues} />
+    <Field.Album       { ...fieldProps } />
+    <Field.Publisher   { ...fieldProps } knownValues={p.knownValues} />
+    <Field.Release     { ...fieldProps } />
+    <Field.Year        { ...fieldProps } />
+    <Field.Genre       { ...fieldProps } knownValues={p.knownValues} />
+    <Field.TrackNumber { ...fieldProps } />
+    <Field.DiscNumber  { ...fieldProps } />
+    <Field.BPM         { ...fieldProps } />
 
-    <div className="field file-path">
-      {p.track.file_path}
-    </div>
-
-    <div className="field artwork">
-      <div className="empty-artwork"></div>
-    </div>
-
-    <div className="field marked artist">
-    </div>
-
-
-    <div className="field marked title">28 Days Later</div>
-    <div className="field marked remixer">N/A</div>
-    <div className="field marked album">Hardcore Underground EP Vol. 4</div>
-    <div className="field marked publisher">Hardcore Underground</div>
-    <div className="field marked release">HULTDCD007</div>
-    <div className="field marked year">2013</div>
-    <div className="field marked genre">Hardcore</div>
-
-    <Field.TrackNumber track={p.track} />
-
-
-    <div className="field marked disc">1/1</div>
-    <div className="field marked bpm">170.00</div>
     <div className="field key">10A</div>
     <div className="field actions"></div>
   </li>;
 }
 
-
 const mapTrackState = (s, props) => ({
-  track:    s.tracks[props.id],
-  selected: s.selectedTracks.includes(props.id)
-
+  track:       s.tracks[props.id],
+  selected:    s.selectedTracks.includes(props.id),
+  knownValues: s.knownValues,
 });
 
 TrackItem = connect(mapTrackState)(TrackItem);
-
-
 
 const PathParts = ({ parts }) => <ol className="path-parts">
   {parts.map(p => <li key={p}>{p}</li>)}

@@ -7,7 +7,7 @@ const FieldHeadings = props => <div className="field-heading">
       checked={props.checked}
       onChange={props.onCheck} />
   </div>
-  <div className="field file-path">File path</div>
+  <div className="field file-name">File Name</div>
   <div className="field artwork">Art</div>
   <div className="field artist">Artist</div>
   <div className="field title">Title</div>

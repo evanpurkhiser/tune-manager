@@ -78,17 +78,30 @@ function reducer(oldState = initialState, action) {
     break;
   }
 
+  case actions.MODIFY_FIELD: {
+    const { focusedTrackID, field, value } = action;
 
+    lodash.union(state.selectedTracks, [focusedTrackID]).forEach(id => {
+      state.tracks[id] = { ...state.tracks[id] };
+      state.tracks[id][field] = value;
+    });
+    break;
+  }
+
+
+
+
+  default:
   }
 
   return state;
 }
 
 function computeTrackTree(tracks) {
-  const sortedTracks = tracks.sort((a, b) => a.file_path.localeCompare(b.file_path));
+  const sortedTracks = tracks.sort((a, b) => a.filePath.localeCompare(b.filePath));
 
-  const paths = lodash.uniq(tracks.map(t => path.dirname(t.file_path)))
-  const grouped = lodash.groupBy(sortedTracks, t => path.dirname(t.file_path));
+  const paths = lodash.uniq(tracks.map(t => path.dirname(t.filePath)));
+  const grouped = lodash.groupBy(sortedTracks, t => path.dirname(t.filePath));
 
   return paths.map(p => ({
     id:        md5(p),

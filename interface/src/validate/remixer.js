@@ -1,0 +1,41 @@
+import { levels, makeValidations, Validations } from './utils';
+import { remixPattern } from './title';
+import { validateArtistsString } from './artist';
+
+const validationType = makeValidations({
+  TITLE_HAS_REMIXER: {
+    level:   levels.WARNING,
+    message: 'Title appears to have remixer, but remixer not specified',
+  },
+});
+
+/**
+ * Remixer validation will validate the following rules:
+ *
+ * 1. ERROR: The title appears to have a remixer note, but the remixer field is
+ *    not specified.
+ *
+ * 2. MIXED: Validate the artists
+ */
+function remixer(track, options) {
+  const remixer = track.remixer || '';
+  const title   = track.title   || '';
+
+  const validations = new Validations();
+
+  // 1. Does the title appear to have some type of remixer note?
+  if (remixer === '' && title.match(remixPattern) !== null) {
+    return validations.add(validationType.TITLE_HAS_REMIXER);
+  }
+
+  if (remixer === '') {
+    return validations;
+  }
+
+  // 2. Validate artist names
+  validateArtistsString(remixer, options, validations);
+
+  return validations;
+}
+
+export { remixer };

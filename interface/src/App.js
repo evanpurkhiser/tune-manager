@@ -1,13 +1,12 @@
-import React from 'react';
-import { connect } from 'react-redux'
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import classNames from 'classnames'
-import * as lodash from 'lodash';
-
 import './assets/App.css';
-import FieldHeadings from './components/FieldHeadings'
-import * as Field from './Fields'
 import * as action from './actions';
+import * as Field from './components/Fields';
+import * as lodash from 'lodash';
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+import classNames from 'classnames';
+import connect from 'react-redux';
+import FieldHeadings from './components/FieldHeadings';
+import React from 'react';
 
 let TrackItem = p => {
   const fieldProps = {

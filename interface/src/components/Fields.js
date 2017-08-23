@@ -23,6 +23,7 @@ class Field extends Component {
     this.state = {
       value: '',
       validations: new validate.Validations(),
+      recentlyEdited: false,
     };
   }
 
@@ -72,19 +73,40 @@ class Field extends Component {
     this.props.dispatch(action.modifyField(id, name, value));
   }
 
+  blurField() {
+    this.updateField();
+    this.setState({ focused: false });
+  }
+
+  focusField() {
+    this.setState({ focused: true });
+  }
+
   render() {
-    const classes = classNames(
+    const classes = classNames([
       'field marked',
       this.props.name,
-      this.state.validations.level()
-    );
+      this.state.validations.level(),
+      { 'recently-edited': this.state.recentlyEdited },
+    ]);
+
+    const tooltipStyles = classNames([
+      'validation-tooltip',
+      { 'shown': this.state.focused },
+    ]);
+
+    const tooltip = <div className={tooltipStyles}>
+      Testing
+    </div>;
 
     return <div className={classes}>
       <input type="text"
         spellCheck="false"
-        onBlur={_ => this.updateField()}
+        onBlur={_ => this.blurField()}
+        onFocus={_ => this.focusField()}
         onChange={e => this.updateLocal(e.target.value)}
         value={this.state.value || ''} />
+      {this.state.focused ? tooltip : null}
     </div>;
   }
 }

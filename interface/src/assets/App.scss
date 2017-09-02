@@ -183,6 +183,10 @@ $centered-fields: (
   &[type="text"] {
     width: 100%;
   }
+
+  &::selection {
+    background-color: rgba(163, 174, 179, 0.3);
+  }
 }
 
 

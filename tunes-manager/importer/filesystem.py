@@ -229,7 +229,8 @@ class ImportAPI(object):
         self.send_event(EventType.KEY_COMPUTING, identifier)
         self.detecting_key.add(identifier)
 
-        media.key = keyfinder.key(media.file_path).camelot()
+        # Prefix key with leading zeros
+        media.key = keyfinder.key(media.file_path).camelot().zfill(3)
         media.save()
 
         self.send_event(EventType.KEY_COMPUTED, identifier, key=media.key)
@@ -267,7 +268,7 @@ class ImportAPI(object):
         # Recompute the key if it is missing or invalid
         valid_keys = keyfinder.notations.camelot.values()
 
-        if True or not media.key or not media.key in valid_keys:
+        if True or not media.key or not media.key.strip('0') in valid_keys:
             self.executor.submit(self.compute_key, identifier, media)
 
         # Report track details

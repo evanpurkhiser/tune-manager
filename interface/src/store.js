@@ -14,7 +14,7 @@ const initialState = {
   // only be modified when tracks are loaded / removed from the server.
   tracksPristine: {},
 
-  // Artwork is a mapping of the md5 sum of an artwork to the in BLOB object.
+  // artwork is a mapping of the md5 sum of an artwork to the in BLOB object.
   artwork: {},
 
   // keyfinding is a list of track IDs that are currently having their keys

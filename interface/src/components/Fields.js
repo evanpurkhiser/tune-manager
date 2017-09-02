@@ -1,6 +1,6 @@
-import * as action from './actions';
+import * as action from '../actions';
 import * as path from 'path';
-import * as validate from './validate';
+import * as validate from '../validate';
 import classNames from 'classnames';
 import React, { Component } from 'react';
 
@@ -23,7 +23,6 @@ class Field extends Component {
     this.state = {
       value: '',
       validations: new validate.Validations(),
-      recentlyEdited: false,
     };
   }
 
@@ -120,7 +119,8 @@ export const Title = p => <Field {...p}
   name="title"
   validator={validate.title} />;
 
-export const Remixer = p => <Field {...p} name="remixer"
+export const Remixer = p => <Field {...p}
+  name="remixer"
   validator={validate.remixer}
   validatorOptions={{ knownArtists: p.knownValues.artists }} />;
 

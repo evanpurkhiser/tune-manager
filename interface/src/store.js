@@ -3,8 +3,10 @@ import * as lodash from 'lodash';
 import * as md5 from 'md5';
 import * as path from 'path';
 
+import { applyMiddleware, compose, createStore } from 'redux';
+import appSaga from './sagas';
 import { arrayMove } from 'react-sortable-hoc';
-import { createStore } from 'redux';
+import createSagaMiddleware from 'redux-saga';
 
 const initialState = {
   // tracks is a mapping of the unique track ID to the track object.
@@ -13,9 +15,6 @@ const initialState = {
   // tracksPristine is the same structure as tracks, however the state will
   // only be modified when tracks are loaded / removed from the server.
   tracksPristine: {},
-
-  // artwork is a mapping of the md5 sum of an artwork to the in BLOB object.
-  artwork: {},
 
   // keyfinding is a list of track IDs that are currently having their keys
   // computed.
@@ -84,6 +83,14 @@ function reducer(oldState = initialState, action) {
 
     for (const item of action.items) {
       state.tracks[item.id] = { ...state.tracks[item.id], key: item.key };
+    }
+    break;
+  }
+
+  case actions.SET_ARTWORK: {
+    for (const trackId in action.items) {
+      const artwork = action.items[trackId];
+      state.tracks[trackId] = { ...state.tracks[trackId], artwork };
     }
     break;
   }
@@ -163,7 +170,16 @@ function normalizeKnownValues(knowns) {
   }));
 }
 
-const reduxDevtools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
-const store = createStore(reducer, reduxDevtools);
+const devTools = '__REDUX_DEVTOOLS_EXTENSION__';
+const devToolMiddleware = window[devTools] && window[devTools]();
+const sagaMiddleware = createSagaMiddleware();
+
+const middleware = compose(
+  applyMiddleware(sagaMiddleware),
+  devToolMiddleware
+);
+
+const store = createStore(reducer, middleware);
+sagaMiddleware.run(appSaga);
 
 export default store;

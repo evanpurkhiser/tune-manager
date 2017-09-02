@@ -8,7 +8,7 @@ import store from './store'
 import * as actions from './actions'
 import registerServiceWorker from './registerServiceWorker';
 
-const socket = new WebSocket('ws://localhost:9000');
+const socket = new WebSocket('ws://localhost:8000/events');
 
 socket.onmessage = m => store.dispatch(camelize(JSON.parse(m.data)));
 

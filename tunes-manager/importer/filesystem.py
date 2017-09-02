@@ -8,7 +8,6 @@ import keyfinder
 import multiprocessing
 import os
 import watchdog.observers
-import websockets
 
 import mediafile
 import utils.file

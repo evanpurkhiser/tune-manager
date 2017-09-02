@@ -319,19 +319,32 @@ ol.path-parts li {
   }
 }
 
-.empty-artwork {
-  height: 26px;
-  width: 26px;
-  background: #f7f7f7;
-  border-radius: 2px;
+.artwork {
+  img, .empty-artwork {
+    height: 26px;
+    width: 26px;
+    border-radius: 2px;
+  }
 
-  &:after {
-    font-family: FontAwesome;
-    content: '\f03e';
-    color: #ddd;
+  .empty-artwork {
+    background: #f7f7f7;
+
+    &:after {
+      font-family: FontAwesome;
+      content: '\f03e';
+      color: #ddd;
+    }
+  }
+
+  .empty-artwork.loading:after {
+    @extend %loader;
+    content: '';
+    opacity: 0.5;
+    position: relative;
+    top: 5px;
+    left: 5px;
   }
 }
-
 
 %loader {
   border-radius: 50%;

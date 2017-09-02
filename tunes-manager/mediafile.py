@@ -96,6 +96,16 @@ class SizeField(TextField):
         return self.Size.unpack(value, writeback=writeback)
 
 
+class ArtworkField(object):
+    """A artwork list field"""
+    def __get__(self, media_file, owner=None):
+        """Get a list of all artworks in the mediafile"""
+        if media_file.mg_file.tags is None:
+            return []
+
+        return media_file.mg_file.tags.getall('APIC')
+
+
 class MediaFile(object):
     """Representation of a media file with it's assorted meta data"""
 
@@ -111,6 +121,7 @@ class MediaFile(object):
     genre     = TextField(ID3.TCON)
     track     = SizeField(ID3.TRCK)
     disc      = SizeField(ID3.TPOS)
+    artwork   = ArtworkField()
 
     def __init__(self, filename):
         self.file_path = os.path.realpath(filename)
@@ -150,5 +161,9 @@ def serialize(media, trim_path=None):
     if trim_path and vals['file_path'].startswith(trim_path):
         path = os.path.normpath(trim_path) + '/'
         vals['file_path'] = vals['file_path'][len(path):]
+
+    # We include the number of artwork items in ther serialization, instead of
+    # a serialization of the artwork, so we can query them separately later.
+    vals['artwork_count'] = len(media.artwork)
 
     return vals

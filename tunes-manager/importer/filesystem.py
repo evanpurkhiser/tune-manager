@@ -217,7 +217,7 @@ class ImportAPI(object):
 
             tracks.append(track)
 
-        key_detections = { 'id': k for k in self.detecting_key }
+        key_detections = [{'id': k} for k in self.detecting_key]
 
         data = json.dumps({ 'type': EventType.TRACK_DETAILS.name, 'items': tracks })
         asyncio.ensure_future(ws.send(data))

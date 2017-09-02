@@ -232,7 +232,7 @@ class ImportAPI(object):
 
     def add(self, path):
         """
-        Add a track to the tracked import list list.
+        Add a track to the tracked import list.
         """
         identifier = file_id(path)
         ext = os.path.splitext(path)[1]

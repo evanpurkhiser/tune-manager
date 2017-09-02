@@ -23,21 +23,6 @@ VALID_FORMATS = ['.mp3', '.aif']
 CONVERTABLE_FORMATS = ['.wav', '.flac']
 
 
-def serialize_media(media):
-    # TODO: really not happy with this...
-
-    vals = {k: getattr(media, k) for k in dir(media)}
-
-    for key, val in vals.items():
-        if isinstance(val, mediafile.SizeField.Size):
-            vals[key] = val.pack()
-
-        if isinstance(val, mediafile.ID3.ID3TimeStamp):
-            vals[key] = str(val)
-
-    return vals
-
-
 def file_id(path):
     """
     Compute the identifier of a file given it's path. This is simply the md5
@@ -212,7 +197,7 @@ class ImportAPI(object):
         tracks = []
 
         for identifier, media in self.mediafiles.items():
-            track = serialize_media(media)
+            track = mediafile.serialize(media, trim_path=self.import_path)
             track.update({ 'id': identifier })
 
             tracks.append(track)
@@ -274,8 +259,8 @@ class ImportAPI(object):
         # Report track details
         self.mediafiles[identifier] = media
 
-        data = serialize_media(media)
-        self.send_event(EventType.TRACK_DETAILS, identifier, data)
+        track = mediafile.serialize(media, trim_path=self.import_path)
+        self.send_event(EventType.TRACK_DETAILS, identifier, track)
 
     def remove(self, path):
         """

@@ -96,19 +96,18 @@ class SizeField(TextField):
 class MediaFile(object):
     """Representation of a media file with it's assorted meta data"""
 
-    artist       = TextField(ID3.TPE1)
-    album_artist = TextField(ID3.TPE2)
-    title        = TextField(ID3.TIT2)
-    album        = TextField(ID3.TALB)
-    remixer      = TextField(ID3.TPE4)
-    publisher    = TextField(ID3.TPUB)
-    release      = TextField(ID3.COMM)
-    bpm          = TextField(ID3.TBPM)
-    key          = TextField(ID3.TKEY)
-    year         = TextField(ID3.TDRC)
-    genre        = TextField(ID3.TCON)
-    track        = SizeField(ID3.TRCK)
-    disc         = SizeField(ID3.TPOS)
+    artist    = TextField(ID3.TPE1)
+    title     = TextField(ID3.TIT2)
+    album     = TextField(ID3.TALB)
+    remixer   = TextField(ID3.TPE4)
+    publisher = TextField(ID3.TPUB)
+    release   = TextField(ID3.COMM)
+    bpm       = TextField(ID3.TBPM)
+    key       = TextField(ID3.TKEY)
+    year      = TextField(ID3.TDRC)
+    genre     = TextField(ID3.TCON)
+    track     = SizeField(ID3.TRCK)
+    disc      = SizeField(ID3.TPOS)
 
     def __init__(self, filename):
         self.file_path = os.path.realpath(filename)
@@ -119,9 +118,9 @@ class MediaFile(object):
             raise ValueError('Loaded file does not have ID3 tags')
 
     def __dir__(self):
-        return ['artist', 'album_artist', 'title', 'album', 'remixer',
-                'publisher', 'release', 'key', 'bpm', 'year', 'genre',
-                'track_number', 'disc_number']
+        return ['file_path', 'artist', 'title', 'album', 'remixer',
+                'publisher', 'release', 'key', 'bpm', 'year', 'genre', 'track',
+                'disc']
 
     def reload(self):
         """Load the mutagen file from the media files path"""
@@ -133,3 +132,20 @@ class MediaFile(object):
 
         for callback in self.save_callbacks:
             callback(self)
+
+
+def serialize(media, trim_path=None):
+    vals = {k: getattr(media, k) for k in dir(media)}
+
+    for key, val in vals.items():
+        if isinstance(val, SizeField.Size):
+            vals[key] = val.pack()
+
+        if isinstance(val, ID3.ID3TimeStamp):
+            vals[key] = str(val)
+
+    if trim_path and vals['file_path'].startswith(trim_path):
+        path = os.path.normpath(trim_path) + '/'
+        vals['file_path'] = vals['file_path'][len(path):]
+
+    return vals

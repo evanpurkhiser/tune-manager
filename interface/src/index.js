@@ -21,4 +21,3 @@ const providedApp = <Provider store={store}>
 </Provider>;
 
 ReactDOM.render(providedApp, document.getElementById('root'));
-registerServiceWorker();

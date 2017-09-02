@@ -51,10 +51,10 @@ class ImportWatcher(object):
         self.loop.call_soon_threadsafe(asyncio.ensure_future, event)
 
 
-class ImportAPI(object):
+class TrackProcessor(object):
     """
-    ImportAPI provides a websocketservices for managing and processing the
-    tracks currently in the importing collection.
+    TrackProcessor provides a service for managing and processing the tracks
+    currently in the importing collection.
 
     This service is resposible for:
 
@@ -90,11 +90,11 @@ class ImportAPI(object):
 
     The websocket connection is available at ws://localhost:9000.
     """
-    def __init__(self, import_path, batch_period=300):
+    def __init__(self, import_path, batch_period=300, loop=None):
         self.import_path = import_path
         self.batch_period = batch_period
 
-        self.loop = asyncio.get_event_loop()
+        self.loop = loop or asyncio.get_event_loop()
         self.events = asyncio.Queue()
         self.connections = set()
 
@@ -111,9 +111,6 @@ class ImportAPI(object):
         cores = multiprocessing.cpu_count()
         self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=cores)
 
-        # Setup websocket server
-        server = websockets.serve(self.on_connect, 'localhost', 9000)
-
         # Setup filesystem watchdog
         watcher = ImportWatcher(self.loop, self)
 
@@ -125,11 +122,10 @@ class ImportAPI(object):
             while True: await asyncio.sleep(1)
 
         # kickoff coroutines
-        asyncio.ensure_future(server, loop=self.loop)
         asyncio.ensure_future(file_dispatcher(), loop=self.loop)
         asyncio.ensure_future(self.dispatcher(), loop=self.loop)
 
-    async def on_connect(self, ws, path):
+    async def open_connection(self, ws):
         self.connections.add(ws)
         self.report_state(ws)
 

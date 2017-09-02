@@ -2,7 +2,6 @@ import os.path
 import mutagen
 import mutagen.id3 as ID3
 
-
 class TextField(object):
     """A plain-text field stored in the mutagen tags"""
 

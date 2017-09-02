@@ -121,16 +121,12 @@ function reducer(oldState = initialState, action) {
   case actions.MODIFY_FIELD: {
     const { focusedTrackID, field, value } = action;
 
-    lodash.union(state.selectedTracks, [focusedTrackID]).forEach(id => {
+    lodash.union(state.selectedTracks, [ focusedTrackID ]).forEach(id => {
       state.tracks[id] = { ...state.tracks[id] };
       state.tracks[id][field] = value;
     });
     break;
   }
-
-
-
-
   default:
   }
 

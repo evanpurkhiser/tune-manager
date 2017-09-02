@@ -89,15 +89,6 @@ class Field extends Component {
       { 'recently-edited': this.state.recentlyEdited },
     ]);
 
-    const tooltipStyles = classNames([
-      'validation-tooltip',
-      { 'shown': this.state.focused },
-    ]);
-
-    const tooltip = <div className={tooltipStyles}>
-      Testing
-    </div>;
-
     return <div className={classes}>
       <input type="text"
         spellCheck="false"
@@ -105,7 +96,6 @@ class Field extends Component {
         onFocus={_ => this.focusField()}
         onChange={e => this.updateLocal(e.target.value)}
         value={this.state.value || ''} />
-      {this.state.focused ? tooltip : null}
     </div>;
   }
 }

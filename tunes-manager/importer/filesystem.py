@@ -47,11 +47,11 @@ def file_id(path):
 
 
 class EventType(enum.Enum):
-    TRACK_CONVERTING = 1
-    TRACK_DETAILS    = 2
-    TRACK_REMOVED    = 3
-    KEY_COMPUTING    = 4
-    KEY_COMPUTED     = 5
+    TRACK_CONVERTING = enum.auto()
+    TRACK_DETAILS    = enum.auto()
+    TRACK_REMOVED    = enum.auto()
+    KEY_COMPUTING    = enum.auto()
+    KEY_COMPUTED     = enum.auto()
 
 
 class ImportWatcher(object):

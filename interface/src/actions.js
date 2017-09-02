@@ -13,6 +13,7 @@ export const REPLACE_KNOWNS = 'REPLACE_KNOWNS';
 export const TOGGLE_ALL_TRACKS = 'TOGGLE_ALL_TRACKS';
 export const TOGGLE_TRACKS     = 'TOGGLE_TRACKS';
 export const REORDER_GROUPS    = 'REORDER_GROUPS';
+export const MODIFY_FIELD      = 'MODIFY_FIELD';
 
 export const setArtwork = items => ({
   type: SET_ARTWORK,

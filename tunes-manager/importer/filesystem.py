@@ -253,7 +253,8 @@ class ImportAPI(object):
         # Recompute the key if it is missing or invalid
         valid_keys = keyfinder.notations.camelot.values()
 
-        if True or not media.key or not media.key.strip('0') in valid_keys:
+        if not media.key or not media.key.strip('0') in valid_keys:
+            media.key = ''
             self.executor.submit(self.compute_key, identifier, media)
 
         # Report track details

@@ -12,6 +12,9 @@ class TextField(object):
 
     def __get__(self, media_file, owner=None):
         """Get the field from the mutagen file"""
+        if media_file.mg_file.tags is None:
+            return None
+
         frames = media_file.mg_file.tags.getall(self.frame_name)
 
         # Always use the first frame in the list, ignoring others.

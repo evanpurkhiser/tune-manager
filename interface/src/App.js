@@ -12,12 +12,12 @@ let TrackItem = p => {
   const fieldProps = {
     track:    p.track,
     dispatch: p.dispatch,
-  }
+  };
 
   return <li className="track-listing">
     <div className="field selector">
       <input type="checkbox"
-        onChange={e => p.dispatch(action.toggleTracks(e.target.checked, [p.id]))}
+        onChange={e => p.dispatch(action.toggleTracks(e.target.checked, [ p.id ]))}
         checked={p.selected} />
     </div>
 
@@ -38,7 +38,7 @@ let TrackItem = p => {
     <div className="field key">10A</div>
     <div className="field actions"></div>
   </li>;
-}
+};
 
 const mapTrackState = (s, props) => ({
   track:       s.tracks[props.id],
@@ -58,14 +58,14 @@ const PathParts = ({ parts }) => <ol className="path-parts">
 let TrackGroup = p => {
   const toggleGroup = toggle => {
     p.dispatch(action.toggleTracks(toggle, p.tracks));
-  }
+  };
 
   const pathParts = p.pathParts[0] !== '.' ? p.pathParts : []; 
 
   const classes = classNames({
     'listing-name': true,
     'root-listing': pathParts.length === 0,
-  })
+  });
 
   const GroupHeading = SortableHandle(_ => <label className={classes}>
     <span className="drag-handle" />
@@ -81,14 +81,14 @@ let TrackGroup = p => {
       {p.tracks.map((t, i) => <TrackItem index={i} key={t} id={t} />)}
     </ol>
   </li>;
-}
+};
 
 const mapTrackGroupingState = (s, props) => ({
   allSelected: lodash.difference(props.tracks, s.selectedTracks).length === 0,
 });
 
 TrackGroup = connect(mapTrackGroupingState)(TrackGroup);
-TrackGroup = SortableElement(TrackGroup)
+TrackGroup = SortableElement(TrackGroup);
 
 /**
  * Track group listings
@@ -105,7 +105,7 @@ TrackGroups = SortableContainer(TrackGroups);
 /**
  * The main application
  */
-let App = p => <div className="app">
+const App = p => <div className="app">
   <header>
     <h1>Tunes Importing Tools</h1>
     <small>

@@ -4,7 +4,7 @@ import * as Field from './components/Fields';
 import * as lodash from 'lodash';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import classNames from 'classnames';
-import connect from 'react-redux';
+import { connect } from 'react-redux';
 import FieldHeadings from './components/FieldHeadings';
 import React from 'react';
 
@@ -34,8 +34,8 @@ let TrackItem = p => {
     <Field.TrackNumber { ...fieldProps } />
     <Field.DiscNumber  { ...fieldProps } />
     <Field.BPM         { ...fieldProps } />
+    <Field.Key         { ...fieldProps } keyfinding={p.keyfinding} />
 
-    <div className="field key">10A</div>
     <div className="field actions"></div>
   </li>;
 };
@@ -43,6 +43,7 @@ let TrackItem = p => {
 const mapTrackState = (s, props) => ({
   track:       s.tracks[props.id],
   selected:    s.selectedTracks.includes(props.id),
+  keyfinding:  s.keyfinding,
   knownValues: s.knownValues,
 });
 

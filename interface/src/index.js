@@ -8,13 +8,13 @@ import store from './store'
 import * as actions from './actions'
 import registerServiceWorker from './registerServiceWorker';
 
-fetch('http://localhost:5000/listing').then(r => r.json()).then(tracks => {
-  store.dispatch(actions.replaceTracks(camelize(tracks)))
-});
+const socket = new WebSocket('ws://localhost:9000');
 
-fetch('http://localhost:5000/known_values').then(r => r.json()).then(knowns => {
-  store.dispatch(actions.replaceKnowns(camelize(knowns)))
-});
+socket.onmessage = m => store.dispatch(camelize(JSON.parse(m.data)));
+
+//fetch('http://localhost:5000/known_values').then(r => r.json()).then(knowns => {
+//  store.dispatch(actions.replaceKnowns(camelize(knowns)))
+//});
 
 const providedApp = <Provider store={store}>
   <App />

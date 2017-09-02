@@ -1,11 +1,10 @@
-import { arrayMove } from 'react-sortable-hoc'
-import { createStore } from 'redux';
-
-import * as lodash from 'lodash';
-import * as path from 'path';
-import * as md5 from 'md5';
-
 import * as actions from './actions';
+import * as lodash from 'lodash';
+import * as md5 from 'md5';
+import * as path from 'path';
+
+import { arrayMove } from 'react-sortable-hoc';
+import { createStore } from 'redux';
 
 const initialState = {
   // tracks is a mapping of the unique track ID to the track object.
@@ -17,6 +16,10 @@ const initialState = {
 
   // Artwork is a mapping of the md5 sum of an artwork to the in BLOB object.
   artwork: {},
+
+  // keyfinding is a list of track IDs that are currently having their keys
+  // computed.
+  keyfinding: [],
 
   // trackTree is a list of objects that represent each grouping of tracks.
   // Track grouping logic is based on the directory path of the track within
@@ -54,10 +57,34 @@ function reducer(oldState = initialState, action) {
   const state = { ...oldState };
 
   switch (action.type) {
-  case actions.REPLACE_TRACKS: {
-    state.tracks = lodash.keyBy(action.tracks, t => t.id);
-    state.tracksPristine = { ...state.tracks };
-    state.trackTree = computeTrackTree(action.tracks);
+  case actions.TRACK_DETAILS: {
+    const newTracks = lodash.keyBy(action.items, t => t.id);
+    state.tracks = { ...state.tracks, ...newTracks };
+    state.trackTree = computeTrackTree(state.tracks);
+    state.tracksPristine = { ...state.tracksPristine, ...newTracks };
+    break;
+  }
+
+  case actions.TRACK_REMOVED: {
+    state.tracks = { ...oldState.tracks };
+    action.items.map(i => i.id).forEach(k => delete state.tracks[k]);
+    state.trackTree = computeTrackTree(state.tracks);
+    break;
+  }
+
+  case actions.KEY_COMPUTING: {
+    const trackIds = action.items.map(i => i.id);
+    state.keyfinding = lodash.union(state.keyfinding, trackIds);
+    break;
+  }
+
+  case actions.KEY_COMPUTED: {
+    const trackIds = action.items.map(i => i.id);
+    state.keyfinding = lodash.difference(state.keyfinding, trackIds);
+
+    for (const item of action.items) {
+      state.tracks[item.id] = { ...state.tracks[item.id], key: item.key };
+    }
     break;
   }
 
@@ -103,7 +130,8 @@ function reducer(oldState = initialState, action) {
   return state;
 }
 
-function computeTrackTree(tracks) {
+function computeTrackTree(trackMap) {
+  const tracks = Object.values(trackMap);
   const sortedTracks = tracks.sort((a, b) => a.filePath.localeCompare(b.filePath));
 
   const paths = lodash.uniq(tracks.map(t => path.dirname(t.filePath)));

@@ -163,6 +163,16 @@ $centered-fields: (
 
 .key {
   @extend %hidden-with-ellipsis;
+  position: relative;
+
+  &.computing:after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 9px;
+    @extend %loader;
+  }
+
 }
 
 .filed-heading .artwork,
@@ -323,3 +333,19 @@ ol.path-parts li {
 }
 
 
+%loader {
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  display: block;
+  transform: translateZ(0);
+  animation: spinner 500ms infinite linear;
+
+  border: 3px solid rgba(77,89,99, 0.2);
+  border-left-color: rgba(77,89,99, 1);
+}
+
+@keyframes spinner {
+  0%   { transform: rotate(0deg);   }
+  100% { transform: rotate(360deg); }
+}

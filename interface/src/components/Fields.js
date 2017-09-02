@@ -162,3 +162,17 @@ export const BPM = p => <Field {...p}
 export const Artwork = p => <div className="field artwork">
   <div className="empty-artwork"></div>
 </div>;
+
+export const Key = p => {
+  const isComputing = p.keyfinding.includes(p.track.id);
+
+  const classes = classNames({
+    field: true,
+    key:   true,
+    computing: isComputing,
+  });
+
+  return <div className={classes}>
+    {p.track.key}
+  </div>;
+};

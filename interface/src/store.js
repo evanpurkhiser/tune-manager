@@ -167,12 +167,11 @@ function normalizeKnownValues(knowns) {
 }
 
 const devTools = '__REDUX_DEVTOOLS_EXTENSION__';
-const devToolMiddleware = window[devTools] && window[devTools]();
 const sagaMiddleware = createSagaMiddleware();
 
 const middleware = compose(
   applyMiddleware(sagaMiddleware),
-  devToolMiddleware
+  window[devTools] ? window[devTools]() : f => f,
 );
 
 const store = createStore(reducer, middleware);

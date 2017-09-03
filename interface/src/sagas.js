@@ -6,11 +6,11 @@ import lodash from 'lodash';
 const ARTWORK_URL = 'http://localhost:8000/artwork/{}@{}';
 
 function* getTrackArtwork(track) {
-  const futures = lodash
+  const promises = lodash
     .times(track.artworkCount, i => format(ARTWORK_URL, i, track.id))
     .map(u => fetch(u));
 
-  const reses = yield all(futures);
+  const reses = yield all(promises);
   const blobs = yield all(reses.map(r => r.blob()));
 
   return [ track.id, blobs ];

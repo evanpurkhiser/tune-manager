@@ -76,7 +76,6 @@
     }],
     "no-proto": "error",
     "no-redeclare": "error",
-    "no-return-assign": "warn",
     "no-script-url": "error",
     "no-self-assign": "warn",
     "no-self-compare": "warn",

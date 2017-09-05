@@ -75,10 +75,6 @@ ArtworkUploader.propTypes = {
  * ArtworkPopover renders a list of artwork items and a artwork uploader.
  */
 const ArtworkPopover = p => {
-  if (p.shown === false) {
-    return null;
-  }
-
   const fireAction = (action, ...params) => e => {
     e.stopPropagation();
     action(...params);
@@ -172,20 +168,23 @@ class Artwork extends Component {
         artwork={artwork[this.state.maximzedArt]}
         onExit={_ => this.setState({ maximzedArt: null })} />;
 
+    const popover = this.state.focused === false
+      ? null
+      : <ArtworkPopover
+        artwork={artwork}
+        selected={selectedArt}
+        onSelect={i => this.onSelect(i)}
+        onRemove={i => this.onRemove(i)}
+        onMaximize={i => this.onMaximize(i)}
+        onFileSelect={f => this.onFileSelect(f)} />;
+
     return <div className="field marked artwork"
       tabIndex="0"
       ref={e => this.DOMNode = e}
       onFocus={_ => this.setState({ focused: true })}
       onBlur={_ => this.blur()}>
       {element}
-      <ArtworkPopover
-        artwork={artwork}
-        selected={selectedArt}
-        onSelect={i => this.onSelect(i)}
-        onRemove={i => this.onRemove(i)}
-        onMaximize={i => this.onMaximize(i)}
-        onFileSelect={f => this.onFileSelect(f)}
-        shown={this.state.focused} />
+      {popover}
       {maximzedArt}
     </div>;
   }

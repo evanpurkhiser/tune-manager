@@ -2,6 +2,21 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700");
 @import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
 
+@mixin fontawesome($code) {
+  font-family: FontAwesome;
+  content: '#{$code}';
+}
+
+@mixin checkered-background {
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+  background-color: #fff;
+  background-image: linear-gradient(45deg, #eee 25%, rgba(0, 0, 0, 0) 25%),
+                    linear-gradient(-45deg, #eee 25%, rgba(0, 0, 0, 0) 25%),
+                    linear-gradient(45deg, rgba(0, 0, 0, 0) 75%, #eee 75%),
+                    linear-gradient(-45deg, rgba(0, 0, 0, 0) 75%, #eee 75%);
+}
+
 * { box-sizing: border-box; }
 
 ol, ul, li {
@@ -91,18 +106,33 @@ body, html, #root {
 .field.marked {
   transition: color 200ms ease-in-out;
 
-  &.error:after   { background: #ffa4a4; }
-  &.warning:after { background: #ffce97; }
-  &.valid:after   { background: #a8ffa4; }
+  &.error:after   { border-color: #ffa4a4; }
+  &.warning:after { border-color: #ffce97; }
+  &.valid:after   { border-color: #a8ffa4; }
 
   &:after {
     content: '';
     display: block;
-    height: 3px;
+    height: 0;
     width: calc(100% - 12px);
     bottom: 3px;
-    background: #f7f7f7;
     position: absolute;
+
+    // Set the base border color to trasnparent so the artwork marker does not
+    // inherit any colors. We can't specify this in the artwork marker as it is
+    // too specific and the indicator colors would not overrride it.
+    border-color: transparent;
+    border-top: 3px solid #f7f7f7;
+  }
+
+  &.artwork:after {
+    width: 0;
+    height: 0;
+    right: 3px;
+    border-width: 3px;
+    border-style: solid;
+    border-top-color: transparent;
+    border-left-color: transparent;
   }
 }
 
@@ -284,8 +314,7 @@ $centered-fields: (
     -webkit-font-smoothing: antialiased;
 
     &:after {
-      font-family: FontAwesome;
-      content: '\f0c9';
+      @include fontawesome('\f0c9');
     }
   }
 
@@ -319,18 +348,21 @@ ol.path-parts li {
 }
 
 .artwork {
-  img, .empty-artwork {
+  outline: none;
+
+  > img, .empty-artwork {
+    display: block;
     height: 26px;
     width: 26px;
     border-radius: 2px;
+    cursor: pointer;
   }
 
   .empty-artwork {
     background: #f7f7f7;
 
     &:after {
-      font-family: FontAwesome;
-      content: '\f03e';
+      @include fontawesome('\f03e');
       color: #ddd;
     }
   }
@@ -342,6 +374,174 @@ ol.path-parts li {
     position: relative;
     top: 5px;
     left: 5px;
+  }
+
+}
+
+.fullscreen-artwork {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+
+  img {
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    max-width: 500px;
+    margin: 20px;
+    margin-top: 80px;
+
+    // checkboard background to indicate transparent images
+    @include checkered-background;
+  }
+}
+
+.artwork-popover {
+  $background: #fff;
+
+  position: absolute;
+  z-index: 2;
+  top: -38px;
+  left: 37px;
+  display: flex;
+  flex-direction: row;
+  background: $background;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  padding: 5px;
+  border-radius: 4px;
+  font-family: "Open Sans";
+  user-select: none;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    height: 0;
+    width: 0;
+    left: -15px;
+    border: 8px solid transparent;
+    border-right-color: $background;
+    top: 50%;
+    margin-top: -8px;
+  }
+
+  img {
+    display: block;
+    height: 64px;
+    width: 64px;
+    border-radius: 3px;
+
+    // checkboard background to indicate transparent images
+    @include checkered-background;
+  }
+
+  > li:not(:first-child) {
+    margin-left: 4px;
+  }
+
+  > li {
+    padding: 6px 6px 4px;
+    border-radius: 3px;
+    position: relative;
+
+    &:hover, &.selected {
+      background: #efefef;
+      cursor: pointer;
+    }
+
+    &:hover .actions {
+      display: block;
+    }
+  }
+
+  ul.actions {
+    display: none;
+    width: 100%;
+    text-align: left;
+    font-size: 8px;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    line-height: 6px;
+
+    li {
+      display: inline-block;
+      padding: 4px;
+      background: #fff;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
+      border-radius: 3px;
+      opacity: 0.8;
+    }
+
+    li:not(:first-child) {
+      margin-left: 4px;
+    }
+
+    li:hover {
+      opacity: 1;
+    }
+
+    .maximize:after {
+      @include fontawesome('\f0b2');
+    }
+
+    .remove {
+      &:after { @include fontawesome('\f00d'); }
+      background: #f16d6d;
+      color: #fff;
+    }
+  }
+
+  .details {
+    font-size: 8px;
+    text-align: left;
+    line-height: 12px;
+    font-weight: bold;
+    margin-top: 2px;
+    text-align: center;
+  }
+
+  .uploader label {
+    margin: -6px -6px -4px;
+    padding: 6px 6px 4px;
+    cursor: pointer;
+    display: block;
+
+    &:before {
+      font-size: 18px;
+      @include fontawesome('\f093');
+      display: block;
+      width: 60px;
+      height: 60px;
+      line-height:46px;
+      border-radius: 5px;
+      border: 2px dashed #ddd;
+      color: #ddd;
+    }
+
+    &:after{
+      content: 'Upload';
+      text-transform: uppercase;
+      font-size: 8px;
+      color: #ccc;
+      position: absolute;
+      top: 40px;
+      left: 8px;
+      width: 60px;
+      text-align: center;
+
+    }
+
+    &:hover:before, &:hover:after {
+      color: #bbb;
+      border-color: #bbb;
+    }
+  }
+
+  input[type="file"] {
+    display: none;
   }
 }
 

@@ -1,18 +1,10 @@
 import * as action from './actions';
 import { all, put, takeEvery } from 'redux-saga/effects';
+import { buildImageObject } from './util/image';
 import format from 'string-format';
 import lodash from 'lodash';
-import { computeImageSize } from './util/image';
 
 const ARTWORK_URL = 'http://localhost:8000/artwork/{}@{}';
-
-/**
- * Compute and attach image dimensions to all given blob objects.
- */
-function* attachImageSize(blobs) {
-  const dimensions = yield all(blobs.map(b => computeImageSize(b)));
-  blobs.forEach((b, i) => b.dimensions = dimensions[i]);
-}
 
 function* getTrackArtwork(track) {
   const promises = lodash
@@ -22,11 +14,9 @@ function* getTrackArtwork(track) {
   const reses = yield all(promises);
   const blobs = yield all(reses.map(r => r.blob()));
 
-  // compute and store the image size on each individual blob. We do this here
-  // so we can avoid recomputing this over and over.
-  yield attachImageSize(blobs)
+  const objects = yield all(blobs.map(b => buildImageObject(b)));
 
-  return [ track.id, blobs ];
+  return [ track.id, objects ];
 }
 
 function* requestArtwork(payload) {

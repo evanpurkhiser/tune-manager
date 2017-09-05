@@ -148,21 +148,7 @@ export const BPM = p => <Field {...p}
   name="bpm"
   validator={validate.bpm} />;
 
-
-export const Artwork = p => {
-  const artwork = p.track.artwork || [];
-  const loading = artwork.length !== p.track.artworkCount;
-
-  const emptyClasses = classNames('empty-artwork', { loading });
-
-  const image = artwork.length > 0
-    ? <img src={window.URL.createObjectURL(artwork[0])} />
-    : <div className={emptyClasses}></div>;
-
-  return <div className="field artwork">
-    {image}
-  </div>;
-};
+export { Artwork } from './Artwork';
 
 export const Key = p => {
   const isComputing = p.keyfinding.includes(p.track.id);

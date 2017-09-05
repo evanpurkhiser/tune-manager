@@ -1,16 +1,18 @@
 /**
- * Genearte the image size of an image Blob.
+ * Generate a simple object representation of an image Blob.
  */
-export function computeImageSize(imageBlob) {
-  const objectURL = window.URL.createObjectURL(imageBlob)
+export function buildImageObject(imageBlob) {
+  const objectURL = window.URL.createObjectURL(imageBlob);
   const image = new Image();
 
-  const sizePromise = new Promise(resolve => image.onload = i => {
-    resolve({ height: image.height, width: image.width });
-    window.URL.revokeObjectURL(objectURL);
-  });
+  const promise = new Promise(resolve => image.onload = _ => resolve({
+    url:        objectURL,
+    size:       imageBlob.size,
+    type:       imageBlob.type,
+    dimensions: { height: image.height, width: image.width },
+  }));
 
   image.src = objectURL;
 
-  return sizePromise;
+  return promise;
 }

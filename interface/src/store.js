@@ -91,6 +91,11 @@ function reducer(oldState = initialState, action) {
     for (const trackId in action.items) {
       const artwork = action.items[trackId];
       state.tracks[trackId] = { ...state.tracks[trackId], artwork };
+
+      // Remove the artworkCount. This field was used to indicate how many
+      // artwork items there are to download for a track, and is used by the
+      // interface as a marker to indicate that artwok is being downloaded.
+      state.tracks[trackId].artworkCount = undefined;
     }
     break;
   }
@@ -121,9 +126,44 @@ function reducer(oldState = initialState, action) {
   case actions.MODIFY_FIELD: {
     const { focusedTrackID, field, value } = action;
 
-    lodash.union(state.selectedTracks, [ focusedTrackID ]).forEach(id => {
+    onSelectedTracks(state, focusedTrackID, id => {
       state.tracks[id] = { ...state.tracks[id] };
       state.tracks[id][field] = value;
+    });
+    break;
+  }
+
+  case actions.ARTWORK_SELECT: {
+    const { focusedTrackID, index } = action;
+    state.tracks[focusedTrackID] = { ...state.tracks[focusedTrackID] };
+    state.tracks[focusedTrackID].artworkSelected = index;
+    break;
+  }
+
+  case actions.ARTWORK_REMOVE: {
+    const { focusedTrackID, index } = action;
+    const track = { ...state.tracks[focusedTrackID] };
+    const currIndex = track.artworkSelected;
+
+    // Remove artwork and offset the artworkSelected index if necessary
+    track.artwork.splice(index, 1);
+    track.artworkSelected = currIndex === index
+      ? null
+      : currIndex <= index ? currIndex : currIndex - 1;
+
+    state.tracks[focusedTrackID] = track;
+    break;
+  }
+
+  case actions.ARTWORK_ADD: {
+    const { focusedTrackID, artwork } = action;
+
+    onSelectedTracks(state, focusedTrackID, id => {
+      const track = { ...state.tracks[id] };
+      const existing = track.artwork || [];
+      track.artwork = [ ...existing, artwork ];
+      track.artworkSelected = existing.length;
+      state.tracks[id] = track;
     });
     break;
   }
@@ -131,6 +171,10 @@ function reducer(oldState = initialState, action) {
   }
 
   return state;
+}
+
+function onSelectedTracks(state, focusedTrack, fn) {
+  lodash.union(state.selectedTracks, [ focusedTrack ]).forEach(fn);
 }
 
 function computeTrackTree(trackMap) {

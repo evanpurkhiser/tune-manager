@@ -9,12 +9,6 @@ export const KEY_COMPUTED     = 'KEY_COMPUTED';
 export const SET_ARTWORK    = 'SET_ARTWORK';
 export const REPLACE_KNOWNS = 'REPLACE_KNOWNS';
 
-// Interface events
-export const TOGGLE_ALL_TRACKS = 'TOGGLE_ALL_TRACKS';
-export const TOGGLE_TRACKS     = 'TOGGLE_TRACKS';
-export const REORDER_GROUPS    = 'REORDER_GROUPS';
-export const MODIFY_FIELD      = 'MODIFY_FIELD';
-
 export const setArtwork = items => ({
   type: SET_ARTWORK,
   items,
@@ -24,6 +18,15 @@ export const replaceKnowns = tracks => ({
   type:    REPLACE_KNOWNS,
   knowns: tracks,
 });
+
+// Interface events
+export const TOGGLE_ALL_TRACKS = 'TOGGLE_ALL_TRACKS';
+export const TOGGLE_TRACKS     = 'TOGGLE_TRACKS';
+export const REORDER_GROUPS    = 'REORDER_GROUPS';
+export const MODIFY_FIELD      = 'MODIFY_FIELD';
+export const ARTWORK_SELECT    = 'ARTWORK_SELECT';
+export const ARTWORK_REMOVE    = 'ARTWORK_REMOVE';
+export const ARTWORK_ADD       = 'ARTWORK_ADD';
 
 export const toggleAllTracks = toggle => ({
   type: TOGGLE_ALL_TRACKS,
@@ -46,4 +49,22 @@ export const modifyField = (focusedTrackID, field, value) => ({
   focusedTrackID,
   field,
   value,
+});
+
+export const selectArtwork = (focusedTrackID, index) => ({
+  type: ARTWORK_SELECT,
+  focusedTrackID,
+  index,
+});
+
+export const removeArtwork = (focusedTrackID, index) => ({
+  type: ARTWORK_REMOVE,
+  focusedTrackID,
+  index,
+});
+
+export const addArtwork = (focusedTrackID, artwork) => ({
+  type: ARTWORK_ADD,
+  focusedTrackID,
+  artwork,
 });

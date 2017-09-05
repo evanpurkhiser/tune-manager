@@ -165,4 +165,12 @@ def serialize(media, trim_path=None):
     # a serialization of the artwork, so we can query them separately later.
     vals['artwork_count'] = len(media.artwork)
 
+    # The selected artwork will always be the 'Front Cover'
+    artTypes = [a.type for a in media.artwork]
+
+    try:
+        vals['artwork_selected'] = artTypes.index(ID3.PictureType.COVER_FRONT)
+    except ValueError:
+        vals['artwork_selected'] = None
+
     return vals

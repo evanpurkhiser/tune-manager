@@ -1,6 +1,6 @@
-import * as action from '../actions';
+import * as action from '../../actions';
 import * as path from 'path';
-import * as validate from '../validate';
+import * as validate from '../../validate';
 import classNames from 'classnames';
 import React, { Component } from 'react';
 

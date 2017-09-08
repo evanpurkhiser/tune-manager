@@ -215,7 +215,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const middleware = compose(
   applyMiddleware(sagaMiddleware),
-  window[devTools] ? window[devTools]() : f => f,
+  window[devTools] ? window[devTools]() : lodash.identity
 );
 
 const store = createStore(reducer, middleware);

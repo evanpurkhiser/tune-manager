@@ -399,32 +399,20 @@ ol.path-parts li {
 }
 
 .artwork-popover {
-  $background: #fff;
-
-  position: absolute;
-  z-index: 2;
-  top: -38px;
-  left: 37px;
+  @extend %popover;
   display: flex;
   flex-direction: row;
-  background: $background;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  top: -38px;
+  left: 37px;
   padding: 5px;
-  border-radius: 4px;
-  font-family: "Open Sans";
   user-select: none;
 
   &:before {
-    content: '';
-    display: block;
-    position: absolute;
-    height: 0;
-    width: 0;
-    left: -15px;
-    border: 8px solid transparent;
-    border-right-color: $background;
+    @extend %popover-arrow;
+    border-right-color: #fff !important;
     top: 50%;
     margin-top: -8px;
+    left: -15px;
   }
 
   img {
@@ -543,6 +531,24 @@ ol.path-parts li {
   input[type="file"] {
     display: none;
   }
+}
+
+%popover {
+  position: absolute;
+  z-index: 2;
+  background: #fff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  font-family: "Open Sans";
+}
+
+%popover-arrow {
+  content: '';
+  display: block;
+  position: absolute;
+  height: 0;
+  width: 0;
+  border: 8px solid transparent;
 }
 
 %loader {

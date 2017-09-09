@@ -11,9 +11,10 @@ import store from './store';
 const socket = new WebSocket('ws://localhost:8000/events');
 socket.onmessage = m => store.dispatch(camelize(JSON.parse(m.data)));
 
-//fetch('http://localhost:5000/known_values').then(r => r.json()).then(knowns => {
-//  store.dispatch(actions.replaceKnowns(camelize(knowns)))
-//});
+// Load known values
+fetch('http://localhost:8000/known-values').then(r => r.json()).then(knowns => {
+  store.dispatch(actions.replaceKnowns(camelize(knowns)));
+});
 
 const providedApp = <Provider store={store}>
   <App />

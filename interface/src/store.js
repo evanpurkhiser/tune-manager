@@ -65,7 +65,7 @@ function reducer(oldState = initialState, action) {
   }
 
   case actions.TRACK_REMOVED: {
-    state.tracks = { ...oldState.tracks };
+    state.tracks = { ...state.tracks };
     action.items.map(i => i.id).forEach(k => delete state.tracks[k]);
     state.trackTree = computeTrackTree(state.tracks);
     break;
@@ -80,6 +80,7 @@ function reducer(oldState = initialState, action) {
   case actions.KEY_COMPUTED: {
     const trackIds = action.items.map(i => i.id);
     state.keyfinding = lodash.difference(state.keyfinding, trackIds);
+    state.tracks = { ...state.tracks };
 
     for (const item of action.items) {
       state.tracks[item.id] = { ...state.tracks[item.id], key: item.key };
@@ -90,6 +91,7 @@ function reducer(oldState = initialState, action) {
   case actions.SET_ARTWORK: {
     for (const trackId in action.items) {
       const artwork = action.items[trackId];
+      state.tracks = { ...state.tracks };
       state.tracks[trackId] = { ...state.tracks[trackId], artwork };
 
       // Remove the artworkCount. This field was used to indicate how many
@@ -125,16 +127,17 @@ function reducer(oldState = initialState, action) {
 
   case actions.MODIFY_FIELD: {
     const { focusedTrackID, field, value } = action;
+    state.tracks = { ...state.tracks };
 
     onSelectedTracks(state, focusedTrackID, id => {
-      state.tracks[id] = { ...state.tracks[id] };
-      state.tracks[id][field] = value;
+      state.tracks[id] = { ...state.tracks[id], [field]: value };
     });
     break;
   }
 
   case actions.ARTWORK_SELECT: {
     const { focusedTrackID, index } = action;
+    state.tracks = { ...state.tracks };
     state.tracks[focusedTrackID] = { ...state.tracks[focusedTrackID] };
     state.tracks[focusedTrackID].artworkSelected = index;
     break;
@@ -146,17 +149,19 @@ function reducer(oldState = initialState, action) {
     const currIndex = track.artworkSelected;
 
     // Remove artwork and offset the artworkSelected index if necessary
+    track.artwork = [ ...track.artwork ];
     track.artwork.splice(index, 1);
     track.artworkSelected = currIndex === index
       ? null
       : currIndex <= index ? currIndex : currIndex - 1;
 
-    state.tracks[focusedTrackID] = track;
+    state.tracks = { ...state.tracks, [focusedTrackID]: track };
     break;
   }
 
   case actions.ARTWORK_ADD: {
     const { focusedTrackID, artwork } = action;
+    state.tracks = { ...state.tracks };
 
     onSelectedTracks(state, focusedTrackID, id => {
       const track = { ...state.tracks[id] };

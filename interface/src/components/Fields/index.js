@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as validate from '../../validate';
 import classNames from 'classnames';
 import React, { Component } from 'react';
+import TypeaheadInput from '../TypeaheadInput';
 
 export function FileName(props) {
   const filename = path.basename(props.track.filePath);
@@ -89,19 +90,26 @@ class Field extends Component {
       { 'recently-edited': this.state.recentlyEdited },
     ]);
 
+    const props = {
+      onBlur:   _ => this.blurField(),
+      onFocus:  _ => this.focusField(),
+      onChange: e => this.updateLocal(e.target.value),
+      value:    this.state.value || '',
+    };
+
+    const input = this.props.typeaheadSource
+      ? <TypeaheadInput source={this.props.typeaheadSource.clean} {...props} />
+      : <input type="text" spellCheck="false" {...props} />;
+
     return <div className={classes}>
-      <input type="text"
-        spellCheck="false"
-        onBlur={_ => this.blurField()}
-        onFocus={_ => this.focusField()}
-        onChange={e => this.updateLocal(e.target.value)}
-        value={this.state.value || ''} />
+      {input}
     </div>;
   }
 }
 
 export const Artist = p => <Field {...p}
   name="artist"
+  typeaheadSource={p.knownValues.artists}
   validator={validate.artist}
   validatorOptions={{ knownArtists: p.knownValues.artists }} />;
 
@@ -111,6 +119,7 @@ export const Title = p => <Field {...p}
 
 export const Remixer = p => <Field {...p}
   name="remixer"
+  typeaheadSource={p.knownValues.artists}
   validator={validate.remixer}
   validatorOptions={{ knownArtists: p.knownValues.artists }} />;
 
@@ -120,6 +129,7 @@ export const Album = p => <Field {...p}
 
 export const Publisher = p => <Field {...p}
   name="publisher"
+  typeaheadSource={p.knownValues.publishers}
   validator={validate.publisher}
   validatorOptions={{ knownPublishers: p.knownValues.publishers }} />;
 
@@ -133,6 +143,7 @@ export const Year = p => <Field {...p}
 
 export const Genre = p => <Field {...p}
   name="genre"
+  typeaheadSource={p.knownValues.genres}
   validator={validate.genre}
   validatorOptions={{ knownGenres: p.knownValues.genres }} />;
 

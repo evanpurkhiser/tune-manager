@@ -172,7 +172,6 @@ $centered-fields: (
   'artwork',
   'release',
   'year',
-  'genre',
   'track',
   'disc',
   'bpm',
@@ -218,6 +217,7 @@ $centered-fields: (
   font-size: 12px;
   line-height: 22px;
   background: transparent;
+  padding: 0;
 
   &[type="text"] {
     width: 100%;
@@ -530,6 +530,64 @@ ol.path-parts li {
 
   input[type="file"] {
     display: none;
+  }
+}
+
+.typeahead {
+  position: relative;
+}
+
+.typeahead-shadow {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  white-space: nowrap;
+  pointer-events: none;
+  overflow: hidden;
+
+  .shadow {
+    // The shadow text has a small ammount of padding to the left to ensure the
+    // caret doesn't overlap.
+    padding-left: 1px;
+    color: #cbd0d4;
+  }
+
+  .hidden {
+    visibility: hidden;
+  }
+}
+
+.typeahead-popover {
+  @extend %popover;
+
+  top: -3px;
+  right: calc(100% + 10px);
+  padding: 10px 14px;
+  font-size: 10px;
+  line-height: 16px;
+  max-width: 120px;
+  white-space: nowrap;
+  padding: 6px 10px;
+
+  &:before {
+    @extend %popover-arrow;
+    border-left-color: #fff !important;
+    top: 6px;
+    right: -15px;
+  }
+
+  .matched-part {
+    color: #ec77b1;
+  }
+
+  li {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    opacity: 0.5;
+  }
+
+  li.focused {
+    opacity: 1;
   }
 }
 

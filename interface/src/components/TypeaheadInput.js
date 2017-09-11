@@ -2,7 +2,14 @@ import * as lodash from 'lodash';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import Fuse from 'fuse.js';
+import { keyMapper } from '../util/keyboard';
 import PropTypes from 'prop-types';
+
+// After completion the caret will be moved to just after the completion. Due
+// to react rendering considerations we must wait before moving the caret, or
+// the value of the input will update and cause it to move again. This is the
+// duration we will wait.
+const CARET_TIMEOUT = 10;
 
 const FUSE_OPTIONS = {
   shouldSort:         true,
@@ -99,6 +106,14 @@ class TypeaheadInput extends Component {
   constructor() {
     super();
 
+    this.keyMapper = keyMapper({
+      27: _ => this.resetState(),       // escape
+      9:  e => this.complete(e.target), // tab
+      13: e => this.complete(e.target), // enter
+      38: _ => this.moveFocus(-1),      // up
+      40: _ => this.moveFocus(+1),      // down
+    });
+
     this.fuseIndex = null;
     this.state = { matches: [], focused: 0, range: [ 0, 0 ] };
   }
@@ -115,6 +130,10 @@ class TypeaheadInput extends Component {
     if (nextProps.source !== this.props.source) {
       this.rebuildIndex(nextProps.source);
     }
+  }
+
+  resetState() {
+    this.setState({ matches: [], range: [ 0, 0 ], focused: 0 });
   }
 
   onChange(e) {
@@ -147,10 +166,49 @@ class TypeaheadInput extends Component {
       .map(m => m.matches[0]);
 
     const focused = matches.length < this.state.focused
-      ? matches.length
+      ? Math.max(0, matches.length - 1)
       : this.state.focused;
 
     this.setState({ value, range, matches, focused });
+  }
+
+  moveFocus(direction) {
+    const matchCount = this.state.matches.length || 1;
+    const focused = this.state.focused + direction < 0
+      ? matchCount - 1
+      : (this.state.focused + direction) % matchCount;
+
+    this.setState({ focused });
+
+    return true;
+  }
+
+  complete(target) {
+    if (this.state.matches.length === 0) {
+      return false;
+    }
+
+    const before = this.state.value.slice(0, this.state.range[0]);
+    const after  = this.state.value.slice(this.state.range[1]);
+
+    let completedValue = this.state.matches[this.state.focused].value;
+
+    // If we're completing in the middle of a word, add a trailing space
+    if (after.length > 0 && after[0] !== ' ') {
+      completedValue += ' ';
+    }
+
+    const value = before + completedValue + after;
+
+    // Compute the caret position just after completion. Since a full re-render
+    // cycle must happen, lets hack around it a bit to make this work for now.
+    const pos = value.length - after.length;
+    setTimeout(_ => target.setSelectionRange(pos, pos), CARET_TIMEOUT);
+
+    this.props.onChange({ target: { value } });
+    this.resetState();
+
+    return true;
   }
 
   render() {
@@ -175,7 +233,8 @@ class TypeaheadInput extends Component {
       <input {...inputProps}
         type="text"
         spellCheck="false"
-        onChange={e => this.onChange(e)} />
+        onChange={e => this.onChange(e)}
+        onKeyDown={this.keyMapper} />
       {shadow}
       {matchesPopover}
     </div>;

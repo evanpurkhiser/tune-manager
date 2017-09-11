@@ -1,6 +1,7 @@
 import * as action from '../../actions';
 import * as path from 'path';
 import * as validate from '../../validate';
+import { splitOn } from '../../util/artistMatch';
 import classNames from 'classnames';
 import React, { Component } from 'react';
 import TypeaheadInput from '../TypeaheadInput';
@@ -97,9 +98,9 @@ class Field extends Component {
       value:    this.state.value || '',
     };
 
-    const input = this.props.typeaheadSource
-      ? <TypeaheadInput source={this.props.typeaheadSource.clean} {...props} />
-      : <input type="text" spellCheck="false" {...props} />;
+    const input = this.props.typeahead
+      ? <TypeaheadInput { ...this.props.typeahead } { ...props } />
+      : <input type="text" spellCheck="false" { ...props } />;
 
     return <div className={classes}>
       {input}
@@ -109,9 +110,9 @@ class Field extends Component {
 
 export const Artist = p => <Field {...p}
   name="artist"
-  typeaheadSource={p.knownValues.artists}
   validator={validate.artist}
-  validatorOptions={{ knownArtists: p.knownValues.artists }} />;
+  validatorOptions={{ knownArtists: p.knownValues.artists }}
+  typeahead={{ source: p.knownValues.artists.clean, splitter: splitOn }} />;
 
 export const Title = p => <Field {...p}
   name="title"
@@ -119,9 +120,9 @@ export const Title = p => <Field {...p}
 
 export const Remixer = p => <Field {...p}
   name="remixer"
-  typeaheadSource={p.knownValues.artists}
   validator={validate.remixer}
-  validatorOptions={{ knownArtists: p.knownValues.artists }} />;
+  validatorOptions={{ knownArtists: p.knownValues.artists }}
+  typeahead={{ source: p.knownValues.artists.clean, splitter: splitOn }} />;
 
 export const Album = p => <Field {...p}
   name="album"
@@ -129,9 +130,9 @@ export const Album = p => <Field {...p}
 
 export const Publisher = p => <Field {...p}
   name="publisher"
-  typeaheadSource={p.knownValues.publishers}
   validator={validate.publisher}
-  validatorOptions={{ knownPublishers: p.knownValues.publishers }} />;
+  validatorOptions={{ knownPublishers: p.knownValues.publishers }}
+  typeahead={{ source: p.knownValues.publishers.clean }} />;
 
 export const Release = p => <Field {...p}
   name="release"
@@ -143,9 +144,9 @@ export const Year = p => <Field {...p}
 
 export const Genre = p => <Field {...p}
   name="genre"
-  typeaheadSource={p.knownValues.genres}
   validator={validate.genre}
-  validatorOptions={{ knownGenres: p.knownValues.genres }} />;
+  validatorOptions={{ knownGenres: p.knownValues.genres }}
+  typeahead={{ source: p.knownValues.genres.clean }} />
 
 export const TrackNumber = p => <Field {...p}
   name="track"

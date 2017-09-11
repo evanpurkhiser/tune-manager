@@ -100,7 +100,7 @@ class TypeaheadInput extends Component {
     super();
 
     this.fuseIndex = null;
-    this.state = { matches: [], focused: 0 };
+    this.state = { matches: [], focused: 0, range: [ 0, 0 ] };
   }
 
   rebuildIndex(source) {
@@ -120,9 +120,23 @@ class TypeaheadInput extends Component {
   onChange(e) {
     this.props.onChange(e);
 
-    const position = e.target.selectionStart;
     const value = e.target.value;
-    const partial = value.slice(0, position);
+    const range = [ 0, e.target.selectionStart ];
+
+    let partial = value.slice(...range);
+
+    // Recompute the partial string and range when a splitter regex is provided
+    // to do matching only on a portion of the value.
+    if (this.props.splitter !== undefined) {
+      const splitters = partial.match(this.props.splitter) || [];
+      const lastSplit = splitters.pop();
+
+      range[0] = lastSplit === undefined
+        ? 0
+        : partial.lastIndexOf(lastSplit) + lastSplit.length;
+
+      partial = value.slice(...range);
+    }
 
     // Compute new matches for the vlaue. Note that since we are only indexing
     // on a list of strings, Fuse will not return multiple matched fields, so
@@ -136,16 +150,16 @@ class TypeaheadInput extends Component {
       ? matches.length
       : this.state.focused;
 
-    this.setState({ value, position, matches, focused });
+    this.setState({ value, range, matches, focused });
   }
 
   render() {
-    const { matches, focused, value, position } = this.state;
+    const { matches, focused, value, range } = this.state;
     const props = lodash.omit(this.props, [ 'source', 'onChange' ]);
 
     // Render the typeahead shadow if we have a match and we're typing at the
     // tail of the input
-    const shadow = matches.length > 0 && position === value.length
+    const shadow = matches.length > 0 && range[1] === value.length
       ? <TypeaheadShadow match={matches[focused]} value={value} />
       : null;
 

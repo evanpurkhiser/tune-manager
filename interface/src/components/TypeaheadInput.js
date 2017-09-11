@@ -68,24 +68,31 @@ MatchesPopover.propTypes = {
 
 /**
  * TypeheadShadow renders the shadow text of the focused match if the current
- * value is a ^substring of it
+ * value ends overlapping the matched value.
  */
 const TypeaheadShadow = p => {
-  if (!p.match.value.toLowerCase().startsWith(p.value.toLowerCase())) {
+  if (p.match.indices[0][0] !== 0) {
     return null;
   }
 
-  const shadow = p.match.value.substring(p.value.length);
+  const endIndex = p.match.indices[0][1] + 1;
+  const shadowHead = p.match.value
+    .slice(0, endIndex)
+    .toLowerCase();
+
+  if (!p.value.toLowerCase().endsWith(shadowHead)) {
+    return null;
+  }
 
   return <div className="typeahead-shadow">
     <span className="hidden">{p.value}</span>
-    <span className="shadow">{shadow}</span>
+    <span className="shadow">{p.match.value.slice(endIndex)}</span>
   </div>;
 };
 
 TypeaheadShadow.propTypes = {
   value: PropTypes.string.isRequired,
-  match: matchShape,
+  match: matchShape.isRequired,
 };
 
 class TypeaheadInput extends Component {

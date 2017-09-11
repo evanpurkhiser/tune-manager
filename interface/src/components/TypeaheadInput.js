@@ -155,7 +155,6 @@ class TypeaheadInput extends Component {
 
   render() {
     const { matches, focused, value, range } = this.state;
-    const props = lodash.omit(this.props, [ 'source', 'onChange' ]);
 
     // Render the typeahead shadow if we have a match and we're typing at the
     // tail of the input
@@ -168,17 +167,27 @@ class TypeaheadInput extends Component {
       ? <MatchesPopover focused={focused} matches={matches} />
       : null;
 
+    // Extract input props
+    const reservedProps = Object.keys(TypeaheadInput.propTypes);
+    const inputProps = lodash.omit(this.props, reservedProps);
+
     return <div className="typeahead">
-      <input
+      <input {...inputProps}
         type="text"
         spellCheck="false"
-        onChange={e => this.onChange(e)}
-        {...props} />
+        onChange={e => this.onChange(e)} />
       {shadow}
       {matchesPopover}
     </div>;
   }
 }
+
+TypeaheadInput.propTypes = {
+  numSuggestions: PropTypes.number,
+  source:         PropTypes.arrayOf(PropTypes.string),
+  splitter:       PropTypes.instanceOf(RegExp),
+  onChange:       PropTypes.func,
+};
 
 TypeaheadInput.defaultProps = {
   numSuggestions: 5,

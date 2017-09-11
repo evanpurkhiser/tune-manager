@@ -27,8 +27,8 @@ const matchShape = PropTypes.shape({
 /**
  * Match represents a single listed matched item.
  *
- * This includes logic to wrap the matched indicies of the match given an
- * indicies list.
+ * This includes logic to wrap the matched indices of the match given an
+ * indices list.
  */
 const Match = p => {
   const { value, indices } = p.match;

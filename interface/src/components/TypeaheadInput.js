@@ -57,8 +57,8 @@ Match.propTypes = {
  */
 const MatchesPopover = p => <ul className="typeahead-popover">
   {p.matches.map((m, i) => <Match
-    key={m.item}
-    match={m.matches[0]}
+    key={i}
+    match={m}
     isFocused={i === p.focused} />)}
 </ul>;
 
@@ -124,7 +124,14 @@ class TypeaheadInput extends Component {
     const value = e.target.value;
     const partial = value.slice(0, position);
 
-    const matches = this.fuseIndex.search(partial).slice(0, 5);
+    // Compute new matches for the vlaue. Note that since we are only indexing
+    // on a list of strings, Fuse will not return multiple matched fields, so
+    // we can just map to the only matched field.
+    const matches = this.fuseIndex
+      .search(partial)
+      .slice(0, this.props.numSuggestions)
+      .map(m => m.matches[0]);
+
     const focused = matches.length < this.state.focused
       ? matches.length
       : this.state.focused;
@@ -139,7 +146,7 @@ class TypeaheadInput extends Component {
     // Render the typeahead shadow if we have a match and we're typing at the
     // tail of the input
     const shadow = matches.length > 0 && position === value.length
-      ? <TypeaheadShadow match={matches[focused].matches[0]} value={value} />
+      ? <TypeaheadShadow match={matches[focused]} value={value} />
       : null;
 
     // Render the matches popover when we have matches.
@@ -158,5 +165,9 @@ class TypeaheadInput extends Component {
     </div>;
   }
 }
+
+TypeaheadInput.defaultProps = {
+  numSuggestions: 5,
+};
 
 export default TypeaheadInput;

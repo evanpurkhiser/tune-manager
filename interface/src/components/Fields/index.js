@@ -145,7 +145,7 @@ export const Genre = p => <Field {...p}
   name="genre"
   validator={validate.genre}
   validatorOptions={{ knownGenres: p.knownValues.genres }}
-  typeahead={{ source: p.knownValues.genres.clean }} />
+  typeahead={{ source: p.knownValues.genres.clean }} />;
 
 export const TrackNumber = p => <Field {...p}
   name="track"

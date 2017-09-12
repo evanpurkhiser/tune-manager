@@ -10,4 +10,4 @@ export { year      } from './year';
 export { genre     } from './genre';
 export { bpm       } from './bpm';
 
-export { trackNumber, discNumber } from './track';
+export { track, disc } from './track';

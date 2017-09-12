@@ -149,11 +149,11 @@ export const Genre = p => <Field {...p}
 
 export const TrackNumber = p => <Field {...p}
   name="track"
-  validator={validate.trackNumber} />;
+  validator={validate.track} />;
 
 export const DiscNumber = p => <Field {...p}
   name="disc"
-  validator={validate.discNumber} />;
+  validator={validate.disc} />;
 
 export const BPM = p => <Field {...p}
   name="bpm"

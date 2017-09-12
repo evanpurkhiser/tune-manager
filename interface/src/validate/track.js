@@ -100,7 +100,7 @@ function validateNumber(numberString, validations) {
  * 1. ERROR: A disc number is set, but the track number is empty.
  * 2. MIXED: The number does not match the `numberPattern`.
  */
-function trackNumber(track) {
+function track(track) {
   const trackNumber = track.track || '';
   const discNumber  = track.disc  || '';
 
@@ -124,7 +124,7 @@ function trackNumber(track) {
  * 2. ERROR: A track number is set, but the disc number is blank.
  * 3. MIXED: The number does not match the `numberPattern`.
  */
-function discNumber(track) {
+function disc(track) {
   const discNumber  = track.disc  || '';
   const trackNumber = track.track || '';
   const album = track.album || '';
@@ -147,4 +147,4 @@ function discNumber(track) {
   return validations;
 }
 
-export { trackNumber, discNumber };
+export { track, disc };

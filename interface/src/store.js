@@ -102,6 +102,15 @@ function reducer(oldState = initialState, action) {
     break;
   }
 
+  case actions.AUTOFIX_FIELDS: {
+    for (const trackId in action.items) {
+      const fixedFields = action.items[trackId];
+      state.tracks = { ...state.tracks };
+      state.tracks[trackId] = { ...state.tracks[trackId], ...fixedFields };
+    }
+    break;
+  }
+
   case actions.REPLACE_KNOWNS: {
     state.knownValues = normalizeKnownValues(action.knowns);
     break;

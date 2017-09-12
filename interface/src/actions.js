@@ -8,6 +8,7 @@ export const KEY_COMPUTED     = 'KEY_COMPUTED';
 // Saga responses
 export const SET_ARTWORK    = 'SET_ARTWORK';
 export const REPLACE_KNOWNS = 'REPLACE_KNOWNS';
+export const AUTOFIX_FIELDS = 'AUTOFIX_FIELDS';
 
 export const setArtwork = items => ({
   type: SET_ARTWORK,
@@ -17,6 +18,11 @@ export const setArtwork = items => ({
 export const replaceKnowns = tracks => ({
   type:    REPLACE_KNOWNS,
   knowns: tracks,
+});
+
+export const autoFixFields = items => ({
+  type: AUTOFIX_FIELDS,
+  items,
 });
 
 // Interface events

@@ -1,4 +1,5 @@
 import * as action from './actions';
+import * as validate from './validate';
 import { all, put, takeEvery } from 'redux-saga/effects';
 import { buildImageObject } from './util/image';
 import format from 'string-format';
@@ -31,6 +32,36 @@ function* requestArtwork(payload) {
   yield put(action.setArtwork(items));
 }
 
+function autoFixTrack(t) {
+  const fixTypes = Object.values(validate.autoFixTypes);
+
+  // NB: We're mapping field names in the payload to the validate functions
+  // pretty heavily here. Important to note this translation.
+  const pairs = Object.keys(t)
+    .filter(f => validate[f] !== undefined)
+    .map(f => [ f, validate[f](t).autoFix(t[f], fixTypes) ])
+    .filter(([ f, v ]) => t[f] !== v);
+
+  // Nothing was auto fixed
+  if (pairs.length === 0) {
+    return;
+  }
+
+  return [ t.id, lodash.fromPairs(pairs) ];
+}
+
+/**
+ * Process track detail items through all validators and execute all automatic
+ * fixes on the values.
+ */
+function* autoFix(payload) {
+  const fixedPairs = payload.items.map(autoFixTrack).filter(t => t);
+  const fixedItems = lodash.fromPairs(fixedPairs);
+
+  yield put(action.autoFixFields(fixedItems));
+}
+
 export default function* appSaga() {
   yield takeEvery(action.TRACK_DETAILS, requestArtwork);
+  yield takeEvery(action.TRACK_DETAILS, autoFix);
 }

@@ -1,4 +1,4 @@
-import { levels, makeValidations, Validations } from './utils';
+import { autoFixTypes, levels, makeValidations, Validations } from './utils';
 
 const bpmPattern = /^[0-9]{2,}\.[0-9]{2}$/;
 
@@ -11,7 +11,7 @@ const validationType = makeValidations({
   INVALID_FORMAT: {
     level:   levels.ERROR,
     message: `BPM should match ${bpmPattern}`,
-    autoFix: true,
+    autoFix: autoFixTypes.POST_EDIT,
     fixer:   formatBPM,
   },
 });

@@ -1,4 +1,4 @@
-import { levels, makeValidations, Validations } from './utils';
+import { autoFixTypes, levels, makeValidations, Validations } from './utils';
 
 const yearPattern = /^[0-9]{4}$/;
 
@@ -16,7 +16,7 @@ const validationType = makeValidations({
   INVALID_FORMAT: {
     level:   levels.ERROR,
     message: `The year must match the format ${yearPattern}`,
-    autoFix: true,
+    autoFix: autoFixTypes.POST_EDIT,
     fixer:   reformatYear,
   },
 });

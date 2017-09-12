@@ -1,4 +1,4 @@
-export { Validations } from './utils';
+export { Validations, autoFixTypes } from './utils';
 
 export { artist    } from './artist';
 export { title     } from './title';

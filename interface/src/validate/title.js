@@ -1,4 +1,4 @@
-import { levels, makeValidations, Validations } from './utils';
+import { autoFixTypes, levels, makeValidations, Validations } from './utils';
 
 const validationType = makeValidations({
   EMPTY: {
@@ -14,7 +14,7 @@ const validationType = makeValidations({
   NO_ORIGINAL_MIX: {
     level:   levels.ERROR,
     fixer:   removeOriginalMix,
-    autoFix: true,
+    autoFix: autoFixTypes.POST_EDIT,
   },
 
   NO_FEATURING: {
@@ -40,7 +40,7 @@ const validationType = makeValidations({
   BAD_REMIX_FORMAT: {
     level:   levels.ERROR,
     fixer:   fixRemixCasing,
-    autoFix: true,
+    autoFix: autoFixTypes.IMMEDIATE,
   },
 });
 

@@ -23,6 +23,14 @@ export const levelPresedence = [
 ];
 
 /**
+ * Validation autoFix supports a few different types of autofixers.
+ */
+export const autoFixTypes = {
+  IMMEDIATE: 'immediate',
+  POST_EDIT: 'post_edit',
+};
+
+/**
  * Make validation inserts the validation type into each validation object. The
  * type is derived from the validations key.
  */
@@ -78,15 +86,16 @@ export class Validations {
   }
 
   /**
-   * Execute all automatic validation fixes on the provided value.
+   * Execute all automatic validation fixes of the specified type on the
+   * provided value.
    *
    * If a automatic fix is able to be applied, the validation will be removed
    * from the list of validations as it's considered to be 'fixed'.
    */
-  autoFix(value) {
+  autoFix(value, types = [ autoFixTypes.IMMEDIATE ]) {
     const fixers = this.items
-      .map(v => v.autoFix ? v.fixer : null)
-      .filter(fn => fn);
+      .filter(v => types.includes(v.autoFix))
+      .map(v => v.fixer);
 
     if (fixers.length === 0) {
       return value;

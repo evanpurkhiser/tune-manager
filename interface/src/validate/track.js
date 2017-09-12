@@ -1,4 +1,4 @@
-import { levels, makeValidations, Validations } from './utils';
+import { autoFixTypes, levels, makeValidations, Validations } from './utils';
 import format from 'string-format';
 
 const numberPattern = /^([0-9]{1,3})\/([0-9]{1,3})$/;
@@ -12,14 +12,13 @@ const validationType = makeValidations({
   INVALID_FORMAT: {
     level:   levels.ERROR,
     message: `Format should match ${numberPattern}`,
-    autoFix: true,
+    autoFix: autoFixTypes.POST_EDIT,
     fixer:   formatNumber,
   },
 
   HAS_ALBUM: {
-    level:   levels.ERROR,
-    autoFix: true,
-    fixer:   setDefault,
+    level: levels.ERROR,
+    fixer: setDefault,
   },
 
   HAS_DISC_NUMBER: {

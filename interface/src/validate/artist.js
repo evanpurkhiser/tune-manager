@@ -1,5 +1,5 @@
+import { autoFixTypes, levels, makeValidations, Validations } from './utils';
 import { splitArtists, splitOn, strictSplitOn } from '../util/artistMatch';
-import { levels, makeValidations, Validations } from './utils';
 import { validateFromKnowns } from './utils';
 
 const validationType = makeValidations({
@@ -36,7 +36,7 @@ const validationType = makeValidations({
   BAD_CONNECTORS: {
     level:   levels.ERROR,
     fixer:   fixConnectors,
-    autoFix: true,
+    autoFix: autoFixTypes.IMMEDIATE,
   },
 });
 

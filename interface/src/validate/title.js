@@ -63,7 +63,7 @@ function fixRemixCasing(title) {
   return title.replace(remixPattern, `(${match[1]} Remix)`);
 }
 
-const originalMixPattern = /\(original mix\)/i;
+const originalMixPattern = / ?\(original mix\)/i;
 
 /**
  * Remove the '(Original Mix)' string from the title.

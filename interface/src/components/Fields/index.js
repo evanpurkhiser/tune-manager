@@ -30,40 +30,39 @@ class Field extends Component {
 
   componentWillReceiveProps(nextProps) {
     const value = nextProps.track[nextProps.name] || '';
-    this.updateLocal(value, { revalidate: true });
+    const validations = this.getValidations(nextProps, value);
+
+    this.setState({ validations, value });
   }
 
-  componentDidMount() {
-    this.componentWillReceiveProps(this.props);
+  onChange(value) {
+    const validations = this.getValidations(this.props, value);
+    const fixedValue  = validations.autoFix(value);
+
+    this.setState({ validations, value: fixedValue });
   }
 
-  updateLocal(value, { revalidate = false } = {}) {
-    this.setState({ value }, revalidate ? this.validateField : null);
-  }
-
-  validateField() {
-    if (!this.props.validator) {
-      return;
+  getValidations(props, value) {
+    if (!props.validator) {
+      return new validate.Validations();
     }
 
-    const options = this.props.validatorOptions;
-    const validations = this.props.validator(this.props.track, options);
+    // Validate the track with the current state of the field
+    const { track, name } = props;
+    const newTrack = { ...track, [name]: value };
 
-    // Excute all automatic fixes
-    const value = this.props.track[this.props.name];
-    const fixedValue = validations.autoFix(value);
-
-    if (fixedValue !== value) {
-      this.setState({ value: fixedValue }, this.updateField);
-    }
-
-    this.setState({ validations });
+    return props.validator(newTrack, props.validatorOptions);
   }
 
   updateField() {
     const id    = this.props.track.id;
     const name  = this.props.name;
-    const value = this.state.value.trim();
+    let value   = this.state.value.trim();
+
+    // Execute post-edit auto fixes
+    value = this.state.validations.autoFix(value, [
+      validate.autoFixTypes.POST_EDIT,
+    ]);
 
     // Do not update if nothing has changed. Bluring an unedited field while
     // multiple tracks are selected will update all tracks.
@@ -94,7 +93,7 @@ class Field extends Component {
     const props = {
       onBlur:   _ => this.blurField(),
       onFocus:  _ => this.focusField(),
-      onChange: e => this.updateLocal(e.target.value),
+      onChange: e => this.onChange(e.target.value),
       value:    this.state.value || '',
     };
 

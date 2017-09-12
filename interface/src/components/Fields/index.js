@@ -160,8 +160,6 @@ export const BPM = p => <Field {...p}
   name="bpm"
   validator={validate.bpm} />;
 
-export { Artwork } from './Artwork';
-
 export const Key = p => {
   const isComputing = p.keyfinding.includes(p.track.id);
 
@@ -175,3 +173,5 @@ export const Key = p => {
     {p.track.key}
   </div>;
 };
+
+export { Artwork } from './Artwork';

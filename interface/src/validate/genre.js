@@ -44,9 +44,9 @@ const typeMapping = {
  * 1. ERROR: Genre must not be left blank.
  * 1. MIXED: Validate the genre string. See `utils.validateFromKnowns`.
  */
-function genre(track, options) {
+function genre(track, options = {}) {
   const genre = track.genre || '';
-  const { knownGenres = [ '' ] } = options;
+  const { knownGenres } = options;
 
   const validations = new Validations();
 

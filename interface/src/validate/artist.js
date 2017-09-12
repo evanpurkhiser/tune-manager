@@ -115,8 +115,8 @@ function validateConnectors(artistsString, validations) {
  * 1. MIXED: Validate each individual artist. See `validateOneArtist`.
  * 2. ERROR: Validate the artists connectors. See `validateConnectors`.
  */
-function validateArtistsString(artistsString, options, validations) {
-  const { knownArtists = [ '' ] } = options;
+function validateArtistsString(artistsString, options = {}, validations) {
+  const { knownArtists } = options;
 
   // 1. Check split artist names
   for (const artist of splitArtists(artistsString)) {

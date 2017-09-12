@@ -161,10 +161,14 @@ const SIMILARITY_CUTOFF = 0.75;
  *   - similarList:   The string representation of similar values for SIMILAR.
  *   - similarKnowns: The similar values list for SIMILAR.
  */
-export function validateFromKnowns(value, options) {
+export function validateFromKnowns(value, options = {}) {
   const { knowns, typeMapping } = options;
 
   const validations = new Validations();
+
+  if (knowns === undefined) {
+    return validations;
+  }
 
   // 1. Does the value already match exactly?
   if (knowns.clean.includes(value)) {

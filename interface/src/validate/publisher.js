@@ -38,9 +38,9 @@ const typeMapping = {
  *
  * 1. MIXED: Validate the publisher string. See `utils.validateFromKnowns`.
  */
-function publisher(track, options) {
+function publisher(track, options = {}) {
   const publisher = track.publisher || '';
-  const { knownPublishers = [ '' ] } = options;
+  const { knownPublishers } = options;
 
   if (publisher === '') {
     return new Validations();

@@ -172,6 +172,11 @@ class TypeaheadInput extends Component {
     this.setState({ value, range, matches, focused });
   }
 
+  onBlur(e) {
+    this.props.onBlur(e);
+    this.resetState();
+  }
+
   moveFocus(direction) {
     const matchCount = this.state.matches.length || 1;
     const focused = this.state.focused + direction < 0
@@ -234,6 +239,7 @@ class TypeaheadInput extends Component {
         type="text"
         spellCheck="false"
         onChange={e => this.onChange(e)}
+        onBlur={e => this.onBlur(e)}
         onKeyDown={this.keyMapper} />
       {shadow}
       {matchesPopover}

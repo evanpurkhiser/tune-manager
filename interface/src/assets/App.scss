@@ -27,7 +27,7 @@ ol, ul, li {
 
 body, html, #root {
   margin: 0;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans-serif;
   color: #4a585f;
   height: 100%;
 }
@@ -68,7 +68,7 @@ body, html, #root {
 .track-listing,
 .field-heading,
 .field input {
-  font-family: "Open Sans Condensed";
+  font-family: "Open Sans Condensed", sans-serif;
   font-size: 12px;
   line-height: 24px;
   color: #757c80;
@@ -281,7 +281,7 @@ $centered-fields: (
 
 .listing-name {
   cursor: pointer;
-  font-family: "Open Sans Condensed";
+  font-family: "Open Sans Condensed", sans-serif;
   margin: 14px 6px;
   font-size: 13px;
   display: inline-block;
@@ -597,7 +597,7 @@ ol.path-parts li {
   background: #fff;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans-serif;
 }
 
 %popover-arrow {

@@ -19,6 +19,9 @@ function* getTrackArtwork(track) {
   return [ track.id, objects ];
 }
 
+/**
+ * Request all artwork BLOBs from the server.
+ */
 function* requestArtwork(payload) {
   const tracks  = payload.items.filter(i => i.artworkCount > 0);
   const artwork = yield all(tracks.map(t => getTrackArtwork(t)));

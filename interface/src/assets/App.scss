@@ -25,6 +25,10 @@ ol, ul, li {
   margin: 0;
 }
 
+a:link {
+  text-decoration: none;
+}
+
 body, html, #root {
   margin: 0;
   font-family: "Open Sans", sans-serif;

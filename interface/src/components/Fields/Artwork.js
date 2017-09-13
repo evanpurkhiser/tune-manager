@@ -147,8 +147,8 @@ class Artwork extends Component {
   }
 
   blur() {
-    const focused = document.activeElement === this.DOMNode;
-    this.setState({ focused });
+    const active = document.activeElement === this.DOMNode;
+    this.setState({ active });
   }
 
   render() {
@@ -170,7 +170,7 @@ class Artwork extends Component {
         artwork={artwork[this.state.maximizedArt]}
         onExit={_ => this.setState({ maximizedArt: null })} />;
 
-    const popover = this.state.focused === false
+    const popover = this.state.active === false
       ? null
       : <ArtworkPopover
         artwork={artwork}
@@ -183,7 +183,7 @@ class Artwork extends Component {
     return <div className="field marked artwork"
       tabIndex="0"
       ref={e => this.DOMNode = e}
-      onFocus={_ => this.setState({ focused: true })}
+      onFocus={_ => this.setState({ active: true })}
       onBlur={_ => this.blur()}>
       {element}
       {popover}

@@ -1,5 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React     from 'react';
 
 const FieldHeadings = props => <div className="field-heading">
   <div className="field selector">

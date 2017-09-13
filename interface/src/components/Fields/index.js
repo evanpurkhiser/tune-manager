@@ -1,9 +1,10 @@
-import * as action from '../../actions';
-import * as path from 'path';
-import * as validate from '../../validate';
-import { splitOn } from '../../util/artistMatch';
-import classNames from 'classnames';
+import * as path            from 'path';
 import React, { Component } from 'react';
+import classNames           from 'classnames';
+
+import * as action    from '../../actions';
+import * as validate  from '../../validate';
+import { splitOn }    from '../../util/artistMatch';
 import TypeaheadInput from '../TypeaheadInput';
 
 export function FileName(props) {

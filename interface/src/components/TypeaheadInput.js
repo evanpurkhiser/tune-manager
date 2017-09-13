@@ -1,9 +1,10 @@
-import * as lodash from 'lodash';
+import * as lodash          from 'lodash';
 import React, { Component } from 'react';
-import classNames from 'classnames';
-import Fuse from 'fuse.js';
+import classNames           from 'classnames';
+import Fuse                 from 'fuse.js';
+import PropTypes            from 'prop-types';
+
 import { keyMapper } from '../util/keyboard';
-import PropTypes from 'prop-types';
 
 // After completion the caret will be moved to just after the completion. Due
 // to react rendering considerations we must wait before moving the caret, or

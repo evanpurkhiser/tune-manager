@@ -1,9 +1,11 @@
-import * as action from '../../actions';
 import React, { Component } from 'react';
-import { buildImageObject } from '../../util/image';
-import classNames from 'classnames';
+import classNames  from 'classnames';
 import prettyBytes from 'pretty-bytes';
-import PropTypes from 'prop-types';
+import PropTypes   from 'prop-types';
+
+import * as action          from '../../actions';
+import { buildImageObject } from '../../util/image';
+import { keyMapper }        from '../../util/keyboard';
 
 const MIME_MAPPING = {
   'image/png':  'PNG',

@@ -1,5 +1,5 @@
 import * as similarity from 'string-similarity';
-import format from 'string-format';
+import format          from 'string-format';
 
 /**
  * Validation levels

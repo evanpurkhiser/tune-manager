@@ -1,5 +1,5 @@
 import * as lodash from 'lodash';
-import keycomb from 'keycomb';
+import keycomb     from 'keycomb';
 
 /**
  * actionHandler is a function factory that given a map will produce a keyboard

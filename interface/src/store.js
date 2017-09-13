@@ -1,12 +1,12 @@
-import * as actions from './actions';
 import * as lodash from 'lodash';
 import * as md5 from 'md5';
 import * as path from 'path';
-
 import { applyMiddleware, compose, createStore } from 'redux';
-import appSaga from './sagas';
 import { arrayMove } from 'react-sortable-hoc';
 import createSagaMiddleware from 'redux-saga';
+
+import * as actions from './actions';
+import appSaga from './sagas';
 
 const initialState = {
   // tracks is a mapping of the unique track ID to the track object.

@@ -1,5 +1,6 @@
-import { autoFixTypes, levels, makeValidations, Validations } from './utils';
 import format from 'string-format';
+
+import { autoFixTypes, levels, makeValidations, Validations } from './utils';
 
 const numberPattern = /^([0-9]{1,3})\/([0-9]{1,3})$/;
 

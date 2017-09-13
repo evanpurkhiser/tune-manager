@@ -18,8 +18,8 @@ const validationType = makeValidations({
   },
 
   HAS_ALBUM: {
-    level: levels.ERROR,
-    fixer: setDefault,
+    level:   levels.ERROR,
+    message: 'Has album, but no disc number set',
   },
 
   HAS_DISC_NUMBER: {
@@ -55,13 +55,6 @@ function formatNumber(number) {
   }
 
   return format('{}/{}', first.padStart(second.length, '0'), second);
-}
-
-/**
- * The disc default is 1/1.
- */
-function setDefault() {
-  return '1/1';
 }
 
 /**

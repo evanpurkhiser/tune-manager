@@ -15,9 +15,9 @@ export const setArtwork = items => ({
   items,
 });
 
-export const replaceKnowns = tracks => ({
-  type:    REPLACE_KNOWNS,
-  knowns: tracks,
+export const replaceKnowns = knowns => ({
+  type: REPLACE_KNOWNS,
+  knowns,
 });
 
 export const autoFixFields = items => ({

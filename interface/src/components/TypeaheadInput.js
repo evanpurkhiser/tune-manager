@@ -107,11 +107,11 @@ class TypeaheadInput extends Component {
     super();
 
     this.keyMapper = keyMapper({
-      27: _ => this.resetState(),       // escape
-      9:  e => this.complete(e.target), // tab
-      13: e => this.complete(e.target), // enter
-      38: _ => this.moveFocus(-1),      // up
-      40: _ => this.moveFocus(+1),      // down
+      'escape': _ => this.resetState(),
+      'enter':  e => this.complete(e.target),
+      'tab':    e => this.complete(e.target),
+      'up':     _ => this.moveFocus(-1),
+      'down':   _ => this.moveFocus(+1),
     });
 
     this.fuseIndex = null;

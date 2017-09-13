@@ -64,7 +64,8 @@
         "ExportNamedDeclaration": true,
         "LogicalExpression": true,
         "VariableDeclarator": true,
-        "ImportDeclaration": true
+        "ImportDeclaration": true,
+        "AssignmentPattern": true
       }
     }],
     "no-native-reassign": "error",

@@ -12,9 +12,9 @@ def beatport_url(path, **kargs):
 
 
 def get_details(track_url=None, track_id=None):
-    if not url and track_id:
+    if not track_url and track_id:
         track_url = beatport_url(TRACK_PATH, beatport_id=track_id)
-    elif not url:
+    elif not track_url:
         raise ValueError('A track_id or track URL must be specified')
 
     with urllib.request.urlopen(track_url) as response:
@@ -40,7 +40,6 @@ def get_details(track_url=None, track_id=None):
 
     return {
         'total_tracks': len(tracks),
-        'artwork_url':  artwor['src'],
-        'label':        details['label'],
+        'artwork_url':  artwork['src'],
         'release':      details['catalog'],
     }

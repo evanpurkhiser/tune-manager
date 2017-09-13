@@ -41,7 +41,7 @@ const fuzzyNumberPattern = /^([0-9]{1,3})( ?\/ ?([0-9]{1,3}))?$/;
 /**
  * Attempt to coerce a track or disc number into our format.
  */
-function formatNumber(number) {
+export function formatNumber(number) {
   const numberMatch = number.match(fuzzyNumberPattern);
 
   if (numberMatch === null) {

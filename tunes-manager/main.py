@@ -5,9 +5,10 @@ from sanic import Sanic, response
 from sanic_cors import CORS
 
 import catalog
+import db
 import importer.filesystem
 import knowns
-import db
+import lookup.beatport
 
 LIBRARY = '/Users/evan/Music/TracksLocal'
 IMPORT_PATH = os.path.expanduser('~/music-to-import')
@@ -58,7 +59,11 @@ async def artwork(request, index, track_id):
 
     return response.raw(art.data, content_type=art.mime)
 
+@app.route('/beatport-lookup/<beatport_id>')
+async def artwork(request, beatport_id):
+    data = lookup.beatport.get_details(track_id=beatport_id)
+
+    return response.json(data)
 
 # Gotta go fast!
 app.run(host="0.0.0.0", port=8000)
-

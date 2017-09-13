@@ -122,7 +122,7 @@ class Artwork extends Component {
     super();
 
     this.DOMNode = undefined;
-    this.state = { focused: false, maximzedArt: null };
+    this.state = { focused: false, maximizedArt: null };
   }
 
   onSelect(index) {
@@ -134,7 +134,7 @@ class Artwork extends Component {
   }
 
   onMaximize(index) {
-    this.setState({ maximzedArt: index });
+    this.setState({ maximizedArt: index });
   }
 
   onFileSelect(file) {
@@ -162,11 +162,11 @@ class Artwork extends Component {
       ? <img src={artwork[selectedArt].url} alt="" />
       : <div className={emptyClasses}></div>;
 
-    const maximzedArt = this.state.maximzedArt === null
+    const maximizedArt = this.state.maximizedArt === null
       ? null
       : <ArtworkFullscreen
-        artwork={artwork[this.state.maximzedArt]}
-        onExit={_ => this.setState({ maximzedArt: null })} />;
+        artwork={artwork[this.state.maximizedArt]}
+        onExit={_ => this.setState({ maximizedArt: null })} />;
 
     const popover = this.state.focused === false
       ? null
@@ -185,7 +185,7 @@ class Artwork extends Component {
       onBlur={_ => this.blur()}>
       {element}
       {popover}
-      {maximzedArt}
+      {maximizedArt}
     </div>;
   }
 }

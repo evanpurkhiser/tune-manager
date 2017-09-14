@@ -117,9 +117,10 @@ function reducer(oldState = initialState, action) {
   }
 
   case actions.AUTOFIX_FIELDS: {
+    state.tracks = { ...state.tracks };
+
     for (const trackId in action.items) {
       const fixedFields = action.items[trackId];
-      state.tracks = { ...state.tracks };
       state.tracks[trackId] = { ...state.tracks[trackId], ...fixedFields };
     }
     break;

@@ -93,10 +93,9 @@ def track_path(path, library_path):
     return path[len(library_path) + 1:]
 
 
-def collect_files(paths, recursive=False):
+def collect_files(paths, recursive=False, types=FILE_TYPES):
     """Collect paths to all supported media files given a list of directories
     """
-    types = FILE_TYPES
     files = set()
 
     assert isinstance(paths, list)

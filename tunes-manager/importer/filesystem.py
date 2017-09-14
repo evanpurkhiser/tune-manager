@@ -248,9 +248,10 @@ class TrackProcessor(object):
         """
         Add all existing tracks in the import path
         """
-        import_path = self.import_path
+        path  = self.import_path
+        types = tuple(VALID_FORMATS + CONVERTABLE_FORMATS)
 
-        for path in utils.file.collect_files([import_path], recursive=True):
+        for path in utils.file.collect_files([path], recursive=True, types=types):
             self.add(path)
 
     def add(self, path):

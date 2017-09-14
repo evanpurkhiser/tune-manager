@@ -36,7 +36,7 @@ let TrackItem = p => {
     <Field.TrackNumber { ...fieldProps } />
     <Field.DiscNumber  { ...fieldProps } />
     <Field.BPM         { ...fieldProps } />
-    <Field.Key         { ...fieldProps } keyfinding={p.keyfinding} />
+    <Field.Key         { ...fieldProps } processes={p.processes} />
 
     <div className="field actions"></div>
   </li>;
@@ -45,7 +45,7 @@ let TrackItem = p => {
 const mapTrackState = (s, props) => ({
   track:       s.tracks[props.id],
   selected:    s.selectedTracks.includes(props.id),
-  keyfinding:  s.keyfinding,
+  processes:   s.processes[props.id] || [],
   knownValues: s.knownValues,
 });
 

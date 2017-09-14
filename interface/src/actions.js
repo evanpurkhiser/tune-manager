@@ -1,9 +1,8 @@
 // Websocket API events
-export const TRACK_CONVERTING = 'TRACK_CONVERTING';
 export const TRACK_DETAILS    = 'TRACK_DETAILS';
 export const TRACK_REMOVED    = 'TRACK_REMOVED';
-export const KEY_COMPUTING    = 'KEY_COMPUTING';
-export const KEY_COMPUTED     = 'KEY_COMPUTED';
+export const TRACK_PROCESSING = 'TRACK_PROCESSING';
+export const TRACK_UPDATE     = 'TRACK_UPDATE';
 
 // Saga responses
 export const SET_ARTWORK    = 'SET_ARTWORK';

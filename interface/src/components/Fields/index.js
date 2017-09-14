@@ -161,7 +161,7 @@ export const BPM = p => <Field {...p}
   validator={validate.bpm} />;
 
 export const Key = p => {
-  const isComputing = p.keyfinding.includes(p.track.id);
+  const isComputing = p.processes.includes('KEY_COMPUTING');
 
   const classes = classNames({
     field: true,

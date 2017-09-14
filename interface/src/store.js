@@ -16,9 +16,9 @@ const initialState = {
   // only be modified when tracks are loaded / removed from the server.
   tracksPristine: {},
 
-  // keyfinding is a list of track IDs that are currently having their keys
-  // computed.
-  keyfinding: [],
+  // processes contains a map of track IDs with a list of the current
+  // processing events occuring for the track.
+  processes: [],
 
   // trackTree is a list of objects that represent each grouping of tracks.
   // Track grouping logic is based on the directory path of the track within
@@ -71,19 +71,33 @@ function reducer(oldState = initialState, action) {
     break;
   }
 
-  case actions.KEY_COMPUTING: {
-    const trackIds = action.items.map(i => i.id);
-    state.keyfinding = lodash.union(state.keyfinding, trackIds);
+  case actions.TRACK_PROCESSING: {
+    const processes = action.items.map(i => ({ [i.id]: [ i.process ] }));
+    state.processes = lodash.merge(state.processes, ...processes);
     break;
   }
 
-  case actions.KEY_COMPUTED: {
-    const trackIds = action.items.map(i => i.id);
-    state.keyfinding = lodash.difference(state.keyfinding, trackIds);
+  case actions.TRACK_UPDATE: {
     state.tracks = { ...state.tracks };
+    state.processes = { ...state.processes };
 
-    for (const item of action.items) {
-      state.tracks[item.id] = { ...state.tracks[item.id], key: item.key };
+    for (const track of action.items) {
+      const process = track.completedProcess;
+      delete track.completedProcess;
+
+      // Update the track with the partial fields
+      state.tracks[track.id] = { ...state.tracks[track.id], ...track };
+
+      if (state.processes[track.id] === undefined) {
+        continue;
+      }
+
+      // Remove the completed process for this track
+      state.processes[track.id] = lodash.remove(state.processes[track.id], process);
+
+      if (state.processes[track.id].length === 0) {
+        delete state.processes[track.id];
+      }
     }
     break;
   }

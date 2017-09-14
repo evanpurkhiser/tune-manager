@@ -4,6 +4,9 @@ import os
 import subprocess
 import tempfile
 
+# This list specifies file extensions that can be automatically converted.
+CONVERTABLE_FORMATS = ['.wav', '.flac']
+
 remap = {
     'TXXX:ARRANGER':     ID3.TPE4,
     'TXXX:ORGANIZATION': ID3.TPUB,

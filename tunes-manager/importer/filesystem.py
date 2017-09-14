@@ -12,14 +12,11 @@ import watchdog.observers
 import mediafile
 import utils.file
 
-from importer.convert import convert_track
+from importer.convert import convert_track, CONVERTABLE_FORMATS
 
 # This list specifies file extensions that are directly supported for
 # importing, without requiring any type of conversion.
 VALID_FORMATS = ['.mp3', '.aif']
-
-# This list specifies file extensions that can be automatically converted.
-CONVERTABLE_FORMATS = ['.wav', '.flac']
 
 
 def file_id(path):
@@ -31,11 +28,15 @@ def file_id(path):
 
 
 class EventType(enum.Enum):
-    TRACK_CONVERTING = enum.auto()
     TRACK_DETAILS    = enum.auto()
     TRACK_REMOVED    = enum.auto()
-    KEY_COMPUTING    = enum.auto()
-    KEY_COMPUTED     = enum.auto()
+    TRACK_PROCESSING = enum.auto()
+    TRACK_UPDATE     = enum.auto()
+
+
+class ProcessingEvents(enum.Enum):
+    CONVERTING    = enum.auto()
+    KEY_COMPUTING = enum.auto()
 
 
 class ImportWatcher(object):
@@ -78,15 +79,29 @@ class TrackProcessor(object):
 
       If a file is removed from the directory
 
-    - KEY_COMPUTING
+    - TRACK_PROCESSING
 
-      Computation of musical key takes some time, this message will be reported
-      to the client when a key for a track is beginning to be computed. When
-      the client first connects.
+      This event is triggered when the track is undergoing a processing event
+      that may take enough time that it warrents representation in the UI.
 
-    - TRACK_CONVERTING
+      The following processing events are possible:
 
-      The track was found, but is not in a valid format and must first be converted
+      * CONVERTING
+
+        The track was found, but is not in a valid format and must first be
+        converted.
+
+      * KEY_COMPUTING
+
+        Computation of musical key takes some time, this message will be
+        reported to the client when a key for a track is beginning to be
+        computed. When the client first connects.
+
+    - TRACK_UPDATE
+
+      Reported when partial information becomes available for a track. The
+      event will report what processing event was fulfilled by this partial
+      information with the 'completed_process' item key.
 
     The websocket connection is available at ws://localhost:9000.
     """
@@ -102,8 +117,8 @@ class TrackProcessor(object):
         # media file object representing them.
         self.mediafiles = {}
 
-        # Track processing keys
-        self.detecting_key = set()
+        # Current processing tracks
+        self.processing = []
 
         # The process executor will be used to parallelize key detection
         # Limit threads to the number of cores we have, key detection becomes a
@@ -180,41 +195,54 @@ class TrackProcessor(object):
             items = [e['item'] for e in items]
             yield { 'type': event_type, 'items': items }
 
-    def send_event(self, event_type, identifier, *args, **kargs):
+    def send_event(self, event_type, identifier, **kwargs):
         item = { 'id': identifier }
-        item.update(kargs)
-
-        for arg in args: item.update(arg)
+        item.update(kwargs)
 
         self.events.put_nowait({ 'type': event_type.name, 'item': item })
 
-    def report_state(self, ws):
-        tracks = []
+    def send_details(self, identifier, track):
+        self.send_event(EventType.TRACK_DETAILS, identifier, **track)
 
+    def send_processing(self, identifier, process):
+        self.processing.append((identifier, process))
+
+        item = { 'process': process.name }
+        self.send_event(EventType.TRACK_PROCESSING, identifier, **item)
+
+    def send_update(self, identifier, completed_process, **kwargs):
+        self.processing.remove((identifier, completed_process))
+
+        item = { 'completed_process': completed_process.name }
+        item.update(kwargs)
+
+        self.send_event(EventType.TRACK_UPDATE, identifier, **item)
+
+    def report_state(self, ws):
+        # Report existing tracks and current processes. Events will be batched
+        # together and dispatched.
         for identifier, media in self.mediafiles.items():
             track = mediafile.serialize(media, trim_path=self.import_path)
-            track.update({ 'id': identifier })
+            self.send_details(identifier, track)
 
-            tracks.append(track)
+        for identifier, process in self.processing:
+            self.send_processing(identifier, process)
 
-        key_detections = [{'id': k} for k in self.detecting_key]
+    def convert_track(self, identifier, path):
+        process = TrackProcesses.CONVERTING
+        self.send_processing(identifier, process)
 
-        data = json.dumps({ 'type': EventType.TRACK_DETAILS.name, 'items': tracks })
-        asyncio.ensure_future(ws.send(data))
-
-        data = json.dumps({ 'type': EventType.KEY_COMPUTING.name, 'items': key_detections })
-        asyncio.ensure_future(ws.send(data))
+        convert_track(path)
+        self.send_update(identifier, process)
 
     def compute_key(self, identifier, media):
-        self.send_event(EventType.KEY_COMPUTING, identifier)
-        self.detecting_key.add(identifier)
+        process = TrackProcesses.KEY_COMPUTING
+        self.send_processing(identifier, process)
 
         # Prefix key with leading zeros
         media.key = keyfinder.key(media.file_path).camelot().zfill(3)
         media.save()
-
-        self.send_event(EventType.KEY_COMPUTED, identifier, key=media.key)
-        self.detecting_key.remove(identifier)
+        self.send_update(identifier, process, key=media.key)
 
     def add_all(self):
         """
@@ -235,8 +263,7 @@ class TrackProcessor(object):
         # File may need to be transformed before it can be processed for
         # importing.
         if ext in CONVERTABLE_FORMATS:
-            self.send_event(EventType.TRACK_CONVERTING, identifier)
-            self.executor.submit(convert_track, path)
+            self.executor.submit(self.convert_track, identifier, path)
             return
 
         if ext not in VALID_FORMATS:
@@ -256,7 +283,7 @@ class TrackProcessor(object):
         self.mediafiles[identifier] = media
 
         track = mediafile.serialize(media, trim_path=self.import_path)
-        self.send_event(EventType.TRACK_DETAILS, identifier, track)
+        self.send_details(identifier, track)
 
     def remove(self, path):
         """

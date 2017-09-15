@@ -18,6 +18,9 @@ session = db.Session()
 app = Sanic(__name__)
 CORS(app)
 
+# Disable keepalive to stop timeouts
+app.config.KEEP_ALIVE = False
+
 app.known_values = knowns.KnownValues(session)
 
 # Begin processing track file events

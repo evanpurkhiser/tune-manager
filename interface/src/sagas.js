@@ -4,12 +4,10 @@ import format from 'string-format';
 import lodash from 'lodash';
 
 import * as action from './actions';
-import * as beatport from './util/beatport';
 import * as validate from './validate';
 import { buildImageObject } from './util/image';
 
-const ARTWORK_URL  = 'http://localhost:8000/artwork/{}@{}';
-const BEATPORT_URL = 'http://localhost:8000/beatport-lookup/{}';
+const ARTWORK_URL = 'http://localhost:8000/artwork/{}@{}';
 
 function* getTrackArtwork(track) {
   const promises = lodash
@@ -65,32 +63,7 @@ function* autoFix(payload) {
   yield put(action.autoFixFields(fixedItems));
 }
 
-/**
- * Request details for a specific Beatport ID and dispatch an AUTOFIX action
- * with the updated fields.
- */
-function* fixBeatportTrack(track, beatportId) {
-  const url = format(BEATPORT_URL, beatportId);
-
-  const json = yield fetch(url).then(r => r.json());
-  const beatportDetails = beatport.getPartialTrack(track, camelize(json));
-
-  yield put(action.autoFixFields({ [track.id]: beatportDetails }));
-}
-
-/**
- * Detect tracks downloaded from Beatport
- */
-function* autoFixBeatport(payload) {
-  const beatportIds = payload.items
-    .map(t => [ t, beatport.identifyId(t) ])
-    .filter(x => x[1]);
-
-  yield all(beatportIds.map(p => fixBeatportTrack(...p)));
-}
-
 export default function* appSaga() {
-  yield takeEvery(action.TRACK_DETAILS, requestArtwork);
   yield takeEvery(action.TRACK_DETAILS, autoFix);
-  yield takeEvery(action.TRACK_DETAILS, autoFixBeatport);
+  yield takeEvery(action.TRACK_DETAILS, requestArtwork);
 }

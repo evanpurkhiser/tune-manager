@@ -9,6 +9,7 @@ import multiprocessing
 import os
 import watchdog.observers
 
+import importer.beatport
 import mediafile
 import utils.file
 
@@ -34,9 +35,10 @@ class EventType(enum.Enum):
     TRACK_UPDATE     = enum.auto()
 
 
-class ProcessingEvents(enum.Enum):
-    CONVERTING    = enum.auto()
-    KEY_COMPUTING = enum.auto()
+class TrackProcesses(enum.Enum):
+    CONVERTING      = enum.auto()
+    KEY_COMPUTING   = enum.auto()
+    BEATPORT_IMPORT = enum.auto()
 
 
 class ImportWatcher(object):
@@ -96,6 +98,11 @@ class TrackProcessor(object):
         Computation of musical key takes some time, this message will be
         reported to the client when a key for a track is beginning to be
         computed. When the client first connects.
+
+      * BEATPORT_IMPORT
+
+        Tracks purchased from beatport have identifying information which can
+        be used to retrieve more information about the track.
 
     - TRACK_UPDATE
 
@@ -244,6 +251,13 @@ class TrackProcessor(object):
         media.save()
         self.send_update(identifier, process, key=media.key)
 
+    def beatport_update(self, identifier, media):
+        process = TrackProcesses.BEATPORT_IMPORT
+        self.send_processing(identifier, process)
+
+        fields = importer.beatport.process(media);
+        self.send_update(identifier, process, **fields)
+
     def add_all(self):
         """
         Add all existing tracks in the import path
@@ -279,6 +293,10 @@ class TrackProcessor(object):
         if not media.key or not media.key.strip('0') in valid_keys:
             media.key = ''
             self.executor.submit(self.compute_key, identifier, media)
+
+        # Request more details from beatport
+        if importer.beatport.has_metadata(media):
+            self.executor.submit(self.beatport_update, identifier, media)
 
         # Report track details
         self.mediafiles[identifier] = media

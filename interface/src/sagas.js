@@ -34,6 +34,9 @@ function* requestArtwork(payload) {
   yield put(action.setArtwork(items));
 }
 
+/**
+ * Execute all validator autoFixes on a given track.
+ */
 function autoFixTrack(t) {
   const fixTypes = Object.values(validate.autoFixTypes);
 

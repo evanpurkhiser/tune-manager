@@ -5,7 +5,7 @@ import { validateArtistsString } from './artist';
 const validationType = makeValidations({
   TITLE_HAS_REMIXER: {
     level:   levels.WARNING,
-    message: 'Title appears to have remixer, but remixer not specified',
+    message: 'Title has remixer, but remixer field missing',
   },
 });
 

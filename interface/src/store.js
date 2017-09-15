@@ -72,8 +72,12 @@ function reducer(oldState = initialState, action) {
   }
 
   case actions.TRACK_PROCESSING: {
-    const processes = action.items.map(i => ({ [i.id]: [ i.process ] }));
-    state.processes = lodash.merge(state.processes, ...processes);
+    state.processes = { ...state.processes };
+    for (const item of action.items) {
+      const trackId = item.id;
+      const current = state.processes[trackId] || [];
+      state.processes[trackId] = [ ...current, item.process ];
+    }
     break;
   }
 
@@ -81,9 +85,8 @@ function reducer(oldState = initialState, action) {
     state.tracks = { ...state.tracks };
     state.processes = { ...state.processes };
 
-    for (const track of action.items) {
-      const process = track.completedProcess;
-      delete track.completedProcess;
+    for (const trackItem of action.items) {
+      const { completedProcess, ...track } = trackItem;
 
       // Update the track with the partial fields
       state.tracks[track.id] = { ...state.tracks[track.id], ...track };
@@ -93,9 +96,11 @@ function reducer(oldState = initialState, action) {
       }
 
       // Remove the completed process for this track
-      state.processes[track.id] = lodash.remove(state.processes[track.id], process);
+      const processes = [ ...state.processes[track.id] ] || [];
+      processes.splice(processes.indexOf(completedProcess), 1);
+      state.processes[track.id] = processes;
 
-      if (state.processes[track.id].length === 0) {
+      if (processes.length === 0) {
         delete state.processes[track.id];
       }
     }

@@ -29,6 +29,10 @@ class Field extends Component {
     };
   }
 
+  componentWillMount() {
+    this.componentWillReceiveProps(this.props);
+  }
+
   componentWillReceiveProps(nextProps) {
     const value = nextProps.track[nextProps.name] || '';
     const validations = this.getValidations(nextProps, value);

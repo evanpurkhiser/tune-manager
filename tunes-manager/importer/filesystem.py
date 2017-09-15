@@ -20,6 +20,10 @@ from importer.convert import convert_track, CONVERTABLE_FORMATS
 VALID_FORMATS = ['.mp3', '.aif']
 
 
+def future_raise(future):
+    if future.exception(): raise future.exception()
+
+
 def file_id(path):
     """
     Compute the identifier of a file given it's path. This is simply the md5
@@ -235,6 +239,9 @@ class TrackProcessor(object):
         for identifier, process in self.processing:
             self.send_processing(identifier, process)
 
+    def execute_paralell(self, fn, *args):
+        self.executor.submit(fn, *args).add_done_callback(future_raise)
+
     def convert_track(self, identifier, path):
         process = TrackProcesses.CONVERTING
         self.send_processing(identifier, process)
@@ -277,8 +284,8 @@ class TrackProcessor(object):
 
         # File may need to be transformed before it can be processed for
         # importing.
-        if ext in CONVERTABLE_FORMATS:
-            self.executor.submit(self.convert_track, identifier, path)
+        if ext in importer.convert.CONVERTABLE_FORMATS:
+            self.execute_paralell(self.convert_track, identifier, path)
             return
 
         if ext not in VALID_FORMATS:
@@ -292,11 +299,11 @@ class TrackProcessor(object):
 
         if not media.key or not media.key.strip('0') in valid_keys:
             media.key = ''
-            self.executor.submit(self.compute_key, identifier, media)
+            self.execute_paralell(self.compute_key, identifier, media)
 
         # Request more details from beatport
         if importer.beatport.has_metadata(media):
-            self.executor.submit(self.beatport_update, identifier, media)
+            self.execute_paralell(self.beatport_update, identifier, media)
 
         # Report track details
         self.mediafiles[identifier] = media

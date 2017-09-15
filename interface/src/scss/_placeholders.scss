@@ -1,0 +1,40 @@
+%hidden-with-ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+%popover {
+  position: absolute;
+  z-index: 2;
+  background: #fff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  font-family: "Open Sans", sans-serif;
+}
+
+%popover-arrow {
+  content: '';
+  display: block;
+  position: absolute;
+  height: 0;
+  width: 0;
+  border: 8px solid transparent;
+}
+
+%loader {
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  display: block;
+  transform: translateZ(0);
+  animation: spinner 500ms infinite linear;
+
+  border: 3px solid rgba(77,89,99, 0.2);
+  border-left-color: rgba(77,89,99, 1);
+}
+
+@keyframes spinner {
+  0%   { transform: rotate(0deg);   }
+  100% { transform: rotate(360deg); }
+}

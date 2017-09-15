@@ -1,0 +1,161 @@
+.field-heading {
+  margin-top: 20px;
+  margin-bottom: 5px;
+  user-select: none;
+  cursor: default;
+}
+
+.field {
+  padding: 0 6px;
+  border-left: 1px solid #d2d6d8;
+
+  &:first-child {
+    border-left: none;
+  }
+
+  input {
+    border: none;
+    outline: none;
+    font-size: 12px;
+    line-height: 22px;
+    background: transparent;
+    padding: 0;
+
+    &[type="text"] {
+      width: 100%;
+    }
+
+    &::selection {
+      background-color: rgba(163, 174, 179, 0.3);
+    }
+  }
+}
+
+.track-listing .field {
+  height: 32px;
+  padding: 3px 6px;
+  position: relative;
+
+  &:not(.marked) {
+    line-height: 28px;
+  }
+}
+
+.field.marked {
+  transition: color 200ms ease-in-out;
+
+  &.error:after   { border-color: #ffa4a4; }
+  &.warning:after { border-color: #ffce97; }
+  &.valid:after   { border-color: #a8ffa4; }
+
+  &:after {
+    content: '';
+    display: block;
+    height: 0;
+    width: calc(100% - 12px);
+    bottom: 3px;
+    position: absolute;
+
+    // Set the base border color to trasnparent so the artwork marker does not
+    // inherit any colors. We can't specify this in the artwork marker as it is
+    // too specific and the indicator colors would not overrride it.
+    border-color: transparent;
+    border-top: 3px solid #f7f7f7;
+  }
+
+  &.artwork:after {
+    width: 0;
+    height: 0;
+    right: 3px;
+    border-width: 3px;
+    border-style: solid;
+    border-top-color: transparent;
+    border-left-color: transparent;
+  }
+}
+
+/* Field headings */
+$field-sizes: (
+  file-name: 180px,
+  artwork:   33px,
+  artist:    220px,
+  album:     300px,
+  remixer:   160px,
+  publisher: 150px,
+  release:   100px,
+  year:      40px,
+  genre:     80px,
+  track:     45px,
+  disc:      45px,
+  bpm:       50px,
+  key:       35px,
+  actions:   30px,
+);
+
+@each $name, $width in $field-sizes {
+  .#{$name} { width: $width; }
+}
+
+.title {
+  flex-grow: 1;
+}
+
+$centered-fields: (
+  'artwork',
+  'year',
+  'track',
+  'disc',
+  'bpm',
+  'key',
+);
+
+@each $field in $centered-fields {
+  .#{$field}, .#{$field} input { text-align: center; }
+}
+
+.listing-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  input { cursor: pointer; }
+}
+
+.file-name {
+  position: relative;
+
+  .fixed {
+    @extend %hidden-with-ellipsis;
+  }
+
+  .full {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    padding: 3px 10px 1px 0;
+    white-space: nowrap;
+    z-index: 2;
+    background: #fff;
+    border-right: 1px solid #d2d6d8;
+
+    pointer-events: none;
+    transition: opacity 300ms ease-in-out;
+  }
+
+  &:hover .full {
+    opacity: 1;
+  }
+}
+
+.key {
+  @extend %hidden-with-ellipsis;
+  position: relative;
+
+  &.computing:after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 9px;
+    @extend %loader;
+  }
+}

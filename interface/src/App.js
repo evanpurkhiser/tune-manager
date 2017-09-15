@@ -8,7 +8,7 @@ import * as action from './actions';
 import * as Field from './components/Fields';
 import FieldHeadings from './components/FieldHeadings';
 
-import './assets/App.css';
+import './scss/app.css';
 
 let TrackItem = p => {
   const fieldProps = {
@@ -17,7 +17,7 @@ let TrackItem = p => {
   };
 
   return <li className="track-listing">
-    <div className="field selector">
+    <div className="field listing-check">
       <input type="checkbox"
         onChange={e => p.dispatch(action.toggleTracks(e.target.checked, [ p.id ]))}
         checked={p.selected} />

@@ -1,0 +1,20 @@
+@mixin fontawesome($code) {
+  font-family: FontAwesome;
+  content: '#{$code}';
+}
+
+@mixin checkered-background {
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+  background-color: #fff;
+  background-image: linear-gradient(45deg, #eee 25%, rgba(0, 0, 0, 0) 25%),
+                    linear-gradient(-45deg, #eee 25%, rgba(0, 0, 0, 0) 25%),
+                    linear-gradient(45deg, rgba(0, 0, 0, 0) 75%, #eee 75%),
+                    linear-gradient(-45deg, rgba(0, 0, 0, 0) 75%, #eee 75%);
+}
+%hidden-with-ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+

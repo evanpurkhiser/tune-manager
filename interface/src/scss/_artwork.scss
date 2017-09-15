@@ -1,0 +1,190 @@
+.track-listing .artwork {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.artwork {
+  outline: none;
+
+  > img, .empty-artwork {
+    display: block;
+    height: 26px;
+    width: 26px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .empty-artwork {
+    background: #f7f7f7;
+
+    &:after {
+      @include fontawesome('\f03e');
+      color: #ddd;
+    }
+  }
+
+  .empty-artwork.loading:after {
+    @extend %loader;
+    content: '';
+    opacity: 0.5;
+    position: relative;
+    top: 5px;
+    left: 5px;
+  }
+
+}
+
+.fullscreen-artwork {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+
+  img {
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    max-width: 500px;
+    margin: 20px;
+    margin-top: 80px;
+
+    // checkboard background to indicate transparent images
+    @include checkered-background;
+  }
+}
+
+.artwork-popover {
+  @extend %popover;
+  display: flex;
+  flex-direction: row;
+  top: -38px;
+  left: 37px;
+  padding: 5px;
+  user-select: none;
+
+  &:before {
+    @extend %popover-arrow;
+    border-right-color: #fff !important;
+    top: 50%;
+    margin-top: -8px;
+    left: -15px;
+  }
+
+  img {
+    display: block;
+    height: 64px;
+    width: 64px;
+    border-radius: 3px;
+
+    // checkboard background to indicate transparent images
+    @include checkered-background;
+  }
+
+  > li:not(:first-child) {
+    margin-left: 4px;
+  }
+
+  > li {
+    padding: 6px 6px 4px;
+    border-radius: 3px;
+    position: relative;
+
+    &:hover, &.selected {
+      background: #efefef;
+      cursor: pointer;
+    }
+
+    &:hover .actions {
+      display: block;
+    }
+  }
+
+  ul.actions {
+    display: none;
+    width: 100%;
+    text-align: left;
+    font-size: 8px;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    line-height: 6px;
+
+    li {
+      display: inline-block;
+      padding: 4px;
+      background: #fff;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
+      border-radius: 3px;
+      opacity: 0.8;
+    }
+
+    li:not(:first-child) {
+      margin-left: 4px;
+    }
+
+    li:hover {
+      opacity: 1;
+    }
+
+    .maximize:after {
+      @include fontawesome('\f0b2');
+    }
+
+    .remove {
+      &:after { @include fontawesome('\f00d'); }
+      background: #f16d6d;
+      color: #fff;
+    }
+  }
+
+  .details {
+    font-size: 8px;
+    text-align: left;
+    line-height: 12px;
+    font-weight: bold;
+    margin-top: 2px;
+    text-align: center;
+  }
+
+  .uploader label {
+    margin: -6px -6px -4px;
+    padding: 6px 6px 4px;
+    cursor: pointer;
+    display: block;
+
+    &:before {
+      font-size: 18px;
+      @include fontawesome('\f093');
+      display: block;
+      width: 60px;
+      height: 60px;
+      line-height:46px;
+      border-radius: 5px;
+      border: 2px dashed #ddd;
+      color: #ddd;
+    }
+
+    &:after{
+      content: 'Upload';
+      text-transform: uppercase;
+      font-size: 8px;
+      color: #ccc;
+      position: absolute;
+      top: 40px;
+      left: 8px;
+      width: 60px;
+      text-align: center;
+
+    }
+
+    &:hover:before, &:hover:after {
+      color: #bbb;
+      border-color: #bbb;
+    }
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+}

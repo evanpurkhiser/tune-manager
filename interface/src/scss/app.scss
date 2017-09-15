@@ -1,0 +1,49 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700");
+@import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+
+@import "_mixins";
+@import "_placeholders";
+
+* { box-sizing: border-box; }
+
+ol, ul, li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+body, html, #root {
+  margin: 0;
+  font-family: "Open Sans", sans-serif;
+  color: #4a585f;
+  height: 100%;
+}
+
+.app {
+  height: 100%;
+
+  > header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 15px;
+    z-index: 2;
+    background: #fff;
+  }
+
+  > header h1 {
+    margin: 0;
+    margin-bottom: 4px;
+    font-size: 20px;
+  }
+}
+
+@import "_grouping";
+@import "_fields";
+@import "_artwork";
+@import "_typeahead";

@@ -9,11 +9,10 @@ import multiprocessing
 import os
 import watchdog.observers
 
+import importer.convert
 import importer.beatport
 import mediafile
 import utils.file
-
-from importer.convert import convert_track, CONVERTABLE_FORMATS
 
 # This list specifies file extensions that are directly supported for
 # importing, without requiring any type of conversion.
@@ -246,7 +245,7 @@ class TrackProcessor(object):
         process = TrackProcesses.CONVERTING
         self.send_processing(identifier, process)
 
-        convert_track(path)
+        importer.convert.convert_track(path)
         self.send_update(identifier, process)
 
     def compute_key(self, identifier, media):
@@ -270,7 +269,7 @@ class TrackProcessor(object):
         Add all existing tracks in the import path
         """
         path  = self.import_path
-        types = tuple(VALID_FORMATS + CONVERTABLE_FORMATS)
+        types = tuple(VALID_FORMATS + importer.convert.CONVERTABLE_FORMATS)
 
         for path in utils.file.collect_files([path], recursive=True, types=types):
             self.add(path)

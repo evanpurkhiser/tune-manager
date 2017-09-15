@@ -171,6 +171,6 @@ def serialize(media, trim_path=None):
     try:
         vals['artwork_selected'] = artTypes.index(ID3.PictureType.COVER_FRONT)
     except ValueError:
-        vals['artwork_selected'] = None
+        vals['artwork_selected'] = 0 if len(media.artwork) > 0 else None
 
     return vals

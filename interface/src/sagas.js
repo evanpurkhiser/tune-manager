@@ -1,4 +1,3 @@
-import * as camelize from 'camelize';
 import { all, put, takeEvery } from 'redux-saga/effects';
 import format from 'string-format';
 import lodash from 'lodash';

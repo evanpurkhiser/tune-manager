@@ -70,7 +70,7 @@ def process(media):
     if media.genre in genre_remapping:
         media.genre = genre_remapping[media.genre]
 
-    mod = mediafile.serialize(media)
+    updated = mediafile.serialize(media)
 
     # Return only changed values
-    return {k: v for k, v in mod.items() if mod[k] != orig[k]}
+    return {k: v for k, v in updated.items() if updated[k] != orig[k]}

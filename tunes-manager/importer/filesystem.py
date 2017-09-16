@@ -254,8 +254,9 @@ class TrackProcessor(object):
 
         # Prefix key with leading zeros
         media.key = keyfinder.key(media.file_path).camelot().zfill(3)
-        media.save()
         self.send_update(identifier, process, key=media.key)
+
+        #media.save()
 
     def beatport_update(self, identifier, media):
         process = TrackProcesses.BEATPORT_IMPORT
@@ -263,6 +264,8 @@ class TrackProcessor(object):
 
         fields = importer.beatport.process(media);
         self.send_update(identifier, process, **fields)
+
+        #media.save()
 
     def add_all(self):
         """

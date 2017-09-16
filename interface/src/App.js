@@ -19,7 +19,7 @@ let TrackItem = p => {
   return <li className="track-listing">
     <div className="field listing-check">
       <input type="checkbox"
-        onChange={e => p.dispatch(action.toggleTracks(e.target.checked, [ p.id ]))}
+        onChange={e => p.dispatch(action.toggleSelect(e.target.checked, [ p.id ]))}
         checked={p.selected} />
     </div>
 
@@ -62,7 +62,7 @@ const PathParts = ({ parts }) => <ol className="path-parts">
  */
 let TrackGroup = p => {
   const toggleGroup = toggle => {
-    p.dispatch(action.toggleTracks(toggle, p.tracks));
+    p.dispatch(action.toggleSelect(toggle, p.tracks));
   };
 
   const pathParts = p.pathParts[0] !== '.' ? p.pathParts : []; 
@@ -117,7 +117,7 @@ const App = p => <div className="app">
       Use the interface below to normalize, tag, and import new music
     </small>
     <FieldHeadings
-      onCheck={e => p.dispatch(action.toggleAllTracks(e.target.checked))}
+      onCheck={e => p.dispatch(action.toggleSelectAll(e.target.checked))}
       checked={p.allSelected} />
   </header>
   <TrackGroups

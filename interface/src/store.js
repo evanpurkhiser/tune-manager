@@ -136,12 +136,12 @@ function reducer(oldState = initialState, action) {
     break;
   }
 
-  case actions.TOGGLE_ALL_TRACKS: {
+  case actions.TOGGLE_SELECT_ALL: {
     state.selectedTracks = action.toggle ? Object.keys(state.tracks) : [];
     break;
   }
 
-  case actions.TOGGLE_TRACKS: {
+  case actions.TOGGLE_SELECT: {
     state.selectedTracks = action.toggle
       ? lodash.union(state.selectedTracks, action.tracks)
       : lodash.difference(state.selectedTracks, action.tracks);

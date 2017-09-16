@@ -25,21 +25,21 @@ export const autoFixFields = items => ({
 });
 
 // Interface events
-export const TOGGLE_ALL_TRACKS = 'TOGGLE_ALL_TRACKS';
-export const TOGGLE_TRACKS     = 'TOGGLE_TRACKS';
+export const TOGGLE_SELECT_ALL = 'TOGGLE_SELECT_ALL';
+export const TOGGLE_SELECT     = 'TOGGLE_SELECT';
 export const REORDER_GROUPS    = 'REORDER_GROUPS';
 export const MODIFY_FIELD      = 'MODIFY_FIELD';
 export const ARTWORK_SELECT    = 'ARTWORK_SELECT';
 export const ARTWORK_REMOVE    = 'ARTWORK_REMOVE';
 export const ARTWORK_ADD       = 'ARTWORK_ADD';
 
-export const toggleAllTracks = toggle => ({
-  type: TOGGLE_ALL_TRACKS,
+export const toggleSelectAll = toggle => ({
+  type: TOGGLE_SELECT_ALL,
   toggle,
 });
 
-export const toggleTracks = (toggle, tracks) => ({
-  type: TOGGLE_TRACKS,
+export const toggleSelect = (toggle, tracks) => ({
+  type: TOGGLE_SELECT,
   toggle,
   tracks,
 });

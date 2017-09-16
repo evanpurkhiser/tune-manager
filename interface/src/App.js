@@ -83,7 +83,7 @@ let TrackGroup = p => {
   return <li className="track-group">
     <GroupHeading />
     <ol>
-      {p.tracks.map((t, i) => <TrackItem index={i} key={t} id={t} />)}
+      {p.tracks.map((t, i) => <TrackItem key={t} id={t} />)}
     </ol>
   </li>;
 };

@@ -42,10 +42,12 @@ let TrackItem = p => {
   </li>;
 };
 
+const processesDefault = [];
+
 const mapTrackState = (s, props) => ({
   track:       s.tracks[props.id],
   selected:    s.selectedTracks.includes(props.id),
-  processes:   s.processes[props.id] || [],
+  processes:   s.processes[props.id] || processesDefault,
   knownValues: s.knownValues,
 });
 

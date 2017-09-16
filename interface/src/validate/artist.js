@@ -151,4 +151,6 @@ function artist(track, options) {
   return validations;
 }
 
+artist.validatesFields = [ 'artist' ];
+
 export { artist, validateArtistsString };

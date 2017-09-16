@@ -38,4 +38,6 @@ function remixer(track, options) {
   return validations;
 }
 
+remixer.validatesFields = [ 'remixer', 'title' ];
+
 export { remixer };

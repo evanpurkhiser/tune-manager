@@ -62,4 +62,6 @@ function genre(track, options = {}) {
   });
 }
 
+genre.validatesFields = [ 'genre' ];
+
 export { genre };

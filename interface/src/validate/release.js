@@ -38,4 +38,6 @@ function release(track) {
   return validations;
 }
 
+release.validatesFields = [ 'release' ];
+
 export { release };

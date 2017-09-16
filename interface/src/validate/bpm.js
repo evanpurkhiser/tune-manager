@@ -51,4 +51,6 @@ function bpm(track) {
   return validations;
 }
 
+bpm.validatesFields = [ 'bpm' ];
+
 export { bpm };

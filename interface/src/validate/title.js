@@ -153,4 +153,6 @@ function title(track) {
   return validations;
 }
 
+title.validatesFields = [ 'title', 'remixer' ];
+
 export { title, remixPattern };

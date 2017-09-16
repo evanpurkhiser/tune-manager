@@ -53,4 +53,6 @@ function publisher(track, options = {}) {
   });
 }
 
+publisher.validatesFields = [ 'publisher' ];
+
 export { publisher };

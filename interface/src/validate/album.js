@@ -26,4 +26,6 @@ function album(track) {
   return validations;
 }
 
+album.validatesFields = [ 'album', 'disc' ];
+
 export { album };

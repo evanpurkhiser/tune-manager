@@ -62,4 +62,6 @@ function year(track) {
   return validations;
 }
 
+year.validatesFields = [ 'year' ];
+
 export { year };

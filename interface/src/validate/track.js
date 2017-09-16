@@ -111,6 +111,8 @@ function track(track) {
   return validations;
 }
 
+track.validatesFields = [ 'track', 'disc' ];
+
 /**
  * Disc number validation will validate the following rules:
  *
@@ -140,5 +142,7 @@ function disc(track) {
 
   return validations;
 }
+
+disc.validatesFields = [ 'track', 'disc', 'album' ];
 
 export { track, disc };

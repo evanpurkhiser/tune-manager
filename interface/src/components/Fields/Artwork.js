@@ -124,7 +124,7 @@ class Artwork extends Component {
     super();
 
     this.DOMNode = undefined;
-    this.state = { focused: false, maximizedArt: null };
+    this.state = { active: false, maximizedArt: null };
   }
 
   onSelect(index) {

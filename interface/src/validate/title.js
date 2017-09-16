@@ -72,7 +72,7 @@ function removeOriginalMix(title) {
   return title.replace(originalMixPattern, '');
 }
 
-const featPattern = /f(?:ea)?t\.?/i;
+const featPattern = / f(?:ea)?t\.?/i;
 
 /**
  * Title validation will validate the following rules:

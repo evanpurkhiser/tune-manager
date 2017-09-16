@@ -89,7 +89,7 @@ $field-sizes: (
   disc:      45px,
   bpm:       50px,
   key:       35px,
-  actions:   30px,
+  actions:   32px,
 );
 
 @each $name, $width in $field-sizes {

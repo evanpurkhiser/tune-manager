@@ -19,6 +19,7 @@ let TrackItem = p => {
   return <li className="track-listing">
     <div className="field listing-check">
       <input type="checkbox"
+        tabIndex="-1"
         onChange={e => p.dispatch(action.toggleSelect(e.target.checked, [ p.id ]))}
         checked={p.selected} />
     </div>
@@ -75,6 +76,7 @@ let TrackGroup = p => {
   const GroupHeading = SortableHandle(_ => <label className={classes}>
     <span className="drag-handle" />
     <input type="checkbox"
+      tabIndex="-1"
       onChange={e => toggleGroup(e.target.checked)}
       checked={p.allSelected} />
     <PathParts parts={pathParts} />

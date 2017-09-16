@@ -27,6 +27,7 @@ export const autoFixFields = items => ({
 // Interface events
 export const TOGGLE_SELECT_ALL = 'TOGGLE_SELECT_ALL';
 export const TOGGLE_SELECT     = 'TOGGLE_SELECT';
+export const CLEAR_SELECTED    = 'CLEAR_SELECTED';
 export const REORDER_GROUPS    = 'REORDER_GROUPS';
 export const MODIFY_FIELD      = 'MODIFY_FIELD';
 export const ARTWORK_SELECT    = 'ARTWORK_SELECT';
@@ -42,6 +43,10 @@ export const toggleSelect = (toggle, tracks) => ({
   type: TOGGLE_SELECT,
   toggle,
   tracks,
+});
+
+export const clearSelected = _ => ({
+  type: CLEAR_SELECTED,
 });
 
 export const reorderGroups = indicies => ({

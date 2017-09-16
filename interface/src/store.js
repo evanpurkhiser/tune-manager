@@ -148,6 +148,11 @@ function reducer(oldState = initialState, action) {
     break;
   }
 
+  case actions.CLEAR_SELECTED: {
+    state.selectedTracks = [];
+    break;
+  }
+
   case actions.REORDER_GROUPS: {
     const { oldIndex, newIndex } = action.indicies;
     state.trackTree = arrayMove(state.trackTree, oldIndex, newIndex);

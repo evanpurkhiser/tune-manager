@@ -10,7 +10,7 @@
     "lodash": "^4.17.4",
     "md5": "^2.2.1",
     "path": "^0.12.7",
-    "pretty-bytes": "^4.0.2",
+    "pretty-bytes": "^3.0.0",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",

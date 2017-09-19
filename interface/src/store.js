@@ -57,7 +57,9 @@ function reducer(oldState = initialState, action) {
 
   switch (action.type) {
   case actions.TRACK_DETAILS: {
-    const newTracks = lodash.keyBy(action.items, t => t.id);
+    const items = action.items.map(cleanNulls);
+    const newTracks = lodash.keyBy(items, t => t.id);
+
     state.tracks = { ...state.tracks, ...newTracks };
     state.trackTree = computeTrackTree(state.tracks);
     state.tracksPristine = { ...state.tracksPristine, ...newTracks };
@@ -210,6 +212,10 @@ function reducer(oldState = initialState, action) {
   }
 
   return state;
+}
+
+function cleanNulls(track) {
+  return lodash.mapValues(track, v => v === null ? '' : v);
 }
 
 function onSelectedTracks(state, focusedTrack, fn) {

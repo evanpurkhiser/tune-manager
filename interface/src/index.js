@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 
 import * as actions from './actions';
 import App from './App';
+import globalKeys from './globalKeys';
 import store from './store';
 
 // Start events listener
@@ -15,6 +16,8 @@ socket.onmessage = m => store.dispatch(camelize(JSON.parse(m.data)));
 fetch('http://localhost:8000/known-values').then(r => r.json()).then(knowns => {
   store.dispatch(actions.replaceKnowns(camelize(knowns)));
 });
+
+document.body.addEventListener('keydown', globalKeys);
 
 const providedApp = <Provider store={store}>
   <App />

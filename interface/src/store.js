@@ -7,6 +7,7 @@ import createSagaMiddleware from 'redux-saga';
 
 import * as actions from './actions';
 import appSaga from './sagas';
+import { formatTrackNumbers } from './util/format';
 
 const initialState = {
   // tracks is a mapping of the unique track ID to the track object.
@@ -161,6 +162,13 @@ function reducer(oldState = initialState, action) {
     break;
   }
 
+  case actions.NUMBER_SELECTED: {
+    for (const track of computeTrackNumbers(state)) {
+      state.tracks[track.id] = { ...state.tracks[track.id], ...track };
+    }
+    break;
+  }
+
   case actions.MODIFY_FIELD: {
     const { focusedTrackID, field, value } = action;
     state.tracks = { ...state.tracks };
@@ -253,6 +261,26 @@ function normalizeKnownValues(knowns) {
     clean:  k,
     normal: lodash.keyBy(k, v => v.toLowerCase()),
   }));
+}
+
+/**
+ * Compute track disc and track numers given the current state.
+ *
+ * The trackTree will be used for track numbering. Disc numbers will be
+ * computed based on how many distinct groups are selected.
+ */
+function computeTrackNumbers(state) {
+  const trackTree = [ ...state.trackTree ]
+    .map(g => lodash.intersection(g.tracks, state.selectedTracks))
+    .filter(x => x.length > 0);
+
+  const list = trackTree.map((tracks, i) => tracks.map((trackId, j) => ({
+    id:    trackId,
+    track: formatTrackNumbers(j + 1, tracks.length),
+    disc:  formatTrackNumbers(i + 1, trackTree.length),
+  })));
+
+  return lodash.flatten(list);
 }
 
 const devTools = '__REDUX_DEVTOOLS_EXTENSION__';

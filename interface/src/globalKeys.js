@@ -102,6 +102,11 @@ function moveGroupFocus(e, direction) {
   return true;
 }
 
+function numberSelected(e) {
+  store.dispatch(action.numberSelected());
+  return true;
+}
+
 export default keyMapper({
   // Selection toggling
   'ctrl+f': toggleSelectFocused,
@@ -115,4 +120,7 @@ export default keyMapper({
   // Group navigation
   'ctrl+alt+n': e => moveGroupFocus(e, DIRECTION_DOWN),
   'ctrl+alt+p': e => moveGroupFocus(e, DIRECTION_UP),
+
+  // Selection actions
+  'ctrl+k': numberSelected,
 });

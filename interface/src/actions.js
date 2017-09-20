@@ -29,6 +29,7 @@ export const TOGGLE_SELECT_ALL = 'TOGGLE_SELECT_ALL';
 export const TOGGLE_SELECT     = 'TOGGLE_SELECT';
 export const CLEAR_SELECTED    = 'CLEAR_SELECTED';
 export const REORDER_GROUPS    = 'REORDER_GROUPS';
+export const NUMBER_SELECTED   = 'NUMBER_SELECTED';
 export const MODIFY_FIELD      = 'MODIFY_FIELD';
 export const ARTWORK_SELECT    = 'ARTWORK_SELECT';
 export const ARTWORK_REMOVE    = 'ARTWORK_REMOVE';
@@ -52,6 +53,10 @@ export const clearSelected = _ => ({
 export const reorderGroups = indicies => ({
   type: REORDER_GROUPS,
   indicies,
+});
+
+export const numberSelected = _ => ({
+  type: NUMBER_SELECTED,
 });
 
 export const modifyField = (focusedTrackID, field, value) => ({

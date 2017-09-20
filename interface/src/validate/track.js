@@ -1,6 +1,5 @@
-import format from 'string-format';
-
 import { autoFixTypes, levels, makeValidations, Validations } from './utils';
+import { formatTrackNumbers } from '../util/format';
 
 const numberPattern = /^([0-9]{1,3})\/([0-9]{1,3})$/;
 
@@ -54,7 +53,7 @@ export function formatNumber(number) {
     return number;
   }
 
-  return format('{}/{}', first.padStart(second.length, '0'), second);
+  return formatTrackNumbers(first, second);
 }
 
 /**

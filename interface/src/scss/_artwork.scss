@@ -145,6 +145,14 @@
     font-weight: bold;
     margin-top: 2px;
     text-align: center;
+
+    .error, .warning {
+      color: #fff;
+      border-radius: 2px;
+    }
+
+    .error   { background: #ff5151; }
+    .warning { background: #ffbd51; }
   }
 
   .uploader label {

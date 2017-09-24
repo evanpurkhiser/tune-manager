@@ -4,6 +4,7 @@ import prettyBytes from 'pretty-bytes';
 import PropTypes   from 'prop-types';
 
 import * as action          from '../../actions';
+import * as validateArt     from '../../validate/artwork';
 import { buildImageObject } from '../../util/image';
 import { keyMapper }        from '../../util/keyboard';
 
@@ -29,6 +30,9 @@ const ArtworkEntry = p => {
     ? `${dimensions.height} × ${dimensions.width}`
     : 'Unknown Size';
 
+  const validations = validateArt.individualArtwork(p.artwork);
+  const dimensionClasses = classNames(validations.level());
+
   const itemClasses = classNames({ selected: p.isSelected });
 
   return <li onClick={p.onSelect} className={itemClasses}>
@@ -39,7 +43,7 @@ const ArtworkEntry = p => {
     <img src={p.artwork.url} alt="Album Artwork" />
     <ul className="details">
       <li>{type} – {size}</li>
-      <li>{dimensionText}</li>
+      <li className={dimensionClasses}>{dimensionText}</li>
     </ul>
   </li>;
 };
@@ -180,7 +184,10 @@ class Artwork extends Component {
         onMaximize={i => this.onMaximize(i)}
         onFileSelect={f => this.onFileSelect(f)} />;
 
-    return <div className="field marked artwork"
+    const validations = validateArt.artwork(track);
+    const classes = classNames('field marked artwork', validations.level());
+
+    return <div className={classes}
       tabIndex="0"
       ref={e => this.DOMNode = e}
       onFocus={_ => this.setState({ active: true })}

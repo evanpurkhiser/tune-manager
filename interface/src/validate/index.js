@@ -1,5 +1,6 @@
 export { Validations, autoFixTypes } from './utils';
 
+export { artwork   } from './artwork';
 export { artist    } from './artist';
 export { title     } from './title';
 export { remixer   } from './remixer';

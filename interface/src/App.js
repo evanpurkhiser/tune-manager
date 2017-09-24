@@ -114,10 +114,6 @@ TrackGroups = SortableContainer(TrackGroups);
  */
 const App = p => <div className="app">
   <header>
-    <h1>Tunes Importing Tools</h1>
-    <small>
-      Use the interface below to normalize, tag, and import new music
-    </small>
     <FieldHeadings
       onCheck={e => p.dispatch(action.toggleSelectAll(e.target.checked))}
       checked={p.allSelected} />

@@ -62,6 +62,8 @@
   left: 37px;
   padding: 5px;
   user-select: none;
+  animation: popoverIn 200ms ease-in-out;
+
 
   &:before {
     @extend %popover-arrow;
@@ -194,5 +196,17 @@
 
   input[type="file"] {
     display: none;
+  }
+}
+
+@keyframes popoverIn {
+  0% {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
   }
 }

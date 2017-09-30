@@ -11,6 +11,12 @@ const splitOn = /(?:,| vs.?| &| and| f(?:ea)?t(?:uring)?[.']?) /gi;
 const strictSplitOn = /(?:,| vs| &| Ft\.) /g;
 
 /**
+ * For titles that follow the usual 'Track name (Artist Remix)' style, this
+ * pattern can be used to detect the artist name and remix wording.
+ */
+const remixPattern = /\((.*) (re?mi?x)\)/i;
+
+/**
  * Split an artists string on common separators into a list of individual
  * artists.
  */
@@ -18,4 +24,4 @@ function splitArtists(artistString) {
   return artistString.split(splitOn).filter(x => x);
 }
 
-export { splitArtists, splitOn, strictSplitOn };
+export { splitArtists, splitOn, strictSplitOn, remixPattern };

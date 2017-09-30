@@ -1,4 +1,5 @@
 import { autoFixTypes, levels, makeValidations, Validations } from './utils';
+import { remixPattern } from '../util/artistMatch';
 
 const validationType = makeValidations({
   EMPTY: {
@@ -43,12 +44,6 @@ const validationType = makeValidations({
     autoFix: autoFixTypes.IMMEDIATE,
   },
 });
-
-/**
- * For titles that follow the usual 'Track name (Artist Remix)' style, this
- * pattern can be used to detect the artist name and remix wording.
- */
-const remixPattern = /\((.*) (re?mi?x)\)/i;
 
 /**
  * Correct the format of tracks matching the remixPattern.

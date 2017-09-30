@@ -21,18 +21,21 @@ function buildArtistString(artistsList) {
   const artists = lodash.cloneDeep(artistsList);
 
   // Use the ANV (artist name variation) if provided
-  artists.forEach(a => a.name = a.anv === '' ? a.name : a.anv);
+  artists.forEach(a => {
+    a.name = a.anv === '' ? a.name : a.anv;
+    a.name = a.name.replace(artistDifferentiatorRegex, '');
+  });
 
   const lastArtist = artists.pop();
   const artist = artists.map(a => {
-    return a.name + a.join === ',' ? ', ' : ` ${a.join} `;
+    return a.name + (a.join === ',' ? ', ' : ` ${a.join} `);
   });
 
   if (lastArtist !== undefined) {
     artist.push(lastArtist.name);
   }
 
-  return artist.map(a => a.replace(artistDifferentiatorRegex, '')).join('');
+  return artist.join('');
 }
 
 /**

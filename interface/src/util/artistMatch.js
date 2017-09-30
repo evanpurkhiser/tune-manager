@@ -2,7 +2,7 @@
  * This is a fuzzy pattern used to split artists apart from their connectors.
  * This pattern does *not* strictly check for connectors in my defined format.
  */
-const splitOn = /(?:,| vs.?| &| and| f(?:ea)?t(?:uring)?\.?) /gi;
+const splitOn = /(?:,| vs.?| &| and| f(?:ea)?t(?:uring)?[.']?) /gi;
 
 /**
  * This is the strict version of the splitOn pattern that only matches the exact

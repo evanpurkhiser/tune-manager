@@ -47,7 +47,7 @@ const validationType = makeValidations({
 const connectorTransforms = [
   [ 'vs\\.?', 'vs' ],
   [ 'and', '&' ],
-  [ 'f(?:ea)?t(?:uring)?\\.?', 'Ft.' ],
+  [ 'f(?:ea)?t(?:uring)?[.\']?', 'Ft.' ],
 ];
 
 /**

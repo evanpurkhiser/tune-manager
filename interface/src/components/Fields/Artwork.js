@@ -6,7 +6,6 @@ import PropTypes   from 'prop-types';
 import * as action          from '../../actions';
 import * as validateArt     from '../../validate/artwork';
 import { buildImageObject } from '../../util/image';
-import { keyMapper }        from '../../util/keyboard';
 
 const MIME_MAPPING = {
   'image/png':  'PNG',

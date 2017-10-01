@@ -4,6 +4,11 @@ export const TRACK_REMOVED    = 'TRACK_REMOVED';
 export const TRACK_PROCESSING = 'TRACK_PROCESSING';
 export const TRACK_UPDATE     = 'TRACK_UPDATE';
 
+export const trackUpdate = items => ({
+  type: TRACK_UPDATE,
+  items,
+});
+
 // Saga responses
 export const SET_ARTWORK    = 'SET_ARTWORK';
 export const REPLACE_KNOWNS = 'REPLACE_KNOWNS';

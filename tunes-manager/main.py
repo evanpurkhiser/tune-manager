@@ -1,8 +1,9 @@
 import os.path
 
-import sqlalchemy
 from sanic import Sanic, response
 from sanic_cors import CORS
+import sqlalchemy
+import requests
 
 import catalog
 import db
@@ -11,6 +12,9 @@ import knowns
 
 LIBRARY = '/Users/evan/Music/TracksLocal'
 IMPORT_PATH = os.path.expanduser('~/music-to-import')
+
+DISCOGS_TOKEN = ''
+DISCOGS_AUTH  = 'Discogs token={}'.format(DISCOGS_TOKEN)
 
 db.init(sqlalchemy.create_engine('sqlite:///database.db'))
 session = db.Session()
@@ -60,6 +64,14 @@ async def artwork(request, index, track_id):
     art = app.processor.mediafiles[track_id].artwork[int(index)]
 
     return response.raw(art.data, content_type=art.mime)
+
+@app.route('/discogs-proxy', strict_slashes=False)
+async def discogs_proxy(request):
+    url = request.args['url'][0]
+    headers = {'Authorization': DISCOGS_AUTH}
+
+    res = requests.get(url, headers=headers)
+    return response.raw(res.content, content_type=res.headers['content-type'])
 
 # Gotta go fast!
 app.run(host="0.0.0.0", port=8000)

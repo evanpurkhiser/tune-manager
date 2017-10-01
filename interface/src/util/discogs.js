@@ -1,13 +1,27 @@
-import * as lodash   from 'lodash';
+import * as lodash from 'lodash';
+import format from 'string-format';
+import md5    from 'md5';
 
 import { formatTrackNumbers } from './format';
 import { remixPattern }       from './artistMatch';
 
+const PROXY_URL  = 'http://localhost:8000/discogs-proxy/';
+const SEARCH_URL = 'https://api.discogs.com/database/search?type=release&q={query}';
+
 /**
- * Regex used to remove the trailing discogs 'unique identifier' on artists who
- * have multiple entries in the discogs database.
+ * Construct a discogs API request URL.
  */
-const artistDifferentiatorRegex = / \([0-9]+\)$/;
+function url(url, ...args) {
+  const queryURL = encodeURIComponent(format(url, ...args));
+
+  return `${PROXY_URL}?url=${queryURL}`;
+}
+
+/**
+ * Regex used to remove the trailing discogs 'unique identifier' on artists /
+ * labels who have multiple entries in the discogs database.
+ */
+const differentiatorRegex = / \([0-9]+\)$/;
 
 /**
  * Used to match the track postion string in a discogs track.
@@ -23,7 +37,7 @@ function buildArtistString(artistsList) {
   // Use the ANV (artist name variation) if provided
   artists.forEach(a => {
     a.name = a.anv === '' ? a.name : a.anv;
-    a.name = a.name.replace(artistDifferentiatorRegex, '');
+    a.name = a.name.replace(differentiatorRegex, '');
   });
 
   const lastArtist = artists.pop();
@@ -42,12 +56,12 @@ function buildArtistString(artistsList) {
  * Given a Discogs release JSON object, map the tracks into our track format.
  */
 function mapTracks(release) {
-  const label = release.labels.pop();
-
-  const tracks = release.tracklist.filter(t => t.type === 'track');
+  const tracks = release.tracklist;
+  const label  = release.labels.pop() || {};
 
   // Compute total tracks and discs
   const positionMatches = tracks
+    .filter(t => t.type === 'track')
     .map(t => t.position)
     .filter(p => p !== undefined)
     .map(p => p.match(positionRegex))
@@ -58,7 +72,19 @@ function mapTracks(release) {
   const totalDiscs  = Object.keys(discGroups).pop() || '1';
   const totalTracks = lodash.mapValues(discGroups, p => p.pop()[2]);
 
-  return tracks.map(t => {
+  // Tracks are grouped into heading keys
+  let currentHeading    = '';
+  let currentTrackGroup = [];
+  const mappedTracks    = [];
+
+  for (const t of tracks) {
+    if (t.type === 'heading') {
+      currentHeading = t.title;
+      currentTrackGroup = [];
+      mappedTracks.push({ name: t.title, tracks: currentTrackGroup });
+      continue;
+    }
+
     const artists = t.artists || release.artists || [];
 
     const track = {
@@ -66,15 +92,16 @@ function mapTracks(release) {
       'title':     t.title,
       'album':     release.title,
       'release':   label.catno,
-      'publisher': label.name,
+      'publisher': label.name.replace(differentiatorRegex, ''),
       'year':      String(release.year),
+      'track':     '',
+      'disc':      '',
     };
 
-    // Add remixer /if/ we find what looks like a remixer in the title.
+    track.id = md5(currentHeading + track.artist + track.title);
+
     const remixerMatch = t.title.match(remixPattern);
-    if (remixerMatch !== null) {
-      track.remixer = remixerMatch[1];
-    }
+    track.remixer = remixerMatch ? remixerMatch[1] : '';
 
     // Add disc and tracks /if/ we have multiple tracks.
     const positionMatch = t.position.match(positionRegex);
@@ -86,8 +113,14 @@ function mapTracks(release) {
       track.disc  = formatTrackNumbers(discNum, totalDiscs);
     }
 
-    return track;
-  });
+    currentTrackGroup.push(track);
+  }
+
+  if (mappedTracks.length > 0) {
+    return mappedTracks;
+  }
+
+  return [ { name: '', tracks: currentTrackGroup } ];
 }
 
-export { mapTracks };
+export { SEARCH_URL, url, mapTracks };

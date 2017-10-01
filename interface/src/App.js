@@ -16,7 +16,7 @@ let TrackItem = p => {
     dispatch: p.dispatch,
   };
 
-  return <li className="track-listing" data-trackId={p.id}>
+  return <li className="track-listing" data-trackid={p.id}>
     <div className="field listing-check">
       <input type="checkbox"
         tabIndex="-1"

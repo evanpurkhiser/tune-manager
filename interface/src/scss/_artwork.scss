@@ -14,33 +14,28 @@
     cursor: pointer;
   }
 
-  .empty-artwork {
-    background: #f7f7f7;
+}
 
-    &:after {
-      @include fontawesome('\f03e');
-      color: #ddd;
-    }
+.empty-artwork {
+  background: #f7f7f7;
+
+  &:after {
+    @include fontawesome('\f03e');
+    color: #ddd;
   }
+}
 
-  .empty-artwork.loading:after {
-    @extend %loader;
-    content: '';
-    opacity: 0.5;
-    position: relative;
-    top: 5px;
-    left: 5px;
-  }
-
+.empty-artwork.loading:after {
+  @extend %loader;
+  content: '';
+  opacity: 0.5;
+  position: relative;
+  top: 5px;
+  left: 5px;
 }
 
 .fullscreen-artwork {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 4;
+  @extend %modal;
 
   img {
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);

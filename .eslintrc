@@ -62,6 +62,7 @@
       "exceptions": {
         "Property": true,
         "ExportNamedDeclaration": true,
+        "AssignmentExpression": true,
         "LogicalExpression": true,
         "VariableDeclarator": true,
         "ImportDeclaration": true,
@@ -155,7 +156,6 @@
     }],
     "spaced-comment": ["warn", "always"],
 
-    "arrow-body-style": ["warn", "as-needed"],
     "arrow-parens": ["warn", "as-needed"],
     "arrow-spacing": ["warn", {
       "before": true,

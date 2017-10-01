@@ -24,6 +24,19 @@ body, html, #root {
   height: 100%;
 }
 
+button {
+  cursor: pointer;
+  outline: none;
+  border-radius: 3px;
+  background: none;
+  border: none;
+  font-size: 0.6rem;
+  padding: 4px 6px;
+  transition: color 200ms ease-in-out,
+              border-color 200ms ease-in-out;
+
+}
+
 .app {
   height: 100%;
 

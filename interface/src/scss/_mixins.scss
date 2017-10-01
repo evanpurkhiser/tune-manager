@@ -12,9 +12,4 @@
                     linear-gradient(45deg, rgba(0, 0, 0, 0) 75%, #eee 75%),
                     linear-gradient(-45deg, rgba(0, 0, 0, 0) 75%, #eee 75%);
 }
-%hidden-with-ellipsis {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
 

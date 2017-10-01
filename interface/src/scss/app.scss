@@ -24,6 +24,10 @@ body, html, #root {
   height: 100%;
 }
 
+input::placeholder {
+  color: #ccc;
+}
+
 button {
   cursor: pointer;
   outline: none;

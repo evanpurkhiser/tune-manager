@@ -319,6 +319,8 @@ class Mapper extends Component {
       .then(_ => this.setState({ isImporting: false }))
       .then(_ => this.props.onImport(importTracks));
 
+    importTracks.forEach(t => t.artworkSelected = 0);
+
     this.setState({ isImporting: true });
   }
 

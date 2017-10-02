@@ -2,6 +2,7 @@ import * as lodash from 'lodash';
 import format from 'string-format';
 import md5    from 'md5';
 
+import * as validate          from '../validate';
 import { formatTrackNumbers } from './format';
 import { remixPattern }       from './artistMatch';
 
@@ -112,6 +113,13 @@ function mapTracks(release) {
       track.track = formatTrackNumbers(trackNum, totalTracks[discNum]);
       track.disc  = formatTrackNumbers(discNum, totalDiscs);
     }
+
+    // Execute validation autofixes
+    const fixTypes = Object.values(validate.autoFixTypes);
+
+    Object.keys(track)
+      .filter(f => validate[f] !== undefined)
+      .forEach(f => track[f] = validate[f](track).autoFix(track[f], fixTypes));
 
     currentTrackGroup.push(track);
   }

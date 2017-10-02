@@ -116,6 +116,8 @@ class TypeaheadInput extends Component {
     });
 
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.onChange  = this.onChange.bind(this);
+    this.onBlur    = this.onBlur.bind(this);
 
     this.fuseIndex = null;
     this.state = { matches: [], focused: 0, range: [ 0, 0 ] };
@@ -249,8 +251,8 @@ class TypeaheadInput extends Component {
       <input {...inputProps}
         type="text"
         spellCheck="false"
-        onChange={e => this.onChange(e)}
-        onBlur={e => this.onBlur(e)}
+        onChange={this.onChange}
+        onBlur={this.onBlur}
         onKeyDown={this.onKeyDown} />
       {shadow}
       {matchesPopover}

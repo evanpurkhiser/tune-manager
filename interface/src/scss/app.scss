@@ -51,6 +51,7 @@ button {
     padding: 15px;
     z-index: 2;
     background: #fff;
+    -webkit-app-region: drag;
   }
 
   > header h1 {

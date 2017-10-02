@@ -115,6 +115,8 @@ class TypeaheadInput extends Component {
       'down':   _ => this.moveFocus(+1),
     });
 
+    this.onKeyDown = this.onKeyDown.bind(this);
+
     this.fuseIndex = null;
     this.state = { matches: [], focused: 0, range: [ 0, 0 ] };
   }
@@ -217,6 +219,14 @@ class TypeaheadInput extends Component {
     return true;
   }
 
+  onKeyDown(e) {
+    if (this.props.onKeyDown !== undefined) {
+      this.props.onKeyDown(e);
+    }
+
+    return this.keyMapper(e);
+  }
+
   render() {
     const { matches, focused, value, range } = this.state;
 
@@ -241,7 +251,7 @@ class TypeaheadInput extends Component {
         spellCheck="false"
         onChange={e => this.onChange(e)}
         onBlur={e => this.onBlur(e)}
-        onKeyDown={this.keyMapper} />
+        onKeyDown={this.onKeyDown} />
       {shadow}
       {matchesPopover}
     </div>;

@@ -4,6 +4,7 @@ import classNames           from 'classnames';
 
 import * as action    from '../../actions';
 import * as validate  from '../../validate';
+import { keyMapper }  from '../../util/keyboard';
 import { splitOn }    from '../../util/artistMatch';
 import TypeaheadInput from '../TypeaheadInput';
 
@@ -23,10 +24,14 @@ class Field extends Component {
   constructor() {
     super();
 
-    this.state = {
-      value: '',
-      validations: new validate.Validations(),
-    };
+    this.acceptChanges = this.acceptChanges.bind(this);
+
+    this.keyMapper = keyMapper({
+      'enter':  this.acceptChanges,
+      'escape': this.acceptChanges,
+    });
+
+    this.state = { value: '', validations: new validate.Validations() };
   }
 
   componentWillMount() {
@@ -59,7 +64,7 @@ class Field extends Component {
     return props.validator(newTrack, props.validatorOptions);
   }
 
-  updateField() {
+  acceptChanges() {
     const id    = this.props.track.id;
     const name  = this.props.name;
     let value   = this.state.value.trim();
@@ -79,7 +84,7 @@ class Field extends Component {
   }
 
   blurField() {
-    this.updateField();
+    this.acceptChanges();
     this.setState({ focused: false });
   }
 
@@ -96,10 +101,11 @@ class Field extends Component {
     ]);
 
     const props = {
-      onBlur:   _ => this.blurField(),
-      onFocus:  _ => this.focusField(),
-      onChange: e => this.onChange(e.target.value),
-      value:    this.state.value || '',
+      onBlur:    _ => this.blurField(),
+      onFocus:   _ => this.focusField(),
+      onChange:  e => this.onChange(e.target.value),
+      onKeyDown: this.keyMapper,
+      value:     this.state.value || '',
     };
 
     const input = this.props.typeahead

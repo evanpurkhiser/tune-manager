@@ -4,6 +4,7 @@ import * as path from 'path';
 import { applyMiddleware, compose, createStore } from 'redux';
 import { arrayMove } from 'react-sortable-hoc';
 import createSagaMiddleware from 'redux-saga';
+import uuid from 'uuid/v4';
 
 import * as actions from './actions';
 import appSaga from './sagas';
@@ -20,6 +21,10 @@ const initialState = {
   // processes contains a map of track IDs with a list of the current
   // processing events occuring for the track.
   processes: [],
+
+  // artwork contains a map of artwork keys to the objeccts created using the
+  // util/images.buildImageObject function.
+  artwork: {},
 
   // trackTree is a list of objects that represent each grouping of tracks.
   // Track grouping logic is based on the directory path of the track within
@@ -111,16 +116,7 @@ function reducer(oldState = initialState, action) {
   }
 
   case actions.SET_ARTWORK: {
-    for (const trackId in action.items) {
-      const artwork = action.items[trackId];
-      state.tracks = { ...state.tracks };
-      state.tracks[trackId] = { ...state.tracks[trackId], artwork };
-
-      // Remove the artworkCount. This field was used to indicate how many
-      // artwork items there are to download for a track, and is used by the
-      // interface as a marker to indicate that artwok is being downloaded.
-      state.tracks[trackId].artworkCount = undefined;
-    }
+    state.artwork = { ...state.artwork, ...action.items };
     break;
   }
 
@@ -205,12 +201,15 @@ function reducer(oldState = initialState, action) {
 
   case actions.ARTWORK_ADD: {
     const { focusedTrackID, artwork } = action;
-    state.tracks = { ...state.tracks };
+    const artKey = uuid();
+
+    state.tracks  = { ...state.tracks };
+    state.artwork = { ...state.artwork, [artKey]: artwork };
 
     onSelectedTracks(state, focusedTrackID, id => {
       const track = { ...state.tracks[id] };
       const existing = track.artwork || [];
-      track.artwork = [ ...existing, artwork ];
+      track.artwork = [ ...existing, artKey ];
       track.artworkSelected = existing.length;
       state.tracks[id] = track;
     });

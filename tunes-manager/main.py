@@ -56,12 +56,12 @@ async def known_values(request):
         'genres':     app.known_values.genre,
     })
 
-@app.route('/artwork/<index>@<track_id>')
-async def artwork(request, index, track_id):
-    if track_id not in app.processor.mediafiles:
-        return response.json({ 'message': 'invalid track ID'}, status=404)
+@app.route('/artwork/<key>')
+async def artwork(request, key):
+    if key not in app.processor.artwork:
+        return response.json({'message': 'invalid artwork ID'}, status=404)
 
-    art = app.processor.mediafiles[track_id].artwork[int(index)]
+    art = app.processor.artwork[key]
 
     return response.raw(art.data, content_type=art.mime)
 

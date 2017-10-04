@@ -85,7 +85,7 @@ const ArtworkPopover = p => {
     action(...params);
   };
 
-  const items = p.artwork.map((a, i) => <ArtworkEntry
+  const items = p.artwork.filter(x => x).map((a, i) => <ArtworkEntry
     isSelected={p.selected === i}
     onSelect={fireAction(p.onSelect, i)}
     onRemove={fireAction(p.onRemove, i)}
@@ -157,14 +157,17 @@ class Artwork extends Component {
   render() {
     const track = this.props.track;
 
-    const artwork = track.artwork || [];
-    const selectedArt = track.artworkSelected;
-    const loading = track.artworkCount > 0;
+    const trackArt = track.artwork || [];
+    const artwork  = trackArt.map(k => this.props.artwork[k]);
 
+    const selectedArtIndex = track.artworkSelected;
+    const selectedArt = artwork[selectedArtIndex];
+
+    const loading = trackArt.length > 0 && selectedArt === undefined;
     const emptyClasses = classNames('empty-artwork', { loading });
 
-    const element = artwork[selectedArt]
-      ? <img src={artwork[selectedArt].url} alt="" />
+    const element = selectedArt
+      ? <img src={selectedArt.url} alt="" />
       : <div className={emptyClasses}></div>;
 
     const maximizedArt = this.state.maximizedArt === null
@@ -177,13 +180,13 @@ class Artwork extends Component {
       ? null
       : <ArtworkPopover
         artwork={artwork}
-        selected={selectedArt}
+        selected={selectedArtIndex}
         onSelect={i => this.onSelect(i)}
         onRemove={i => this.onRemove(i)}
         onMaximize={i => this.onMaximize(i)}
         onFileSelect={f => this.onFileSelect(f)} />;
 
-    const validations = validateArt.artwork(track);
+    const validations = validateArt.individualArtwork(selectedArt);
     const classes = classNames('field marked artwork', validations.level());
 
     return <div className={classes}

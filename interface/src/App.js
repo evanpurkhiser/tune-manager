@@ -25,7 +25,7 @@ let TrackItem = p => {
     </div>
 
     <Field.FileName    { ...fieldProps } />
-    <Field.Artwork     { ...fieldProps } />
+    <Field.Artwork     { ...fieldProps } artwork={p.artwork} />
     <Field.Artist      { ...fieldProps } knownValues={p.knownValues} />
     <Field.Title       { ...fieldProps } />
     <Field.Remixer     { ...fieldProps } knownValues={p.knownValues} />
@@ -47,6 +47,7 @@ const processesDefault = [];
 
 const mapTrackState = (s, props) => ({
   track:       s.tracks[props.id],
+  artwork:     s.artwork,
   selected:    s.selectedTracks.includes(props.id),
   processes:   s.processes[props.id] || processesDefault,
   knownValues: s.knownValues,

@@ -1,4 +1,5 @@
 import os.path
+import hashlib
 import mutagen
 import mutagen.id3 as ID3
 
@@ -97,12 +98,28 @@ class SizeField(TextField):
 
 class ArtworkField(object):
     """A artwork list field"""
+    class ArtworkList(list):
+        pass
+
+    class Artwork(object):
+        def __init__(self, artwork):
+            self.artwork = artwork
+
+        def __getattr__(self, key):
+            return getattr(self.artwork, key)
+
+        @property
+        def md5(self):
+            return hashlib.md5(self.artwork.data).hexdigest()
+
     def __get__(self, media_file, owner=None):
         """Get a list of all artworks in the mediafile"""
         if media_file.mg_file.tags is None:
             return []
 
-        return media_file.mg_file.tags.getall('APIC')
+        artworks = media_file.mg_file.tags.getall('APIC')
+
+        return self.ArtworkList(self.Artwork(a) for a in artworks)
 
 
 class MediaFile(object):
@@ -131,7 +148,7 @@ class MediaFile(object):
             raise ValueError('Loaded file does not have ID3 tags')
 
     def __dir__(self):
-        return ['file_path', 'artist', 'title', 'album', 'remixer',
+        return ['file_path', 'artwork', 'artist', 'title', 'album', 'remixer',
                 'publisher', 'release', 'key', 'bpm', 'year', 'genre', 'track',
                 'disc']
 
@@ -157,13 +174,12 @@ def serialize(media, trim_path=None):
         if isinstance(val, ID3.ID3TimeStamp):
             vals[key] = str(val)
 
+        if isinstance(val, ArtworkField.ArtworkList):
+            vals[key] = [a.md5 for a in val]
+
     if trim_path and vals['file_path'].startswith(trim_path):
         path = os.path.normpath(trim_path) + '/'
         vals['file_path'] = vals['file_path'][len(path):]
-
-    # We include the number of artwork items in ther serialization, instead of
-    # a serialization of the artwork, so we can query them separately later.
-    vals['artwork_count'] = len(media.artwork)
 
     # The selected artwork will always be the 'Front Cover'
     artTypes = [a.type for a in media.artwork]

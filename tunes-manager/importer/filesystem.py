@@ -127,6 +127,9 @@ class TrackProcessor(object):
         # media file object representing them.
         self.mediafiles = {}
 
+        # Track artwork as their md5 sums, an optimization
+        self.artwork = {}
+
         # Current processing tracks
         self.processing = []
 
@@ -309,6 +312,7 @@ class TrackProcessor(object):
 
         # Report track details
         self.mediafiles[identifier] = media
+        self.artwork.update({a.md5: a for a in media.artwork})
 
         track = mediafile.serialize(media, trim_path=self.import_path)
         self.send_details(identifier, track)
@@ -322,5 +326,9 @@ class TrackProcessor(object):
         if identifier not in self.mediafiles:
             return
 
-        self.send_event(EventType.TRACK_REMOVED, identifier)
+        for k in self.mediafiles[identifier].artwork.keys():
+            self.artwork.pop(k, None)
+
         del self.mediafiles[identifier]
+
+        self.send_event(EventType.TRACK_REMOVED, identifier)

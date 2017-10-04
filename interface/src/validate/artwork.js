@@ -22,6 +22,11 @@ const MIN_SIZE = 500;
  */
 function individualArtwork(artwork) {
   const validations = new Validations();
+
+  if (artwork === undefined) {
+    return validations;
+  }
+
   const { height, width } = artwork.dimensions;
 
   if (height !== width) {
@@ -38,15 +43,10 @@ function individualArtwork(artwork) {
 /**
  * Validates the currently selected artwork.
  */
-function artwork(track) {
-  const artwork = track.artwork || [];
-  const artSelected = artwork[track.artworkSelected];
-
-  if (artSelected === undefined) {
-    return new Validations();
-  }
-
-  return individualArtwork(artSelected);
+function artwork() {
+  // TODO: For now this is noop. This becoems a little tricky to implement in
+  //       such a way where the track is all that's required for validation.
+  return new Validations();
 }
 
 export { artwork, individualArtwork };

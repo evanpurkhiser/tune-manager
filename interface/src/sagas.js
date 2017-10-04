@@ -1,36 +1,66 @@
-import { all, put, takeEvery } from 'redux-saga/effects';
+import { all, call, flush, fork, put, takeEvery } from 'redux-saga/effects';
+import { buffers, channel, delay, END } from 'redux-saga';
 import format from 'string-format';
 import lodash from 'lodash';
 
-import * as action from './actions';
+import * as action   from './actions';
 import * as validate from './validate';
 import { buildImageObject } from './util/image';
+import store from './store';
 
-const ARTWORK_URL = 'http://localhost:8000/artwork/{}@{}';
+const ARTWORK_URL = 'http://localhost:8000/artwork/{}';
 
-function* getTrackArtwork(track) {
-  const promises = lodash
-    .times(track.artworkCount, i => format(ARTWORK_URL, i, track.id))
-    .map(u => fetch(u));
+/**
+ * Download and store an artwork item. Artwork will not be downloaded twice.
+ */
+function* loadArtwork(key, completed) {
+  const existingArt = store.getState().artwork;
 
-  const reses = yield all(promises);
-  const blobs = yield all(reses.map(r => r.blob()));
+  // Has this artwork already been downloaded?
+  if (existingArt[key] !== undefined) {
+    return;
+  }
 
-  const objects = yield all(blobs.map(b => buildImageObject(b)));
+  const res  = yield fetch(format(ARTWORK_URL, key));
+  const blob = yield res.blob();
+  const art  = yield buildImageObject(blob);
 
-  return [ track.id, objects ];
+  yield completed.put({ [key]: art });
+}
+
+function* loadAllArtwork(artKeys, completed) {
+  yield all(artKeys.map(k => loadArtwork(k, completed)));
+  yield completed.close();
 }
 
 /**
  * Request all artwork BLOBs from the server.
+ *
+ * SET_ARTWORK actions will be dispatched to redux. However, actions will be
+ * batched so that we do not fire many SET_ARTWORK actions all at once.
  */
 function* requestArtwork(payload) {
-  const tracks  = payload.items.filter(i => i.artworkCount > 0);
-  const artwork = yield all(tracks.map(t => getTrackArtwork(t)));
+  const BUFFER_SIZE   = 10;
+  const DEBOUNCE_TIME = 100;
 
-  const items = lodash.fromPairs(artwork);
+  const artKeys   = payload.items.reduce((s, t) => s.concat(t.artwork), []);
+  const uniqueArt = lodash.uniq(artKeys);
+  const completed = yield channel(buffers.expanding(BUFFER_SIZE));
 
-  yield put(action.setArtwork(items));
+  yield fork(loadAllArtwork, uniqueArt, completed);
+
+  while (true) {
+    yield call(delay, DEBOUNCE_TIME);
+    const results = yield flush(completed);
+
+    if (results === END) {
+      break;
+    }
+
+    if (results.length > 0) {
+      yield put(action.setArtwork(Object.assign(...results)));
+    }
+  }
 }
 
 /**

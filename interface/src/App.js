@@ -8,7 +8,7 @@ import * as action from './actions';
 import * as Field from './components/Fields';
 import FieldHeadings from './components/FieldHeadings';
 
-import './scss/app.css';
+import './scss/app.scss';
 
 let TrackItem = p => {
   const fieldProps = {

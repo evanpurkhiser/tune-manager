@@ -1,5 +1,6 @@
+import 'babel-polyfill';
 import 'abortcontroller-polyfill';
-import * as camelize from 'camelize';
+import camelize from 'camelize';
 import { Provider } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';

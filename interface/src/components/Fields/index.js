@@ -31,6 +31,10 @@ class Field extends Component {
       'escape': this.acceptChanges,
     });
 
+    // Allow onAccept to be called immideately after onChange. Using setState
+    // does not work here since it will batch the state changes together.
+    this.immediateValue = '';
+
     this.state = { value: '', validations: new validate.Validations() };
   }
 
@@ -42,6 +46,7 @@ class Field extends Component {
     const value = nextProps.track[nextProps.name] || '';
     const validations = this.getValidations(nextProps, value);
 
+    this.immediateValue = value;
     this.setState({ validations, value });
   }
 
@@ -49,6 +54,7 @@ class Field extends Component {
     const validations = this.getValidations(this.props, value);
     const fixedValue  = validations.autoFix(value);
 
+    this.immediateValue = fixedValue;
     this.setState({ validations, value: fixedValue });
   }
 
@@ -67,7 +73,7 @@ class Field extends Component {
   acceptChanges() {
     const id    = this.props.track.id;
     const name  = this.props.name;
-    let value   = this.state.value.trim();
+    let value   = this.immediateValue.trim();
 
     // Execute post-edit auto fixes
     value = this.state.validations.autoFix(value, [

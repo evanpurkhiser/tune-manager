@@ -222,11 +222,13 @@ class TypeaheadInput extends Component {
   }
 
   onKeyDown(e) {
+    const keyOk = this.keyMapper(e);
+
     if (this.props.onKeyDown !== undefined) {
       this.props.onKeyDown(e);
     }
 
-    return this.keyMapper(e);
+    return keyOk;
   }
 
   render() {

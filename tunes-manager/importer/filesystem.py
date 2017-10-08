@@ -326,7 +326,7 @@ class TrackProcessor(object):
         if identifier not in self.mediafiles:
             return
 
-        for k in self.mediafiles[identifier].artwork.keys():
+        for k in [a.md5 for a in self.mediafiles[identifier].artwork]:
             self.artwork.pop(k, None)
 
         del self.mediafiles[identifier]

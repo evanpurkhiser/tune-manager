@@ -3,7 +3,7 @@ import classNames  from 'classnames';
 import prettyBytes from 'pretty-bytes';
 import PropTypes   from 'prop-types';
 
-import * as action          from '../../actions';
+import * as action          from '../../store/actions';
 import * as validateArt     from '../../validate/artwork';
 import { buildImageObject } from '../../util/image';
 

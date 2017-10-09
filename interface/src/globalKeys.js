@@ -1,4 +1,4 @@
-import * as action from './actions';
+import * as action from './store/actions';
 import { keyMapper } from './util/keyboard';
 import store from './store';
 

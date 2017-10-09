@@ -4,9 +4,9 @@ import format from 'string-format';
 import lodash from 'lodash';
 
 import * as action   from './actions';
-import * as validate from './validate';
-import { buildImageObject } from './util/image';
-import store from './store';
+import * as validate from '../validate';
+import { buildImageObject } from '../util/image';
+import store from '.';
 
 const ARTWORK_URL = 'http://localhost:8000/artwork/{}';
 

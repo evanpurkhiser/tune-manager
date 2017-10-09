@@ -2,7 +2,7 @@ import classNames    from 'classnames';
 import PropTypes     from 'prop-types';
 import React, { Component } from 'react';
 
-import * as actions from '../../actions';
+import * as actions from '../../store/actions';
 import * as Discogs from './Discogs';
 
 const mappableTrackShape = PropTypes.shape({

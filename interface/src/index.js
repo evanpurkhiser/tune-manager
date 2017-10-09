@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import * as actions from './actions';
+import * as actions from './store/actions';
 import App from './App';
 import globalKeys from './globalKeys';
 import store from './store';

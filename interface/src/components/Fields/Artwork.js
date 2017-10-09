@@ -163,7 +163,7 @@ class Artwork extends Component {
     const selectedArtIndex = track.artworkSelected;
     const selectedArt = artwork[selectedArtIndex];
 
-    const loading = trackArt.length > 0 && selectedArt === undefined;
+    const loading = trackArt.length > 0 && selectedArtIndex !== null;
     const emptyClasses = classNames('empty-artwork', { loading });
 
     const element = selectedArt

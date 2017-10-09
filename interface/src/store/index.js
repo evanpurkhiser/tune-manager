@@ -8,7 +8,7 @@ import uuid from 'uuid/v4';
 
 import * as actions from './actions';
 import appSaga from './sagas';
-import { formatTrackNumbers } from '../util/format';
+import { formatTrackNumbers } from 'app/util/format';
 
 const initialState = {
   // tracks is a mapping of the unique track ID to the track object.

@@ -9,7 +9,6 @@ import * as action   from 'app/store/actions';
 import * as Field    from 'app/components/Fields';
 import FieldHeadings from 'app/components/FieldHeadings';
 
-
 let TrackItem = p => {
   const fieldProps = {
     track:    p.track,
@@ -67,7 +66,7 @@ let TrackGroup = p => {
     p.dispatch(action.toggleSelect(toggle, p.tracks));
   };
 
-  const pathParts = p.pathParts[0] !== '.' ? p.pathParts : []; 
+  const pathParts = p.pathParts[0] === '.' ? [] : p.pathParts;
 
   const classes = classNames({
     'listing-name': true,

@@ -102,7 +102,7 @@ function moveGroupFocus(e, direction) {
   return true;
 }
 
-function numberSelected(e) {
+function numberSelected() {
   store.dispatch(action.numberSelected());
   return true;
 }

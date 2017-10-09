@@ -120,7 +120,6 @@
     "max-depth": ["warn", 3],
     "max-len": ["warn", 120],
     "max-params": ["warn", 3],
-    "new-cap": "warn",
     "new-parens": "warn",
     "newline-per-chained-call": ["warn", {
       "ignoreChainWithDepth": 3
@@ -192,6 +191,8 @@
     }],
     "template-curly-spacing": ["warn", "never"],
     "yield-star-spacing": ["warn", "after"],
-    "react/jsx-uses-vars": "error"
+    "react/jsx-uses-vars": "error",
+    "react/jsx-uses-react": "error"
+
   }
 }

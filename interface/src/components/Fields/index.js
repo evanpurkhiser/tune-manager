@@ -2,11 +2,11 @@ import * as path            from 'path';
 import React, { Component } from 'react';
 import classNames           from 'classnames';
 
-import * as action    from '../../actions';
-import * as validate  from '../../validate';
-import { keyMapper }  from '../../util/keyboard';
-import { splitOn }    from '../../util/artistMatch';
-import TypeaheadInput from '../TypeaheadInput';
+import * as action    from 'app/store/actions';
+import * as validate  from 'app/validate';
+import { keyMapper }  from 'app/util/keyboard';
+import { splitOn }    from 'app/util/artistMatch';
+import TypeaheadInput from 'app/components/TypeaheadInput';
 
 export function FileName(props) {
   const filename = path.basename(props.track.filePath);

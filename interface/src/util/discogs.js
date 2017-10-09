@@ -2,7 +2,7 @@ import * as lodash from 'lodash';
 import format from 'string-format';
 import md5    from 'md5';
 
-import * as validate          from '../validate';
+import * as validate          from 'app/validate';
 import { formatTrackNumbers } from './format';
 import { remixPattern }       from './artistMatch';
 

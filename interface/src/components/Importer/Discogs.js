@@ -4,10 +4,10 @@ import classNames    from 'classnames';
 import PropTypes     from 'prop-types';
 import React, { Component } from 'react';
 
-import * as discogs           from '../../util/discogs';
-import { buildImageObject }   from '../../util/image';
+import * as discogs           from 'app/util/discogs';
+import { buildImageObject }   from 'app/util/image';
 import { mappableTrackShape } from '.';
-import ScrollLockList         from './../ScrollLockList';
+import ScrollLockList         from 'app/components/ScrollLockList';
 
 const releaseObjectShape = {
   resourceUrl: PropTypes.string,

@@ -1,6 +1,6 @@
-import * as action from './store/actions';
-import { keyMapper } from './util/keyboard';
-import store from './store';
+import * as action   from 'app/store/actions';
+import { keyMapper } from 'app/util/keyboard';
+import store         from 'app/store';
 
 const DIRECTION_UP   = -1;
 const DIRECTION_DOWN =  1;

@@ -3,9 +3,9 @@ import classNames  from 'classnames';
 import prettyBytes from 'pretty-bytes';
 import PropTypes   from 'prop-types';
 
-import * as action          from '../../store/actions';
-import * as validateArt     from '../../validate/artwork';
-import { buildImageObject } from '../../util/image';
+import * as action          from 'app/store/actions';
+import * as validateArt     from 'app/validate/artwork';
+import { buildImageObject } from 'app/util/image';
 
 const MIME_MAPPING = {
   'image/png':  'PNG',

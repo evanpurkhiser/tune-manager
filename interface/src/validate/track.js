@@ -1,5 +1,5 @@
 import { autoFixTypes, levels, makeValidations, Validations } from './utils';
-import { formatTrackNumbers } from '../util/format';
+import { formatTrackNumbers } from 'app/util/format';
 
 const numberPattern = /^([0-9]{1,3})\/([0-9]{1,3})$/;
 

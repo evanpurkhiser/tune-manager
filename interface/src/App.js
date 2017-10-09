@@ -4,11 +4,11 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React from 'react';
 
-import * as action   from './store/actions';
-import * as Field    from './components/Fields';
-import FieldHeadings from './components/FieldHeadings';
+import 'app/scss/app.scss';
+import * as action   from 'app/store/actions';
+import * as Field    from 'app/components/Fields';
+import FieldHeadings from 'app/components/FieldHeadings';
 
-import './scss/app.scss';
 
 let TrackItem = p => {
   const fieldProps = {

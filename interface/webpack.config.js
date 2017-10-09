@@ -2,11 +2,16 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const commonChunk = new webpack.optimize.CommonsChunkPlugin({
+  name: 'vendor',
+  minChunks: module => /node_modules/.test(module.resource),
+});
+
 module.exports = {
-  entry: './src/index.js',
+  entry:  { app: './src/index.js' },
   output: {
     path: path.resolve(__dirname, '../build'),
-    filename: 'app.js',
+    filename: '[name].js',
   },
   resolve: { alias: { app: path.resolve(__dirname, 'src') } },
   devtool: 'source-map',
@@ -29,5 +34,7 @@ module.exports = {
     new HtmlWebpackPlugin({ template: 'src/index.html' }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
+    commonChunk,
+    new webpack.optimize.CommonsChunkPlugin({ name: 'bundle', minChunks: Infinity }),
   ],
 };

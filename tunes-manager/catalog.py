@@ -123,14 +123,14 @@ def mediafile_to_track(media, library_path):
 
     track = db.Track()
 
-    track.mtime = int(os.path.getmtime(path))
-    track.file_path = utils.file.track_path(path, library_path)
-    track.file_hash = file_hash
-    track.artwork_hash = art_hash
-
     # Columns are gathered as a direct mapping from attributes in the MediaFile
     # object to the columns in the track model.
     for k in (k for k in dir(media) if hasattr(track, k)):
         setattr(track, k, str(getattr(media, k)))
+
+    track.mtime = int(os.path.getmtime(path))
+    track.file_path = utils.file.track_path(path, library_path)
+    track.file_hash = file_hash
+    track.artwork_hash = art_hash
 
     return track

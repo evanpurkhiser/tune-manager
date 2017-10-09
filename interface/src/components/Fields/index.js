@@ -8,15 +8,6 @@ import { keyMapper }  from 'app/util/keyboard';
 import { splitOn }    from 'app/util/artistMatch';
 import TypeaheadInput from 'app/components/TypeaheadInput';
 
-export function FileName(props) {
-  const filename = path.basename(props.track.filePath);
-
-  return <div className="field file-name">
-    <div className="fixed">{filename}</div>
-    <div className="full">{filename}</div>
-  </div>;
-}
-
 /**
  * Generic track Field
  */
@@ -189,5 +180,11 @@ export const Key = p => {
     {p.track.key}
   </div>;
 };
+
+export function FileName(props) {
+  const filename = path.basename(props.track.filePath);
+
+  return <div className="field file-name">{filename}</div>;
+}
 
 export { Artwork } from './Artwork';

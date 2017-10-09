@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -9,7 +10,7 @@ module.exports = {
   },
   resolve: { alias: { app: path.resolve(__dirname, 'src') } },
   devtool: 'source-map',
-  devServer: { port: 9000 },
+  devServer: { port: 9000, hot: true },
   module: {
     loaders: [
       {
@@ -24,5 +25,9 @@ module.exports = {
       },
     ],
   },
-  plugins: [ new HtmlWebpackPlugin({ template: 'src/index.html' }) ],
+  plugins: [
+    new HtmlWebpackPlugin({ template: 'src/index.html' }),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin(),
+  ],
 };

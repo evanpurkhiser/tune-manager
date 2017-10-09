@@ -30,7 +30,7 @@ class MetadataIndexer(object):
 
         for path in files:
             path = os.path.realpath(path)
-            last_mtime = os.path.getmtime(path)
+            last_mtime = int(os.path.getmtime(path))
 
             short_path = utils.file.track_path(path, self.library_path)
 
@@ -123,7 +123,7 @@ def mediafile_to_track(media, library_path):
 
     track = db.Track()
 
-    track.mtime = os.path.getmtime(path)
+    track.mtime = int(os.path.getmtime(path))
     track.file_path = utils.file.track_path(path, library_path)
     track.file_hash = file_hash
     track.artwork_hash = art_hash

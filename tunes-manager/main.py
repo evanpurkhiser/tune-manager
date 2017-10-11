@@ -39,7 +39,7 @@ def start_processor(app, loop):
 #       expands into a general music server.
 @app.listener('before_server_start')
 def index_collection(app, loop):
-    indexer = catalog.MetadataIndexer(LIBRARY, session)
+    indexer = catalog.MetadataIndexer(LIBRARY, session, loop)
     indexer.reindex()
     indexer.watch_collection()
 

@@ -13,6 +13,7 @@ import importer.convert
 import importer.beatport
 import mediafile
 import utils.file
+import utils.watchdog
 
 # This list specifies file extensions that are directly supported for
 # importing, without requiring any type of conversion.
@@ -42,19 +43,6 @@ class TrackProcesses(enum.Enum):
     CONVERTING      = enum.auto()
     KEY_COMPUTING   = enum.auto()
     BEATPORT_IMPORT = enum.auto()
-
-
-class ImportWatcher(object):
-    """
-    A watchdog event handler which asynchronously dispatches events.
-    """
-    def __init__(self, loop, importer_api):
-        self.loop = loop
-        self.importer_api = importer_api
-
-    def dispatch(self, event):
-        event = self.importer_api.file_event(event)
-        self.loop.call_soon_threadsafe(asyncio.ensure_future, event)
 
 
 class TrackProcessor(object):
@@ -140,7 +128,7 @@ class TrackProcessor(object):
         self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=cores)
 
         # Setup filesystem watchdog
-        watcher = ImportWatcher(self.loop, self)
+        watcher = utils.watchdog.AsyncHandler(self.loop, self.file_event)
 
         observer = watchdog.observers.Observer()
         observer.schedule(watcher, import_path, recursive=True)

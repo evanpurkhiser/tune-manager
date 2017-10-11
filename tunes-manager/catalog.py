@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import os
 import sqlalchemy
@@ -7,17 +8,19 @@ import watchdog.observers
 import db
 import mediafile
 import utils.file
+import utils.watchdog
 
 
 class MetadataIndexer(object):
     """Sync file libray to a database backed catalog
     """
-    def __init__(self, library_path, session):
+    def __init__(self, library_path, session, loop=None):
         # Normalize library path
         library_path = os.path.realpath(library_path)
 
         self.library_path = library_path
         self.session = session
+        self.loop = loop or asyncio.get_event_loop()
 
     def reindex(self):
         """Reindex new or changed tracks.
@@ -45,11 +48,17 @@ class MetadataIndexer(object):
     def watch_collection(self):
         """Watch all files for changes in the collection.
         """
-        handler = _CatalogWatchHandler(self)
+        handler = CatalogWatchHandler(self)
+        handler = utils.watchdog.AsyncHandler(self.loop, handler.dispatch)
 
         watcher = watchdog.observers.Observer()
         watcher.schedule(handler, self.library_path, recursive=True)
-        watcher.start()
+
+        async def file_dispatcher():
+            watcher.start()
+            while True: await asyncio.sleep(1)
+
+        asyncio.ensure_future(file_dispatcher(), loop=self.loop)
 
     def add_or_update(self, path):
         """Add or update a libray track in the catalog.
@@ -76,13 +85,13 @@ class MetadataIndexer(object):
         self.session.merge(track)
 
 
-class _CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
+class CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
     """Watchdog catalog file change handler
     """
     def __init__(self, indexer):
         self.indexer = indexer
 
-    def dispatch(self, event):
+    async def dispatch(self, event):
         super().dispatch(event)
         self.indexer.session.commit()
 

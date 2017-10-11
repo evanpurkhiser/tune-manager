@@ -99,7 +99,7 @@ class CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
         media = mediafile.MediaFile(event.src_path)
         track = mediafile_to_track(media, self.indexer.library_path)
 
-        self.indexersession.add(track)
+        self.indexer.session.add(track)
 
     def on_modified(self, event):
         self.indexer.add_or_update(event.src_path)
@@ -110,7 +110,7 @@ class CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
         src = utils.file.track_path(event.src_path, library_path)
         dst = utils.file.track_path(event.dest_path, library_path)
 
-        track = self.session.query(db.Track).filter(db.Track.file_path == src)
+        track = self.indexer.session.query(db.Track).filter(db.Track.file_path == src)
 
         track.file_path = dst
 

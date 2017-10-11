@@ -1,4 +1,4 @@
-import { all, call, flush, fork, put, takeEvery } from 'redux-saga/effects';
+import { all, call, flush, fork, put, select, takeEvery } from 'redux-saga/effects';
 import { buffers, channel, delay, END } from 'redux-saga';
 import format from 'string-format';
 import lodash from 'lodash';
@@ -6,7 +6,6 @@ import lodash from 'lodash';
 import * as action   from './actions';
 import * as validate from '../validate';
 import { buildImageObject } from '../util/image';
-import store from '.';
 
 const ARTWORK_URL = 'http://localhost:8000/artwork/{}';
 
@@ -14,7 +13,8 @@ const ARTWORK_URL = 'http://localhost:8000/artwork/{}';
  * Download and store an artwork item. Artwork will not be downloaded twice.
  */
 function* loadArtwork(key, completed) {
-  const existingArt = store.getState().artwork;
+  const state = yield select();
+  const existingArt = state.artwork;
 
   // Has this artwork already been downloaded?
   if (existingArt[key] !== undefined) {

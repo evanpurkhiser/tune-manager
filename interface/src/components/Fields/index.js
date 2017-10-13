@@ -94,7 +94,6 @@ class Field extends Component {
       'field marked',
       this.props.name,
       this.state.validations.level(),
-      { 'recently-edited': this.state.recentlyEdited },
     ]);
 
     const props = {

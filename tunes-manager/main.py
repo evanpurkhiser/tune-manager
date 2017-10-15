@@ -25,6 +25,9 @@ CORS(app)
 # Disable keepalive to stop timeouts
 app.config.KEEP_ALIVE = False
 
+# Hide sanic logo, it just takes too much console!
+app.config.LOGO = None
+
 app.known_values = knowns.KnownValues(session)
 
 # Begin processing track file events

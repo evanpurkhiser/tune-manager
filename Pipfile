@@ -15,6 +15,7 @@ sanic = "*"
 sanic-cors = "*"
 requests = "*"
 keyfinder = {git = "https://github.com/EvanPurkhiser/keyfinder-py", editable = true}
+pillow = "*"
 
 
 [dev-packages]

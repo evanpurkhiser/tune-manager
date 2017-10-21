@@ -4,7 +4,9 @@ from sanic import Sanic, response
 from sanic_cors import CORS
 import sqlalchemy
 import requests
+import json
 
+from mediafile import Artwork
 import catalog
 import db
 import importer.filesystem
@@ -58,6 +60,19 @@ async def known_values(request):
         'publishers': app.known_values.publisher,
         'genres':     app.known_values.genre,
     })
+
+@app.route('/save', methods=['POST'])
+async def save(request):
+    files = request.files
+
+    artwork = files.getlist('artwork', [])
+    artwork = [Artwork(f.name, f.type, f.body, None) for f in artwork]
+    app.processor.cache_art(artwork)
+
+    data = json.loads(files['data'][0].body)
+    app.processor.save_all(data['tracks'], data['options'])
+
+    return response.text('')
 
 @app.route('/artwork/<key>')
 async def artwork(request, key):

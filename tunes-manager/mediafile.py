@@ -2,6 +2,8 @@ import os.path
 import hashlib
 import mutagen
 import mutagen.id3 as ID3
+from collections import namedtuple
+
 
 class TextField(object):
     """A plain-text field stored in the mutagen tags"""
@@ -96,21 +98,18 @@ class SizeField(TextField):
         return self.Size.unpack(value, writeback=writeback)
 
 
+Artwork = namedtuple('Artwork', ['key', 'mime', 'data', 'type'])
+
+
 class ArtworkField(object):
     """A artwork list field"""
+
     class ArtworkList(list):
         pass
 
-    class Artwork(object):
-        def __init__(self, artwork):
-            self.artwork = artwork
-
-        def __getattr__(self, key):
-            return getattr(self.artwork, key)
-
-        @property
-        def md5(self):
-            return hashlib.md5(self.artwork.data).hexdigest()
+    def make_artwork(self, apic):
+        key = hashlib.md5(apic.data).hexdigest()
+        return Artwork(key, apic.mime, apic.data, apic.type)
 
     def __get__(self, media_file, owner=None):
         """Get a list of all artworks in the mediafile"""
@@ -119,7 +118,11 @@ class ArtworkField(object):
 
         artworks = media_file.mg_file.tags.getall('APIC')
 
-        return self.ArtworkList(self.Artwork(a) for a in artworks)
+        return self.ArtworkList(self.make_artwork(a) for a in artworks)
+
+    def __set__(self, media_file, artwork):
+        apic = ID3.APIC(data=artwork.data, mime=artwork.mime)
+        media_file.mg_file['APIC'] = apic
 
 
 class MediaFile(object):
@@ -141,7 +144,6 @@ class MediaFile(object):
 
     def __init__(self, filename):
         self.file_path = os.path.realpath(filename)
-        self.save_callbacks = []
         self.reload()
 
         if not hasattr(self.mg_file, 'tags'):
@@ -156,12 +158,13 @@ class MediaFile(object):
         """Load the mutagen file from the media files path"""
         self.mg_file = mutagen.File(self.file_path)
 
+    def clear(self):
+        """Remove all tags from the mediafile"""
+        self.mg_file.delete()
+
     def save(self):
         """Save the metadata of the file"""
         self.mg_file.tags.save(self.file_path)
-
-        for callback in self.save_callbacks:
-            callback(self)
 
 
 def serialize(media, trim_path=None):
@@ -175,7 +178,7 @@ def serialize(media, trim_path=None):
             vals[key] = str(val)
 
         if isinstance(val, ArtworkField.ArtworkList):
-            vals[key] = [a.md5 for a in val]
+            vals[key] = [a.key for a in val]
 
     if trim_path and vals['file_path'].startswith(trim_path):
         path = os.path.normpath(trim_path) + '/'

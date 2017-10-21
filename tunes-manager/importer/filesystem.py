@@ -7,12 +7,14 @@ import json
 import keyfinder
 import multiprocessing
 import os
+import shutil
 import watchdog.observers
 
 import importer.convert
 import importer.beatport
 import mediafile
 import utils.file
+import utils.image
 import utils.watchdog
 
 # This list specifies file extensions that are directly supported for
@@ -37,6 +39,7 @@ class EventType(enum.Enum):
     TRACK_REMOVED    = enum.auto()
     TRACK_PROCESSING = enum.auto()
     TRACK_UPDATE     = enum.auto()
+    TRACK_SAVED      = enum.auto()
 
 
 class TrackProcesses(enum.Enum):
@@ -120,6 +123,10 @@ class TrackProcessor(object):
 
         # Current processing tracks
         self.processing = []
+
+        # List of tracks that are expected to be removed and should not be
+        # reported back as removed.
+        self.expect_removed = []
 
         # The process executor will be used to parallelize key detection
         # Limit threads to the number of cores we have, key detection becomes a
@@ -258,6 +265,54 @@ class TrackProcessor(object):
 
         #media.save()
 
+    def save_track(self, track, options={}):
+        identifier = track['id']
+        assert identifier in self.mediafiles
+
+        media = self.mediafiles[identifier]
+
+        artwork = self.artwork.get(track['artwork'])
+        if artwork:
+            artwork = utils.image.normalize_artwork(artwork)
+            track['artwork'] = artwork
+        else:
+            track['artwork'] = None
+
+        track = [(k, v) for k, v in track.items() if hasattr(media, k) and v]
+
+        media.clear()
+        for key, value in track:
+            setattr(media, key, value)
+
+        self.cache_art(media.artwork)
+        media.save()
+
+        standard_path = utils.file.determine_path(media)
+        migrate_path = options.get('migrate_path')
+        if migrate_path:
+            # Expect that this will be removed, do not notify the client, it
+            # will handle removal of the track listing itself.
+            self.expect_removed.append(identifier)
+
+            path = os.path.join(migrate_path, standard_path)
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            shutil.move(media.file_path, path)
+
+            media.file_path = path
+            media.reload()
+
+        # Link the track to it's other specified paths
+        for link_path in options.get('link_paths', []):
+            path = os.path.join(link_path, standard_path)
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            os.symlink(media.file_path, new_path)
+
+        self.send_event(EventType.TRACK_SAVED, identifier)
+
+    def save_all(self, tracks, options):
+        for track in tracks:
+            self.execute_paralell(self.save_track, track, options)
+
     def add_all(self):
         """
         Add all existing tracks in the import path
@@ -298,10 +353,10 @@ class TrackProcessor(object):
         if importer.beatport.has_metadata(media):
             self.execute_paralell(self.beatport_update, identifier, media)
 
-        # Report track details
         self.mediafiles[identifier] = media
-        self.artwork.update({a.md5: a for a in media.artwork})
+        self.cache_art(media.artwork)
 
+        # Report track details
         track = mediafile.serialize(media, trim_path=self.import_path)
         self.send_details(identifier, track)
 
@@ -314,9 +369,17 @@ class TrackProcessor(object):
         if identifier not in self.mediafiles:
             return
 
-        for k in [a.md5 for a in self.mediafiles[identifier].artwork]:
+        # TODO: This is somewhat wrong since some other tracks may be using
+        # this artwork.
+        for k in [a.key for a in self.mediafiles[identifier].artwork]:
             self.artwork.pop(k, None)
 
         del self.mediafiles[identifier]
 
-        self.send_event(EventType.TRACK_REMOVED, identifier)
+        if identifier not in self.expect_removed:
+            self.send_event(EventType.TRACK_REMOVED, identifier)
+        else:
+            self.expect_removed.remove(identifier)
+
+    def cache_art(self, artwork):
+        self.artwork.update({a.key: a for a in artwork})

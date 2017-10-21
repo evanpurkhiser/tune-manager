@@ -17,7 +17,7 @@ PATH_REPLACMENTS = {
 }
 
 
-def determine_path(track):
+def determine_path(media):
     """Determine the filename and path of a track based on it's tags
     """
     path_parts = []
@@ -33,19 +33,19 @@ def determine_path(track):
     #
 
     # First directory is the publisher
-    path_parts.append(track.publisher or '[+no-label]')
+    path_parts.append(media.publisher or '[+no-label]')
 
     # Second directory is the album name and catalog number
-    if track.album and track.release:
-        path_parts.append('[{}] {}'.format(track.release, track.album))
-    elif track.album and not track.release:
-        path_parts.append('[--] {}'.format(track.album))
+    if media.album and media.release:
+        path_parts.append('[{}] {}'.format(media.release, media.album))
+    elif media.album and not media.release:
+        path_parts.append('[--] {}'.format(media.album))
     else:
-        path_parts.append(track.album or '[+singles]')
+        path_parts.append(media.album or '[+singles]')
 
     # If the album has multiple discs include them as a directory
-    if track.disc.total > 1:
-        path_parts.append('Disc {}'.format(track.disc.number))
+    if media.disc.total > 1:
+        path_parts.append('Disc {}'.format(media.disc.number))
 
     # Construct track filename
     #
@@ -57,18 +57,18 @@ def determine_path(track):
     #
 
     # If part of an album or EP include the track number
-    if track.album and track.track.number:
-        name_parts.append('{0:02}.'.format(track.track.number))
+    if media.album and media.track.number:
+        name_parts.append('{0:02}.'.format(media.track.number))
 
     # If this track is a single and has a catalog number include it
-    if not track.album and track.release:
-        name_parts.append('[{}]'.format(track.release))
+    if not media.album and media.release:
+        name_parts.append('[{}]'.format(media.release))
 
     # Include key of the track if available
-    name_parts.append('[{}]'.format(track.key or '--'))
+    name_parts.append('[{}]'.format(media.key or '--'))
 
     # Finally artist and title of the track
-    name_parts.append('{} - {}'.format(track.artist, track.title))
+    name_parts.append('{} - {}'.format(media.artist, media.title))
 
     # Construct the logical path
     path_parts.append(' '.join(name_parts))
@@ -78,7 +78,7 @@ def determine_path(track):
         path_parts = [re.sub(p, r, c) for c in path_parts]
 
     # Convert to full path
-    return os.path.join(*path_parts) + os.path.splitext(track.file_path)[1]
+    return os.path.join(*path_parts) + os.path.splitext(media.file_path)[1]
 
 
 def track_path(path, library_path):

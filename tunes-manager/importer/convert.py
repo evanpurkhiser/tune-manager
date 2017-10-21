@@ -49,12 +49,13 @@ def convert_track(path):
     # ffmpeg incantation for transforming the file to a AIFF file *while
     # preserving* the ID3 tags. Some transformations to these may need to be
     # done later.
-    options = '-y -f aiff -write_id3v2 1'.split(' ')
+    options = '-loglevel quiet -y -f aiff -write_id3v2 1'.split(' ')
     command = ['ffmpeg', '-i', path] + options + ['--', temp_file.name]
 
-    process = subprocess.Popen(command, stderr=subprocess.PIPE)
+    process = subprocess.Popen(command)
+    process.communicate(timeout=5)
 
-    if process.wait() > 0:
+    if process.returncode != 0:
         raise Exception('Failed to convert file: {}'.format(path))
 
     remap_id3tags(temp_file.name)

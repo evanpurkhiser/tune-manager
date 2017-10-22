@@ -50,13 +50,13 @@
       margin-bottom: 10px;
     }
 
-    &.initial:before { @include fontawesome('\f002'); }
-    &.empty:before   { @include fontawesome('\f10c'); }
+    &.initial:before { @include fontawesome($fa-var-search); }
+    &.empty:before   { @include fontawesome($fa-var-circle-o); }
 
     &.error {
       color: #f16e6e;
 
-      &:before { @include fontawesome('\f071'); }
+      &:before { @include fontawesome($fa-var-exclamation-triangle); }
     }
   }
 

@@ -48,7 +48,7 @@
     -webkit-font-smoothing: antialiased;
 
     &:after {
-      @include fontawesome('\f0c9');
+      @include fontawesome($fa-var-bars);
     }
   }
 
@@ -63,7 +63,7 @@
   opacity: 1;
 
   &:after {
-    content: '\f0dc';
+    content: $fa-var-sort;
   }
 }
 

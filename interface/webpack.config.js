@@ -19,14 +19,18 @@ module.exports = {
   module: {
     loaders: [
       {
-        test:   /\.js$/,
-        loader: 'babel-loader',
+        test:    /\.js$/,
         exclude: /node_modules/,
-        query:  { presets: [ 'env', 'stage-1', 'react' ] },
+        loader:  'babel-loader',
+        query:   { presets: [ 'env', 'stage-1', 'react' ] },
       },
       {
-        test: /\.scss$/,
+        test:    /\.scss$/,
         loaders: [ 'style-loader', 'css-loader', 'sass-loader' ],
+      },
+      {
+        test:   /\.(eot|woff|woff2|ttf|svg|png|jpe?g|gif)(\?\S*)?$/,
+        loader: 'file-loader',
       },
     ],
   },

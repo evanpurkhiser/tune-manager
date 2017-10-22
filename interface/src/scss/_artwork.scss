@@ -20,7 +20,7 @@
   background: #f7f7f7;
 
   &:after {
-    @include fontawesome('\f03e');
+    @include fontawesome($fa-var-picture-o);
     color: #ddd;
   }
 }
@@ -125,11 +125,11 @@
     }
 
     .maximize:after {
-      @include fontawesome('\f0b2');
+      @include fontawesome($fa-var-arrows-alt);
     }
 
     .remove {
-      &:after { @include fontawesome('\f00d'); }
+      &:after { @include fontawesome($fa-var-times); }
       background: #f16d6d;
       color: #fff;
     }
@@ -160,7 +160,7 @@
 
     &:before {
       font-size: 18px;
-      @include fontawesome('\f093');
+      @include fontawesome($fa-var-upload);
       display: block;
       width: 60px;
       height: 60px;

@@ -40,5 +40,6 @@ module.exports = {
     new webpack.NamedModulesPlugin(),
     commonChunk,
     new webpack.optimize.CommonsChunkPlugin({ name: 'bundle', minChunks: Infinity }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
   ],
 };

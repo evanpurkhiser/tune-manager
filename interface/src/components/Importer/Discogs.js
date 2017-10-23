@@ -315,16 +315,17 @@ class Mapper extends Component {
 
     const imageUrl = this.state.fullRelease.images[0].resourceUrl;
 
+    this.setState({ isImporting: true });
+
     fetch(discogs.url(imageUrl))
       .then(res => res.blob())
       .then(buildImageObject)
-      .then(image => importTracks.forEach(t => t.artwork = [ image ]))
-      .then(_ => this.setState({ isImporting: false }))
-      .then(_ => this.props.onImport(importTracks));
-
-    importTracks.forEach(t => t.artworkSelected = 0);
-
-    this.setState({ isImporting: true });
+      .then(artwork => {
+        importTracks.forEach(t => t.artworkSelected = 0);
+        importTracks.forEach(t => t.artwork = []);
+        this.props.onImport(importTracks, artwork);
+        this.setState({ isImporting: false });
+      });
   }
 
   buildTrackList() {

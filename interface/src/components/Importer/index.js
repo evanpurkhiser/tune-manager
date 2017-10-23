@@ -21,8 +21,9 @@ class Importer extends Component {
     this.setState({ selectedRelease: release, showMapper: true });
   }
 
-  onImport(tracks) {
+  onImport(tracks, artwork = []) {
     this.props.dispatch(actions.trackUpdate(tracks));
+    this.props.dispatch(actions.addArtwork(tracks.map(t => t.id), artwork));
   }
 
   render() {

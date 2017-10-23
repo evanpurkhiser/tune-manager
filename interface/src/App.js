@@ -5,9 +5,10 @@ import { connect } from 'react-redux';
 import React from 'react';
 
 import 'app/scss/app.scss';
-import * as action   from 'app/store/actions';
-import * as Field    from 'app/components/Fields';
-import FieldHeadings from 'app/components/FieldHeadings';
+import * as action      from 'app/store/actions';
+import * as Field       from 'app/components/Fields';
+import FieldHeadings    from 'app/components/FieldHeadings';
+import { ImportButton } from 'app/components/Importer';
 
 let TrackItem = p => {
   const fieldProps = {
@@ -114,6 +115,9 @@ TrackGroups = SortableContainer(TrackGroups);
  */
 const App = p => <div className="app">
   <header>
+    <nav>
+      <ImportButton />
+    </nav>
     <FieldHeadings
       onCheck={e => p.dispatch(action.toggleSelectAll(e.target.checked))}
       checked={p.allSelected} />

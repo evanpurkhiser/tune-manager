@@ -59,13 +59,27 @@ nav {
     position: absolute;
     top: 40px;
     left: -35px;
+    animation: actionDialogIn 200ms ease-in-out;
   }
 
-  &:before {
+  &.active:before {
     @extend %popover-arrow;
     border-bottom-color: #fff !important;
     top: 24px;
     left: 5px;
     z-index: 3;
+    animation: actionDialogIn 200ms ease-in-out;
+  }
+}
+
+@keyframes actionDialogIn {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
   }
 }

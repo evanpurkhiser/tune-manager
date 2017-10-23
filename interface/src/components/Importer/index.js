@@ -1,9 +1,11 @@
 import classNames    from 'classnames';
 import PropTypes     from 'prop-types';
+import { connect }   from 'react-redux';
 import React, { Component } from 'react';
 
-import * as actions from 'app/store/actions';
-import * as Discogs from './Discogs';
+import * as actions  from 'app/store/actions';
+import * as Discogs  from './Discogs';
+import { keyMapper } from 'app/util/keyboard';
 
 class Importer extends Component {
   constructor() {
@@ -24,6 +26,7 @@ class Importer extends Component {
   onImport(tracks, artwork = []) {
     this.props.dispatch(actions.trackUpdate(tracks));
     this.props.dispatch(actions.addArtwork(tracks.map(t => t.id), artwork));
+    this.props.onComplete();
   }
 
   render() {
@@ -47,7 +50,50 @@ class Importer extends Component {
 
 Importer.propTypes = {
   presetSearch: PropTypes.string,
+  onComplete:   PropTypes.func,
   tracks:       PropTypes.arrayOf(Discogs.mappableTrackShape),
 };
 
-export { Importer };
+Importer.defaultProps = {
+  onComplete: _ => { /* noop */ },
+};
+
+const mapImporterProps = s => ({
+  tracks: s.selectedTracks.map(id => s.tracks[id]),
+});
+
+const LinkedImporter = connect(mapImporterProps)(Importer);
+
+class ImportButton extends Component {
+  constructor() {
+    super();
+    this.state = { active: false };
+
+    this.keyMapper = keyMapper({
+      'escape': _ => this.toggleActive(false),
+    });
+
+    this.toggleActive = this.toggleActive.bind(this);
+  }
+
+  toggleActive(state = null) {
+    this.setState({ active: state === null ? !this.state.active : state });
+  }
+
+  render() {
+    const classes = classNames('main-importer', {
+      active: this.state.active,
+    });
+
+    const importer = this.state.active
+      ? <LinkedImporter onComplete={_ => this.toggleActive(false)}/>
+      : null;
+
+    return <div className={classes} onKeyDown={this.keyMapper}>
+      <button className="action-import" onClick={_ => this.toggleActive()} />
+      {importer}
+    </div>;
+  }
+}
+
+export { ImportButton, Importer };

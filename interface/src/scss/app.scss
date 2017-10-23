@@ -44,26 +44,6 @@ button {
 
 }
 
-.app {
-  height: 100%;
-
-  > header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    padding: 15px;
-    z-index: 2;
-    background: #fff;
-    -webkit-app-region: drag;
-  }
-
-  > header h1 {
-    margin: 0;
-    margin-bottom: 4px;
-    font-size: 20px;
-  }
-}
-
 @import '_header';
 @import '_grouping';
 @import '_fields';

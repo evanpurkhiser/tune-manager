@@ -1,0 +1,71 @@
+$header-height: 90px;
+
+.app > header {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 15px 15px 0;
+  z-index: 2;
+  background: #fff;
+  height: $header-height;
+  -webkit-app-region: drag;
+
+  .btn-action {
+    margin-right: 10px;
+    font-size: 0.7rem;
+    padding: 5px 8px;
+    background: linear-gradient(#f4f5f5, #f2f4f5);
+    color: #9fa5a9;
+
+    &:hover { color: #899194; }
+  }
+
+  .action-save {
+    @extend .btn-action;
+    background: linear-gradient(#4cd699, #5ace9b);
+    color: #e1fff5;
+    &:hover  { color: #fff; }
+  }
+
+  .action-import {
+    @extend .btn-action;
+    &:before { @include fontawesome($fa-var-tag); }
+  }
+
+  .action-config {
+    @extend .btn-action;
+    &:before { @include fontawesome($fa-var-gear); }
+  }
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.field-heading {
+  margin: 15px 0 5px;
+  user-select: none;
+  cursor: default;
+}
+
+.main-importer {
+  position: relative;
+
+  .importer {
+    position: absolute;
+    top: 40px;
+    left: -35px;
+  }
+
+  &:before {
+    @extend %popover-arrow;
+    border-bottom-color: #fff !important;
+    top: 24px;
+    left: 5px;
+    z-index: 3;
+  }
+}

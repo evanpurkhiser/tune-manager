@@ -5,11 +5,6 @@ import React, { Component } from 'react';
 import * as actions from 'app/store/actions';
 import * as Discogs from './Discogs';
 
-const mappableTrackShape = PropTypes.shape({
-  id:       PropTypes.string.isRequired,
-  filePath: PropTypes.string.isRequired,
-});
-
 class Importer extends Component {
   constructor() {
     super();
@@ -51,7 +46,7 @@ class Importer extends Component {
 
 Importer.propTypes = {
   presetSearch: PropTypes.string,
-  tracks: PropTypes.arrayOf(mappableTrackShape),
+  tracks:       PropTypes.arrayOf(Discogs.mappableTrackShape),
 };
 
-export { Importer, mappableTrackShape };
+export { Importer };

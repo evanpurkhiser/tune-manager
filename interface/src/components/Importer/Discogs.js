@@ -1,13 +1,17 @@
-import * as camelize from 'camelize';
 import * as lodash   from 'lodash';
+import camelize      from 'camelize';
 import classNames    from 'classnames';
 import PropTypes     from 'prop-types';
 import React, { Component } from 'react';
 
 import * as discogs           from 'app/util/discogs';
 import { buildImageObject }   from 'app/util/image';
-import { mappableTrackShape } from '.';
 import ScrollLockList         from 'app/components/ScrollLockList';
+
+const mappableTrackShape = PropTypes.shape({
+  id:       PropTypes.string.isRequired,
+  filePath: PropTypes.string.isRequired,
+});
 
 const releaseObjectShape = {
   resourceUrl: PropTypes.string,
@@ -255,7 +259,6 @@ class Mapper extends Component {
       return;
     }
 
-
     fetch(discogs.url(release.resourceUrl))
       .then(r => r.json())
       .then(this.recieveNewTracks);
@@ -379,7 +382,11 @@ Mapper.propTypes = {
   onImport:      PropTypes.func.isRequired,
   onCancel:      PropTypes.func.isRequired,
   release:       PropTypes.shape(releaseObjectShape),
-  mappingTracks: PropTypes.arrayOf(mappableTrackShape).isRequired,
+  mappingTracks: PropTypes.arrayOf(mappableTrackShape),
 };
 
-export { Search, Mapper };
+Mapper.defaultProps = {
+  mappingTracks: [],
+};
+
+export { Search, Mapper, mappableTrackShape };

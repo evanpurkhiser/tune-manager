@@ -9,7 +9,7 @@ import * as action      from 'app/store/actions';
 import * as Field       from 'app/components/Fields';
 import FieldHeadings    from 'app/components/FieldHeadings';
 import { ImportButton } from 'app/components/Importer';
-import { SaveButton }   from 'app/components/Save';
+import { SaveButton, SaveStatus } from 'app/components/Save';
 
 let TrackItem = p => {
   const fieldProps = {
@@ -119,6 +119,8 @@ const App = p => <div className="app">
     <nav>
       <SaveButton />
       <ImportButton />
+      <button className="action-config" />
+      <SaveStatus />
     </nav>
     <FieldHeadings
       onCheck={e => p.dispatch(action.toggleSelectAll(e.target.checked))}

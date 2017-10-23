@@ -192,16 +192,10 @@
       color: #e82121;
     }
 
-    .importing &:before {
-      @extend %loader;
-      content: '';
-      display: inline-block;
-      height: 7px;
-      width: 7px;
-      border-width: 1px;
+    .importing & {
+      @extend .button-busy;
       border-color: #f5d0cf;
       border-left-color: #f37776;
-      margin-right: 4px;
     }
   }
 

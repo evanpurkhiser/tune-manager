@@ -40,8 +40,19 @@ button {
   font-size: 0.6rem;
   padding: 4px 6px;
   transition: color 200ms ease-in-out,
+              background 200ms ease-in-out,
+              box-shadow 200ms ease-in-out,
               border-color 200ms ease-in-out;
+}
 
+.button-busy:before {
+  @extend %loader;
+  content: '';
+  display: inline-block;
+  height: 7px;
+  width: 7px;
+  border-width: 1px;
+  margin-right: 4px;
 }
 
 @import '_header';

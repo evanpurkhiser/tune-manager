@@ -9,6 +9,7 @@ import * as action      from 'app/store/actions';
 import * as Field       from 'app/components/Fields';
 import FieldHeadings    from 'app/components/FieldHeadings';
 import { ImportButton } from 'app/components/Importer';
+import { SaveButton }   from 'app/components/Save';
 
 let TrackItem = p => {
   const fieldProps = {
@@ -116,6 +117,7 @@ TrackGroups = SortableContainer(TrackGroups);
 const App = p => <div className="app">
   <header>
     <nav>
+      <SaveButton />
       <ImportButton />
     </nav>
     <FieldHeadings

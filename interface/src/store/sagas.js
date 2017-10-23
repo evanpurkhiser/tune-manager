@@ -5,9 +5,10 @@ import lodash from 'lodash';
 
 import * as action   from './actions';
 import * as validate from '../validate';
-import { buildImageObject } from '../util/image';
+import { blobForImage, buildImageObject } from '../util/image';
 
 const ARTWORK_URL = 'http://localhost:8000/artwork/{}';
+const SAVE_URL    = 'http://localhost:8000/save';
 
 /**
  * Download and store an artwork item. Artwork will not be downloaded twice.
@@ -24,6 +25,10 @@ function* loadArtwork(key, completed) {
   const res  = yield fetch(format(ARTWORK_URL, key));
   const blob = yield res.blob();
   const art  = yield buildImageObject(blob);
+
+  // Artwork existing on the mediafile should be marked, so when saved we can
+  // ignore uploading this artwork.
+  art.isOriginal = true;
 
   yield completed.put({ [key]: art });
 }
@@ -95,7 +100,41 @@ function* autoFix(payload) {
   yield put(action.autoFixFields(fixedItems));
 }
 
+/**
+ * Send tracks across to the server to be saved.
+ */
+function* saveTracks(payload) {
+  const state  = yield select();
+  const tracks = state.selectedTracks.map(id => ({ ...state.tracks[id] }));
+  const data   = new FormData();
+
+  tracks.forEach(t => t.artwork = t.artwork[t.artworkSelected] || null);
+  tracks.forEach(t => delete t.artworkSelected);
+
+  const artworkKeys = tracks
+    .map(t => t.artwork)
+    .filter(key => key !== null)
+    .filter(key => state.artwork[key].isOriginal !== true);
+
+  // Add artwork to the form
+  lodash.uniq(artworkKeys).forEach(key => {
+    const file = blobForImage(state.artwork[key]);
+    data.append('artwork', file, key);
+  });
+
+  const options = payload.options || {};
+
+  // Add track data and save options
+  const json = JSON.stringify({ tracks, options });
+  const file = new File([ json ], '', { type: 'application/json' });
+  data.append('data', file);
+
+  yield fetch(SAVE_URL, { method: 'POST', body: data });
+  yield put(action.saveProcessing(tracks.length));
+}
+
 export default function* appSaga() {
+  yield takeEvery(action.SAVE_TRACKS, saveTracks);
   yield takeEvery(action.TRACK_DETAILS, autoFix);
   yield takeEvery(action.TRACK_DETAILS, requestArtwork);
 }

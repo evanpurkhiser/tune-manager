@@ -48,6 +48,13 @@ const initialState = {
   // the interface. Order should not be considered important here.
   selectedTracks: [],
 
+  // saveProcess contains the current state of the global saving process.
+  saveProcess: {
+    preparing:    false,
+    targetTracks: [],
+    total:        undefined,
+  },
+
   // knownValues contains various lists of known values of fields that exist
   // in the current library database. We also keep a cached normalized mapping
   // of their normal form (lower case) to the actual value.
@@ -215,6 +222,30 @@ function reducer(oldState = initialState, action) {
     });
     break;
   }
+
+  case actions.SAVE_TRACKS: {
+    state.saveProcess = {
+      preparing:    true,
+      targetTracks: [ ...state.selectedTracks ],
+      total:        state.selectedTracks.length,
+    };
+    break;
+  }
+
+  case actions.SAVE_PROCESSING: {
+    state.saveProcess = { ...state.saveProcess, preparing: false };
+    break;
+  }
+
+  case actions.TRACK_SAVED: {
+    const trackIds = action.items.map(t => t.id);
+    const tracks = lodash.difference(state.saveProcess.targetTracks, trackIds);
+
+    state.saveProcess = { ...state.saveProcess };
+    state.saveProcess.targetTracks = tracks;
+    break;
+  }
+
   default:
   }
 

@@ -213,17 +213,18 @@ class TrackProcessor(object):
         self.send_event(EventType.TRACK_DETAILS, identifier, **track)
 
     def send_processing(self, identifier, process):
-        self.processing.append((identifier, process))
-
-        item = { 'process': process.name }
+        item = {'process': process.name}
         self.send_event(EventType.TRACK_PROCESSING, identifier, **item)
 
-    def send_update(self, identifier, completed_process, **kwargs):
+    def add_processing(self, identifier, process):
+        self.processing.append((identifier, process))
+        self.send_processing(identifier, process)
+
+    def done_processing(self, identifier, completed_process, **kwargs):
         self.processing.remove((identifier, completed_process))
 
-        item = { 'completed_process': completed_process.name }
+        item = {'completed_process': completed_process.name}
         item.update(kwargs)
-
         self.send_event(EventType.TRACK_UPDATE, identifier, **item)
 
     def report_state(self, ws):
@@ -241,27 +242,27 @@ class TrackProcessor(object):
 
     def convert_track(self, identifier, path):
         process = TrackProcesses.CONVERTING
-        self.send_processing(identifier, process)
+        self.add_processing(identifier, process)
 
         importer.convert.convert_track(path)
-        self.send_update(identifier, process)
+        self.done_processing(identifier, process)
 
     def compute_key(self, identifier, media):
         process = TrackProcesses.KEY_COMPUTING
-        self.send_processing(identifier, process)
+        self.add_processing(identifier, process)
 
         # Prefix key with leading zeros
         media.key = keyfinder.key(media.file_path).camelot().zfill(3)
-        self.send_update(identifier, process, key=media.key)
+        self.done_processing(identifier, process, key=media.key)
 
         #media.save()
 
     def beatport_update(self, identifier, media):
         process = TrackProcesses.BEATPORT_IMPORT
-        self.send_processing(identifier, process)
+        self.add_processing(identifier, process)
 
         fields = importer.beatport.process(media);
-        self.send_update(identifier, process, **fields)
+        self.done_processing(identifier, process, **fields)
 
         #media.save()
 

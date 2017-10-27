@@ -95,8 +95,6 @@ function mapTracks(release) {
       'release':   label.catno,
       'publisher': label.name.replace(differentiatorRegex, ''),
       'year':      String(release.year),
-      'track':     '',
-      'disc':      '',
     };
 
     track.id = md5(currentHeading + track.artist + track.title);

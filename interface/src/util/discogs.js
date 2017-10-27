@@ -76,7 +76,7 @@ function mapTracks(release) {
   // Tracks are grouped into heading keys
   let currentHeading    = '';
   let currentTrackGroup = [];
-  const mappedTracks    = [];
+  const mappedTracks    = [ { name: '', tracks: currentTrackGroup } ];
 
   for (const t of tracks) {
     if (t.type === 'heading') {
@@ -124,11 +124,7 @@ function mapTracks(release) {
     currentTrackGroup.push(track);
   }
 
-  if (mappedTracks.length > 0) {
-    return mappedTracks;
-  }
-
-  return [ { name: '', tracks: currentTrackGroup } ];
+  return mappedTracks;
 }
 
 export { SEARCH_URL, url, mapTracks };

@@ -323,8 +323,8 @@ class Mapper extends Component {
       .then(artwork => {
         importTracks.forEach(t => t.artworkSelected = 0);
         importTracks.forEach(t => t.artwork = []);
-        this.props.onImport(importTracks, artwork);
         this.setState({ isImporting: false });
+        this.props.onImport(importTracks, artwork);
       });
   }
 

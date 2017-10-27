@@ -90,6 +90,10 @@ class Search extends Component {
     this.activeRequest = null;
   }
 
+  componentDidMount() {
+    this.inputElement.focus();
+  }
+
   queryResults(value) {
     if (this.activeRequest !== null) {
       this.activeRequest.abort();
@@ -167,6 +171,7 @@ class Search extends Component {
 
     return <div className={classes}>
       <input type="text"
+        ref={e => this.inputElement = e}
         defaultValue={this.props.presetSearch}
         spellCheck={false}
         placeholder="Enter a release name"

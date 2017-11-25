@@ -1,9 +1,31 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 
-const ScrollLockList = p => <ul { ...p }
-  onMouseOver={_ => document.body.style.overflow = 'hidden'}
-  onMouseOut={_ => document.body.style.overflow = 'auto'}>
-  {p.children}
-</ul>;
+class ScrollLockList extends PureComponent {
+  constructor() {
+    super();
+    this.disableScroll = this.disableScroll.bind(this);
+    this.enableScroll  = this.enableScroll.bind(this);
+  }
+
+  componentWillUnmount() {
+    this.enableScroll();
+  }
+
+  disableScroll() {
+    document.body.style.overflow = 'hidden';
+  }
+
+  enableScroll() {
+    document.body.style.overflow = 'auto';
+  }
+
+  render() {
+    return <ul { ...this.props }
+      onMouseOver={this.disableScroll}
+      onMouseOut={this.enableScroll}>
+      {this.props.children}
+    </ul>;
+  }
+}
 
 export default ScrollLockList;

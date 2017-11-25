@@ -262,7 +262,7 @@ function onSelectedTracks(state, focusedTrack, fn) {
 
 function computeTrackTree(trackMap) {
   const tracks = Object.values(trackMap);
-  const sortedTracks = tracks.sort((a, b) => a.filePath.localeCompare(b.filePath));
+  const sortedTracks = lodash.sortBy(tracks, t => t.filePath);
 
   const paths = lodash.uniq(tracks.map(t => path.dirname(t.filePath)));
   const grouped = lodash.groupBy(sortedTracks, t => path.dirname(t.filePath));

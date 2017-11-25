@@ -97,6 +97,7 @@ export const addArtwork = (focusedTrackID, artwork) => ({
   artwork,
 });
 
-export const saveTracks = _ => ({
+export const saveTracks = options => ({
   type: SAVE_TRACKS,
+  options,
 });

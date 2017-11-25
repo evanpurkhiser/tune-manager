@@ -15,7 +15,7 @@ import knowns
 LIBRARY = '/Users/evan/Music/TracksLocal'
 IMPORT_PATH = os.path.expanduser('~/music-to-import')
 
-DISCOGS_TOKEN = ''
+DISCOGS_TOKEN = 'ZTMTrzXddIDNOTLCTKEpQmFsjGyGNHlIeXpgzRNL'
 DISCOGS_AUTH  = 'Discogs token={}'.format(DISCOGS_TOKEN)
 
 db.init(sqlalchemy.create_engine('sqlite:///database.db'))
@@ -51,10 +51,12 @@ def index_collection(app, loop):
 # Application handlers
 @app.websocket('/events')
 async def events(request, ws):
+    print('opey opening connection')
     await app.processor.open_connection(ws)
 
 @app.route('/known-values')
 async def known_values(request):
+    print('okay known values time')
     return response.json({
         'artists':    app.known_values.individual_artists,
         'publishers': app.known_values.publisher,
@@ -76,8 +78,11 @@ async def save(request):
 
 @app.route('/artwork/<key>')
 async def artwork(request, key):
+    print('okay ARTWORK TIME')
     if key not in app.processor.artwork:
         return response.json({'message': 'invalid artwork ID'}, status=404)
+
+    print('getting artwork')
 
     art = app.processor.artwork[key]
 

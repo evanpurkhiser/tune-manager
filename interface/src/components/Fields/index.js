@@ -2,11 +2,12 @@ import * as path            from 'path';
 import React, { Component } from 'react';
 import classNames           from 'classnames';
 
-import * as action    from 'app/store/actions';
-import * as validate  from 'app/validate';
-import { keyMapper }  from 'app/util/keyboard';
-import { splitOn }    from 'app/util/artistMatch';
-import TypeaheadInput from 'app/components/TypeaheadInput';
+import * as action       from 'app/store/actions';
+import * as validate     from 'app/validate';
+import { keyMapper }     from 'app/util/keyboard';
+import { splitOn }       from 'app/util/artistMatch';
+import TypeaheadInput    from 'app/components/TypeaheadInput';
+import ValidationPopover from 'app/components/ValidationPopover';
 
 /**
  * Generic track Field
@@ -108,8 +109,13 @@ class Field extends Component {
       ? <TypeaheadInput { ...this.props.typeahead } { ...props } />
       : <input type="text" spellCheck="false" { ...props } />;
 
+    const validationPopover = this.state.focused
+      ? <ValidationPopover validations={this.state.validations} />
+      : null;
+
     return <div className={classes}>
       {input}
+      {validationPopover}
     </div>;
   }
 }

@@ -46,7 +46,7 @@ function* loadAllArtwork(artKeys, completed) {
  */
 function* requestArtwork(payload) {
   const BUFFER_SIZE   = 10;
-  const DEBOUNCE_TIME = 100;
+  const DEBOUNCE_TIME = 500;
 
   const artKeys   = payload.items.reduce((s, t) => s.concat(t.artwork), []);
   const uniqueArt = lodash.uniq(artKeys);

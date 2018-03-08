@@ -9,6 +9,7 @@ import multiprocessing
 import os
 import shutil
 import watchdog.observers
+import time
 
 import importer.convert
 import importer.beatport
@@ -185,7 +186,7 @@ class TrackProcessor(object):
         appropriate action.
         """
         commands = {
-            'created': self.add,
+            'created': self.add_safe,
             'deleted': self.remove,
         }
 
@@ -323,6 +324,24 @@ class TrackProcessor(object):
 
         for path in utils.file.collect_files([path], recursive=True, types=types):
             self.add(path)
+
+    def add_safe(self, path):
+        """
+        Add a track to the tracked import list, first checking that the file is
+        not still being written into the directory. Will wait until the files
+        size is no longer changing.
+        """
+        size = os.stat(path).st_size
+
+        # Ensure the file isn't still being written
+        while True:
+            time.sleep(0.5)
+            latest_size = os.stat(path).st_size
+            if latest_size == size:
+                break
+            size = latest_size
+
+        return self.add(path)
 
     def add(self, path):
         """

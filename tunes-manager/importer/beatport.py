@@ -1,5 +1,5 @@
 import bs4
-import urllib.request
+import requests
 from urllib.parse import urljoin
 
 import mediafile
@@ -33,13 +33,14 @@ def process(media):
     # Beatport seems to prefix the field with this control character
     track_url = media.mg_file.tags.get('WOAF').url.strip('\x03')
 
-    with urllib.request.urlopen(track_url) as response:
-        track = bs4.BeautifulSoup(response, 'html.parser')
-        release_link = track.select('a.interior-track-release-artwork-link')[0]
-        release_url = urljoin('http://www.beatport.com', release_link['href'])
+    response = requests.get(track_url)
 
-    with urllib.request.urlopen(release_url) as response:
-        release = bs4.BeautifulSoup(response, 'html.parser')
+    track = bs4.BeautifulSoup(response.content, 'html.parser')
+    release_link = track.select('a.interior-track-release-artwork-link')[0]
+    release_url = urljoin('http://www.beatport.com', release_link['href'])
+
+    response = requests.get(release_url)
+    release = bs4.BeautifulSoup(response.content, 'html.parser')
 
     # Get the list of tracks
     tracks = release.select('div.bucket.tracks ul.bucket-items li')

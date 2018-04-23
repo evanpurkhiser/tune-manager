@@ -1,5 +1,7 @@
 import * as lodash from 'lodash';
 import keycomb     from 'keycomb';
+import PropTypes   from 'prop-types';
+import React       from 'react';
 
 /**
  * actionHandler is a function factory that given a map will produce a keyboard
@@ -51,4 +53,37 @@ const transformMap = map => lodash.map(map, (fn, s) => {
  */
 const keyMapper = map => actionHandler(transformMap(map));
 
-export { keyMapper };
+/**
+ * KeyboardNavigator is a component that may be used to navigate a list of
+ * items, the component manipulates a focus index automatically.
+ */
+function KeyboardNavigatable(props) {
+  const { count, index, onMoveFocus, extraKeys, children, ...rest } = props;
+
+  const incrementIndex = delta => onMoveFocus(index + delta < 0
+    ? count - 1
+    : (index + delta) % count);
+
+  const handler = keyMapper({
+    right: _ => incrementIndex(1),
+    left:  _ => incrementIndex(-1),
+    ...extraKeys,
+  });
+
+  // XXX: This is a hack to allow the ref to be passed
+  if (rest.elementRef) {
+    rest.ref = rest.elementRef;
+    delete rest.elementRef;
+  }
+
+  return <div onKeyDown={handler} {...rest}>{children}</div>;
+}
+
+KeyboardNavigatable.propTypes = {
+  count:       PropTypes.number.isRequired,
+  index:       PropTypes.number.isRequired,
+  onMoveFocus: PropTypes.func.isRequired,
+  extraKeys:   PropTypes.object,
+};
+
+export { keyMapper, KeyboardNavigatable };

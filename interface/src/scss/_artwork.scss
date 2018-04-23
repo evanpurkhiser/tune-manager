@@ -152,6 +152,13 @@
     .warning { background: #ffbd51; }
   }
 
+  %uploaderLabelSelected {
+    &:before, &:after {
+      color: #bbb;
+      border-color: #bbb;
+    }
+  }
+
   .uploader label {
     margin: -6px -6px -4px;
     padding: 6px 6px 4px;
@@ -183,10 +190,13 @@
 
     }
 
-    &:hover:before, &:hover:after {
-      color: #bbb;
-      border-color: #bbb;
+    &:hover {
+      @extend %uploaderLabelSelected;
     }
+  }
+
+  .uploader.selected label {
+    @extend %uploaderLabelSelected;
   }
 
   input[type='file'] {

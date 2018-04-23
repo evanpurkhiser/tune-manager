@@ -359,6 +359,11 @@ class TrackProcessor(object):
         if ext not in VALID_FORMATS:
             return
 
+        # Apple likes to litter these files into directories, don't even
+        # attempt to read them as it will just immediately fail
+        if os.path.basename(path).startswith('._'):
+            return
+
         # Track ready to be reported
         media = mediafile.MediaFile(path)
 

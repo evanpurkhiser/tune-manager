@@ -38,6 +38,12 @@ const validationType = makeValidations({
     fixer:   fixConnectors,
     autoFix: autoFixTypes.IMMEDIATE,
   },
+
+  SINGLE_AMPERSAND: {
+    level:   levels.ERROR,
+    fixer:   fixAmpersand,
+    autoFix: autoFixTypes.IMMEDIATE,
+  },
 });
 
 /**
@@ -62,6 +68,14 @@ function fixConnectors(artistsString) {
   }
 
   return str;
+}
+
+/**
+ * Fix an artist with one comma separator by replacing the comma with an
+ * ampersand.
+ */
+function fixAmpersand(artistsString) {
+  return artistsString.replace(', ', ' & ');
 }
 
 /**
@@ -98,6 +112,11 @@ function validateConnectors(artistsString, validations) {
   // There are no detectable artist connectors
   if (fuzzy === null) {
     return;
+  }
+
+  // If the connector is just a single comma, replace that with an ampersand
+  if (fuzzy.length === 1 && fuzzy[0] === ', ') {
+    validations.add(validationType.SINGLE_AMPERSAND);
   }
 
   const strict = artistsString.match(strictSplitOn);

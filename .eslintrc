@@ -55,7 +55,7 @@
     "no-implicit-globals": "warn",
     "no-implied-eval": "error",
     "no-magic-numbers": ["warn", {
-      "ignore": [0, 1],
+      "ignore": [0, 1, -1],
       "ignoreArrayIndexes": true
     }],
     "no-multi-spaces": ["warn", {

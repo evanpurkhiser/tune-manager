@@ -20,7 +20,7 @@ import utils.watchdog
 
 # This list specifies file extensions that are directly supported for
 # importing, without requiring any type of conversion.
-VALID_FORMATS = ['.mp3', '.aif']
+VALID_FORMATS = ['.mp3', '.aif', '.aiff']
 
 
 def future_raise(future):
@@ -349,6 +349,12 @@ class TrackProcessor(object):
         """
         identifier = file_id(path)
         ext = os.path.splitext(path)[1]
+
+        if ext == '.aiff':
+            ext = '.aif'
+            new_path = path[:-5]+ext
+            os.rename(path, new_path)
+            path = new_path
 
         # File may need to be transformed before it can be processed for
         # importing.

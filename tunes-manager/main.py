@@ -51,12 +51,10 @@ def index_collection(app, loop):
 # Application handlers
 @app.websocket('/events')
 async def events(request, ws):
-    print('opey opening connection')
     await app.processor.open_connection(ws)
 
 @app.route('/known-values')
 async def known_values(request):
-    print('okay known values time')
     return response.json({
         'artists':    app.known_values.individual_artists,
         'publishers': app.known_values.publisher,
@@ -78,7 +76,6 @@ async def save(request):
 
 @app.route('/artwork/<key>')
 async def artwork(request, key):
-    print('okay ARTWORK TIME')
     if key not in app.processor.artwork:
         return response.json({'message': 'invalid artwork ID'}, status=404)
 

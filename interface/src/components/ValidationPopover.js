@@ -11,9 +11,6 @@ const ValidationPopover = p => {
     items = items.filter(i => i.level !== validate.levels.VALID);
   }
 
-  console.log('okay')
-
-
 
 
 

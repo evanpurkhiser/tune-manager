@@ -101,7 +101,7 @@
       "classes": false
     }],
 
-    "array-bracket-spacing": ["warn", "always"],
+    "array-bracket-spacing": ["warn", "never"],
     "brace-style": "warn",
     "camelcase": "warn",
     "comma-spacing": "warn",

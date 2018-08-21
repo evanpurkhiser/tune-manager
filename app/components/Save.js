@@ -6,6 +6,7 @@ import * as action   from 'app/store/actions';
 
 const o = {
   'migrate_path': '/Users/evan/Server/multimedia/djing/tracks/',
+  //'migrate_path': '/Users/evan/saved-music/',
 };
 
 const mapSaveButton = s => ({

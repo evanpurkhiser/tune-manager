@@ -1,4 +1,5 @@
 import os.path
+import asyncio
 
 from sanic import Sanic, response
 from sanic_cors import CORS
@@ -12,11 +13,11 @@ import db
 import importer.filesystem
 import knowns
 
-LIBRARY = '/Users/evan/Music/TracksLocal'
+LIBRARY = '/Users/evan/Music/Tracks'
 IMPORT_PATH = os.path.expanduser('~/music-to-import')
 
 DISCOGS_TOKEN = 'ZTMTrzXddIDNOTLCTKEpQmFsjGyGNHlIeXpgzRNL'
-DISCOGS_AUTH  = 'Discogs token={}'.format(DISCOGS_TOKEN)
+DISCOGS_AUTH  = f'Discogs token={DISCOGS_TOKEN}'
 
 db.init(sqlalchemy.create_engine('sqlite:///database.db'))
 session = db.Session()
@@ -45,12 +46,19 @@ def start_processor(app, loop):
 @app.listener('before_server_start')
 def index_collection(app, loop):
     indexer = catalog.MetadataIndexer(LIBRARY, session, loop)
-    indexer.reindex()
     indexer.watch_collection()
+    indexer.reindex()
+
 
 # Application handlers
 @app.websocket('/events')
 async def events(request, ws):
+    await app.processor.open_connection(ws)
+
+@app.websocket('/static')
+async def statics(request):
+
+
     await app.processor.open_connection(ws)
 
 @app.route('/known-values')

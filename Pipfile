@@ -1,21 +1,20 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 sqlalchemy = "*"
 "beautifulsoup4" = "*"
 watchdog = "*"
 mutagen = "*"
+requests = "*"
+keyfinder = {editable = true, git = "https://github.com/EvanPurkhiser/keyfinder-py"}
+pillow = "*"
 sanic = "*"
 sanic-cors = "*"
-requests = "*"
-keyfinder = {git = "https://github.com/EvanPurkhiser/keyfinder-py", editable = true}
-pillow = "*"
-
 
 [dev-packages]
+
+[pipenv]
+allow_prereleases = true

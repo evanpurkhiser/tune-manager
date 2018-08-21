@@ -41,7 +41,10 @@ class MetadataIndexer(object):
             if short_path in mtimes and mtimes[short_path] == last_mtime:
                 continue
 
-            self.add_or_update(path)
+            try:
+                self.add_or_update(path)
+            except Exception as e:
+                print(f'Failed to update {short_path}: {e}')
 
         self.session.commit()
 
@@ -53,6 +56,7 @@ class MetadataIndexer(object):
 
         watcher = watchdog.observers.Observer()
         watcher.schedule(handler, self.library_path, recursive=True)
+        print('watcher started')
 
         async def file_dispatcher():
             watcher.start()
@@ -65,7 +69,7 @@ class MetadataIndexer(object):
 
         It's important to note, that if a track has both changed paths and
         changed metadata, the path and file checksum will no longer match, thus
-        the trac will be added as a *new* item in the catalog.
+        the track will be added as a *new* item in the catalog.
         """
         media = mediafile.MediaFile(path)
         track = mediafile_to_track(media, self.library_path)

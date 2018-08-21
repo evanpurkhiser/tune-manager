@@ -1,70 +1,79 @@
-import * as lodash   from 'lodash';
-import camelize      from 'camelize';
-import classNames    from 'classnames';
-import PropTypes     from 'prop-types';
+import * as lodash from 'lodash';
+import camelize from 'camelize';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import * as discogs           from 'app/util/discogs';
-import { buildImageObject }   from 'app/util/image';
-import ScrollLockList         from 'app/components/ScrollLockList';
+import * as discogs from 'app/util/discogs';
+import { buildImageObject } from 'app/util/image';
+import ScrollLockList from 'app/components/ScrollLockList';
 
 const mappableTrackShape = PropTypes.shape({
-  id:       PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   filePath: PropTypes.string.isRequired,
 });
 
 const releaseObjectShape = {
   resourceUrl: PropTypes.string,
-  catno:       PropTypes.string,
-  country:     PropTypes.string,
-  label:       PropTypes.arrayOf(PropTypes.string),
-  thumb:       PropTypes.string,
-  title:       PropTypes.string,
-  year:        PropTypes.string,
+  catno: PropTypes.string,
+  country: PropTypes.string,
+  label: PropTypes.arrayOf(PropTypes.string),
+  thumb: PropTypes.string,
+  title: PropTypes.string,
+  year: PropTypes.string,
 };
 
 const releaseShape = PropTypes.shape(releaseObjectShape);
 
-const ReleaseItem = p => <div className="importable-release">
-  {p.thumb
-    ? <img src={p.thumb} alt={p.title} />
-    : <div className="empty-artwork" />}
-  <div className="details">
-    <div className="title">{p.title}</div>
-    <div className="sub-details">
-      <span>{p.catno}</span>
-      <span>{p.label.join(', ')}</span>
-    </div>
-    <div className="sub-details">
-      <span>{p.country}</span>
-      <span>{p.year}</span>
+const ReleaseItem = p => (
+  <div className="importable-release">
+    {p.thumb ? (
+      <img src={p.thumb} alt={p.title} />
+    ) : (
+      <div className="empty-artwork" />
+    )}
+    <div className="details">
+      <div className="title">{p.title}</div>
+      <div className="sub-details">
+        <span>{p.catno}</span>
+        <span>{p.label.join(', ')}</span>
+      </div>
+      <div className="sub-details">
+        <span>{p.country}</span>
+        <span>{p.year}</span>
+      </div>
     </div>
   </div>
-</div>;
+);
 
 ReleaseItem.propTypes = releaseObjectShape;
 
-const ReleaseSet = p => <ScrollLockList className="result-list">
-  {p.results.map(r => <li key={r.id} onClick={_ => p.onSelect(r)}>
-    <ReleaseItem { ...r } />
-  </li>)}
-</ScrollLockList>;
+const ReleaseSet = p => (
+  <ScrollLockList className="result-list">
+    {p.results.map(r => (
+      <li key={r.id} onClick={_ => p.onSelect(r)}>
+        <ReleaseItem {...r} />
+      </li>
+    ))}
+  </ScrollLockList>
+);
 
 ReleaseSet.propTypes = {
-  results:  PropTypes.arrayOf(releaseShape),
+  results: PropTypes.arrayOf(releaseShape),
   onSelect: PropTypes.func,
 };
 
 const STATUS_MESSAGES = {
-  'initial': 'Type in a release to import',
-  'empty':   'No results found for your query',
-  'error':   'Failed to query API. Requests may be rated limited.',
+  initial: 'Type in a release to import',
+  empty: 'No results found for your query',
+  error: 'Failed to query API. Requests may be rated limited.',
 };
 
-const StatusMessage = p => <p
-  className={classNames('status-message', p.type)}>
-  {STATUS_MESSAGES[p.type]}
-</p>;
+const StatusMessage = p => (
+  <p className={classNames('status-message', p.type)}>
+    {STATUS_MESSAGES[p.type]}
+  </p>
+);
 
 StatusMessage.propTypes = {
   type: PropTypes.oneOf(Object.keys(STATUS_MESSAGES)),
@@ -75,9 +84,9 @@ class Search extends Component {
     super();
 
     this.state = {
-      results:     [],
-      isBlank:     true,
-      isQuerying:  false,
+      results: [],
+      isBlank: true,
+      isQuerying: false,
       queryFailed: false,
     };
 
@@ -112,17 +121,21 @@ class Search extends Component {
 
     let request = fetch(url, { signal: this.activeRequest.signal });
 
-    request = request.then(r => r.json()).then(json => this.setState({
-      results:     camelize(json.results),
-      isQuerying:  false,
-      queryFailed: false,
-    }));
+    request = request.then(r => r.json()).then(json =>
+      this.setState({
+        results: camelize(json.results),
+        isQuerying: false,
+        queryFailed: false,
+      })
+    );
 
-    request.catch(e => this.setState({
-      results:     [],
-      isQuerying:  false,
-      queryFailed: e.name !== 'AbortError',
-    }));
+    request.catch(e =>
+      this.setState({
+        results: [],
+        isQuerying: false,
+        queryFailed: e.name !== 'AbortError',
+      })
+    );
   }
 
   onChange(e) {
@@ -159,9 +172,10 @@ class Search extends Component {
   }
 
   render() {
-    const releaseList = this.state.results.length > 0
-      ? <ReleaseSet results={this.state.results} onSelect={this.onSelected} />
-      : null;
+    const releaseList =
+      this.state.results.length > 0 ? (
+        <ReleaseSet results={this.state.results} onSelect={this.onSelected} />
+      ) : null;
 
     const statusMessage = this.getStatusMessage();
 
@@ -169,72 +183,86 @@ class Search extends Component {
       querying: this.state.isQuerying,
     });
 
-    return <div className={classes}>
-      <input type="text"
-        ref={e => this.inputElement = e}
-        defaultValue={this.props.presetSearch}
-        spellCheck={false}
-        placeholder="Enter a release name"
-        onChange={e => this.onChange(e)} />
-      {statusMessage}
-      {releaseList}
-    </div>;
+    return (
+      <div className={classes}>
+        <input
+          type="text"
+          ref={e => (this.inputElement = e)}
+          defaultValue={this.props.presetSearch}
+          spellCheck={false}
+          placeholder="Enter a release name"
+          onChange={e => this.onChange(e)}
+        />
+        {statusMessage}
+        {releaseList}
+      </div>
+    );
   }
 }
 
 Search.propTypes = {
-  onSelected:   PropTypes.func.isRequired,
+  onSelected: PropTypes.func.isRequired,
   presetSearch: PropTypes.string,
 };
 
 const ImportTrackMapping = p => {
   const numberRegex = /[0-9]+(?=\/)/;
-  const disc  = p.disc.match(numberRegex)[0];
+  const disc = p.disc.match(numberRegex)[0];
   const track = p.track.match(numberRegex)[0];
 
   const mappingName = p.mappedFile || 'unmapped';
 
   const classes = classNames({
     unselected: p.selected === false,
-    unmapped:   p.mappedFile === undefined,
+    unmapped: p.mappedFile === undefined,
   });
 
-  return <li
-    className={classes}
-    onClick={p.onClick}
-    data-position={`${disc}-${track}`}>
-    <div className="title">{p.artist} - {p.title}</div>
-    <div className="mapping">{mappingName}</div>
-  </li>;
+  return (
+    <li
+      className={classes}
+      onClick={p.onClick}
+      data-position={`${disc}-${track}`}>
+      <div className="title">
+        {p.artist} - {p.title}
+      </div>
+      <div className="mapping">{mappingName}</div>
+    </li>
+  );
 };
 
 ImportTrackMapping.propTypes = {
-  artist:     PropTypes.string.isRequired,
-  title:      PropTypes.string.isRequired,
-  disc:       PropTypes.string,
-  track:      PropTypes.string,
-  selected:   PropTypes.bool,
+  artist: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  disc: PropTypes.string,
+  track: PropTypes.string,
+  selected: PropTypes.bool,
   mappedFile: PropTypes.string,
 };
 
 ImportTrackMapping.defaultProps = {
   track: '0/0',
-  disc:  '0/0',
+  disc: '0/0',
 };
 
-const ImportActions = p => <div className="import-actions">
-  <button className="accept" onClick={p.onImport}>Import Tracks</button>
-  <button className="return" onClick={p.onCancel}>Back to search</button>
-  <div className="stats">
-    {p.numSelected} Selected → {p.numFiles} Files
+const ImportActions = p => (
+  <div className="import-actions">
+    <button className="accept" onClick={p.onImport}>
+      Import Tracks
+    </button>
+    <button className="return" onClick={p.onCancel}>
+      Back to search
+    </button>
+    <div className="stats">
+      {p.numSelected} Selected → {p.numFiles} Files
+    </div>
   </div>
-</div>;
+);
 
 ImportActions.propTypes = {
-  onImport:    PropTypes.func.isRequired,
-  onCancel:    PropTypes.func.isRequired,
+  onImport: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
   numSelected: PropTypes.number.isRequired,
-  numFiles:    PropTypes.number.isRequired,
+  numFiles: PropTypes.number.isRequired,
 };
 
 class Mapper extends Component {
@@ -243,9 +271,9 @@ class Mapper extends Component {
 
     this.state = {
       fullRelease: {},
-      newTracks:   [],
-      selected:    [],
-      isQuerying:  false,
+      newTracks: [],
+      selected: [],
+      isQuerying: false,
       isImporting: false,
     };
 
@@ -276,7 +304,7 @@ class Mapper extends Component {
     const newTracks = discogs.mapTracks(fullRelease);
 
     const selected = newTracks
-      .reduce((tracks, g) => [ ...tracks, ...g.tracks ], [])
+      .reduce((tracks, g) => [...tracks, ...g.tracks], [])
       .map(t => t.id);
 
     this.setState({ fullRelease, newTracks, selected, isQuerying: false });
@@ -286,15 +314,16 @@ class Mapper extends Component {
     const trackIds = this.state.newTracks[index].tracks.map(t => t.id);
     const included = lodash.intersection(this.state.selected, trackIds);
 
-    const selected = included.length > 0
-      ? lodash.difference(this.state.selected, trackIds)
-      : lodash.union(this.state.selected, trackIds);
+    const selected =
+      included.length > 0
+        ? lodash.difference(this.state.selected, trackIds)
+        : lodash.union(this.state.selected, trackIds);
 
     this.setState({ selected });
   }
 
   onToggleTrack(id) {
-    const selected = [ ...this.state.selected ];
+    const selected = [...this.state.selected];
 
     if (selected.includes(id)) {
       selected.splice(selected.indexOf(id), 1);
@@ -306,10 +335,10 @@ class Mapper extends Component {
   }
 
   onImport() {
-    const mappingTracks = [ ...this.props.mappingTracks ];
+    const mappingTracks = [...this.props.mappingTracks];
 
     const importTracks = this.state.newTracks
-      .reduce((tracks, g) => [ ...tracks, ...g.tracks ], [])
+      .reduce((tracks, g) => [...tracks, ...g.tracks], [])
       .filter(t => this.state.selected.includes(t.id))
       .slice(0, mappingTracks.length)
       .map(t => ({ ...t, id: mappingTracks.shift().id }));
@@ -326,8 +355,8 @@ class Mapper extends Component {
       .then(res => res.blob())
       .then(buildImageObject)
       .then(artwork => {
-        importTracks.forEach(t => t.artworkSelected = 0);
-        importTracks.forEach(t => t.artwork = []);
+        importTracks.forEach(t => (t.artworkSelected = 0));
+        importTracks.forEach(t => (t.artwork = []));
         this.setState({ isImporting: false });
         this.props.onImport(importTracks, artwork);
       });
@@ -335,29 +364,34 @@ class Mapper extends Component {
 
   buildTrackList() {
     const tracks = this.state.newTracks || [];
-    const mappingTracks = [ ...this.props.mappingTracks ];
+    const mappingTracks = [...this.props.mappingTracks];
 
     const mapTracks = t => {
       const isSelected = this.state.selected.includes(t.id);
-      const mappedTrack = isSelected
-        ? mappingTracks.shift() || {}
-        : {};
+      const mappedTrack = isSelected ? mappingTracks.shift() || {} : {};
 
-      return <ImportTrackMapping { ...t }
-        key={t.id}
-        onClick={_ => this.onToggleTrack(t.id)}
-        mappedFile={mappedTrack.filePath}
-        selected={isSelected} />;
+      return (
+        <ImportTrackMapping
+          {...t}
+          key={t.id}
+          onClick={_ => this.onToggleTrack(t.id)}
+          mappedFile={mappedTrack.filePath}
+          selected={isSelected}
+        />
+      );
     };
 
     return tracks.map((g, index) => {
-      const heading = <li key={index}
-        onClick={_ => this.onToggleHeading(index)}
-        className="heading">
-        {g.name}
-      </li>;
+      const heading = (
+        <li
+          key={index}
+          onClick={_ => this.onToggleHeading(index)}
+          className="heading">
+          {g.name}
+        </li>
+      );
 
-      return [ g.name === '' ? null : heading, ...g.tracks.map(mapTracks) ];
+      return [g.name === '' ? null : heading, ...g.tracks.map(mapTracks)];
     });
   }
 
@@ -370,24 +404,27 @@ class Mapper extends Component {
       importing: this.state.isImporting,
     });
 
-    return <div className={classes}>
-      <ReleaseItem { ...this.props.release } />
-      <ImportActions
-        onImport={this.onImport}
-        onCancel={_ => this.props.onCancel()}
-        numSelected={this.state.selected.length}
-        numFiles={this.props.mappingTracks.length} />
-      <ScrollLockList className="import-tracks">
-        {this.buildTrackList()}
-      </ScrollLockList>
-    </div>;
+    return (
+      <div className={classes}>
+        <ReleaseItem {...this.props.release} />
+        <ImportActions
+          onImport={this.onImport}
+          onCancel={_ => this.props.onCancel()}
+          numSelected={this.state.selected.length}
+          numFiles={this.props.mappingTracks.length}
+        />
+        <ScrollLockList className="import-tracks">
+          {this.buildTrackList()}
+        </ScrollLockList>
+      </div>
+    );
   }
 }
 
 Mapper.propTypes = {
-  onImport:      PropTypes.func.isRequired,
-  onCancel:      PropTypes.func.isRequired,
-  release:       PropTypes.shape(releaseObjectShape),
+  onImport: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  release: PropTypes.shape(releaseObjectShape),
   mappingTracks: PropTypes.arrayOf(mappableTrackShape),
 };
 

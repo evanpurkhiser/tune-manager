@@ -3,7 +3,7 @@ import * as path from 'path';
 import { applyMiddleware, compose, createStore } from 'redux';
 import { arrayMove } from 'react-sortable-hoc';
 import createSagaMiddleware from 'redux-saga';
-import md5  from 'md5';
+import md5 from 'md5';
 import uuid from 'uuid/v4';
 
 import * as actions from './actions';
@@ -50,18 +50,18 @@ const initialState = {
 
   // saveProcess contains the current state of the global saving process.
   saveProcess: {
-    preparing:    false,
+    preparing: false,
     targetTracks: [],
-    total:        undefined,
+    total: undefined,
   },
 
   // knownValues contains various lists of known values of fields that exist
   // in the current library database. We also keep a cached normalized mapping
   // of their normal form (lower case) to the actual value.
   knownValues: {
-    artists:    { clean: [], normal: {} },
+    artists: { clean: [], normal: {} },
     publishers: { clean: [], normal: {} },
-    genres:     { clean: [], normal: {} },
+    genres: { clean: [], normal: {} },
   },
 };
 
@@ -69,195 +69,201 @@ function reducer(oldState = initialState, action) {
   const state = { ...oldState };
 
   switch (action.type) {
-  case actions.TRACK_DETAILS: {
-    const items = action.items.map(cleanNulls);
-    const newTracks = lodash.keyBy(items, t => t.id);
+    case actions.TRACK_DETAILS: {
+      const items = action.items.map(cleanNulls);
+      const newTracks = lodash.keyBy(items, t => t.id);
 
-    state.tracks = { ...state.tracks, ...newTracks };
-    state.trackTree = computeTrackTree(state.tracks);
-    state.tracksPristine = { ...state.tracksPristine, ...newTracks };
-    break;
-  }
-
-  case actions.TRACK_REMOVED: {
-    state.tracks = { ...state.tracks };
-    action.items.map(i => i.id).forEach(k => delete state.tracks[k]);
-    state.trackTree = computeTrackTree(state.tracks);
-    break;
-  }
-
-  case actions.TRACK_PROCESSING: {
-    state.processes = { ...state.processes };
-    for (const item of action.items) {
-      const trackId = item.id;
-      const current = state.processes[trackId] || [];
-      state.processes[trackId] = [ ...current, item.process ];
+      state.tracks = { ...state.tracks, ...newTracks };
+      state.trackTree = computeTrackTree(state.tracks);
+      state.tracksPristine = { ...state.tracksPristine, ...newTracks };
+      break;
     }
-    break;
-  }
 
-  case actions.TRACK_UPDATE: {
-    state.tracks = { ...state.tracks };
-    state.processes = { ...state.processes };
+    case actions.TRACK_REMOVED: {
+      state.tracks = { ...state.tracks };
+      action.items.map(i => i.id).forEach(k => delete state.tracks[k]);
+      state.trackTree = computeTrackTree(state.tracks);
+      break;
+    }
 
-    for (const trackItem of action.items) {
-      const { completedProcess, ...track } = trackItem;
-
-      // Update the track with the partial fields
-      state.tracks[track.id] = { ...state.tracks[track.id], ...track };
-
-      if (state.processes[track.id] === undefined) {
-        continue;
+    case actions.TRACK_PROCESSING: {
+      state.processes = { ...state.processes };
+      for (const item of action.items) {
+        const trackId = item.id;
+        const current = state.processes[trackId] || [];
+        state.processes[trackId] = [...current, item.process];
       }
+      break;
+    }
 
-      // Remove the completed process for this track
-      const processes = [ ...state.processes[track.id] ] || [];
-      processes.splice(processes.indexOf(completedProcess), 1);
-      state.processes[track.id] = processes;
+    case actions.TRACK_UPDATE: {
+      state.tracks = { ...state.tracks };
+      state.processes = { ...state.processes };
 
-      if (processes.length === 0) {
-        delete state.processes[track.id];
+      for (const trackItem of action.items) {
+        const { completedProcess, ...track } = trackItem;
+
+        // Update the track with the partial fields
+        state.tracks[track.id] = { ...state.tracks[track.id], ...track };
+
+        if (state.processes[track.id] === undefined) {
+          continue;
+        }
+
+        // Remove the completed process for this track
+        const processes = [...state.processes[track.id]] || [];
+        processes.splice(processes.indexOf(completedProcess), 1);
+        state.processes[track.id] = processes;
+
+        if (processes.length === 0) {
+          delete state.processes[track.id];
+        }
       }
+      break;
     }
-    break;
-  }
 
-  case actions.SET_ARTWORK: {
-    state.artwork = { ...state.artwork, ...action.items };
-    break;
-  }
-
-  case actions.AUTOFIX_FIELDS: {
-    state.tracks = { ...state.tracks };
-
-    for (const trackId in action.items) {
-      const fixedFields = action.items[trackId];
-      state.tracks[trackId] = { ...state.tracks[trackId], ...fixedFields };
+    case actions.SET_ARTWORK: {
+      state.artwork = { ...state.artwork, ...action.items };
+      break;
     }
-    break;
-  }
 
-  case actions.REPLACE_KNOWNS: {
-    state.knownValues = normalizeKnownValues(action.knowns);
-    break;
-  }
+    case actions.AUTOFIX_FIELDS: {
+      state.tracks = { ...state.tracks };
 
-  case actions.TOGGLE_SELECT_ALL: {
-    state.selectedTracks = action.toggle ? Object.keys(state.tracks) : [];
-    break;
-  }
-
-  case actions.TOGGLE_SELECT: {
-    state.selectedTracks = action.toggle
-      ? lodash.union(state.selectedTracks, action.tracks)
-      : lodash.difference(state.selectedTracks, action.tracks);
-    break;
-  }
-
-  case actions.CLEAR_SELECTED: {
-    state.selectedTracks = [];
-    break;
-  }
-
-  case actions.REORDER_GROUPS: {
-    const { oldIndex, newIndex } = action.indicies;
-    state.trackTree = arrayMove(state.trackTree, oldIndex, newIndex);
-    break;
-  }
-
-  case actions.NUMBER_SELECTED: {
-    for (const track of computeTrackNumbers(state)) {
-      state.tracks[track.id] = { ...state.tracks[track.id], ...track };
+      for (const trackId in action.items) {
+        const fixedFields = action.items[trackId];
+        state.tracks[trackId] = { ...state.tracks[trackId], ...fixedFields };
+      }
+      break;
     }
-    break;
-  }
 
-  case actions.MODIFY_FIELD: {
-    const { focusedTrackID, field, value } = action;
-    state.tracks = { ...state.tracks };
+    case actions.REPLACE_KNOWNS: {
+      state.knownValues = normalizeKnownValues(action.knowns);
+      break;
+    }
 
-    onSelectedTracks(state, focusedTrackID, id => {
-      state.tracks[id] = { ...state.tracks[id], [field]: value };
-    });
-    break;
-  }
+    case actions.TOGGLE_SELECT_ALL: {
+      state.selectedTracks = action.toggle ? Object.keys(state.tracks) : [];
+      break;
+    }
 
-  case actions.ARTWORK_SELECT: {
-    const { focusedTrackID, index } = action;
-    state.tracks = { ...state.tracks };
-    state.tracks[focusedTrackID] = { ...state.tracks[focusedTrackID] };
-    state.tracks[focusedTrackID].artworkSelected = index;
-    break;
-  }
+    case actions.TOGGLE_SELECT: {
+      state.selectedTracks = action.toggle
+        ? lodash.union(state.selectedTracks, action.tracks)
+        : lodash.difference(state.selectedTracks, action.tracks);
+      break;
+    }
 
-  case actions.ARTWORK_REMOVE: {
-    const { focusedTrackID, index } = action;
-    const track = { ...state.tracks[focusedTrackID] };
-    const currIndex = track.artworkSelected;
+    case actions.CLEAR_SELECTED: {
+      state.selectedTracks = [];
+      break;
+    }
 
-    // Remove artwork and offset the artworkSelected index if necessary
-    track.artwork = [ ...track.artwork ];
-    track.artwork.splice(index, 1);
-    track.artworkSelected = currIndex === index
-      ? null
-      : currIndex <= index ? currIndex : currIndex - 1;
+    case actions.REORDER_GROUPS: {
+      const { oldIndex, newIndex } = action.indicies;
+      state.trackTree = arrayMove(state.trackTree, oldIndex, newIndex);
+      break;
+    }
 
-    state.tracks = { ...state.tracks, [focusedTrackID]: track };
-    break;
-  }
+    case actions.NUMBER_SELECTED: {
+      for (const track of computeTrackNumbers(state)) {
+        state.tracks[track.id] = { ...state.tracks[track.id], ...track };
+      }
+      break;
+    }
 
-  case actions.ARTWORK_ADD: {
-    const { focusedTrackID, artwork } = action;
-    const artKey = uuid();
+    case actions.MODIFY_FIELD: {
+      const { focusedTrackID, field, value } = action;
+      state.tracks = { ...state.tracks };
 
-    state.tracks  = { ...state.tracks };
-    state.artwork = { ...state.artwork, [artKey]: artwork };
+      onSelectedTracks(state, focusedTrackID, id => {
+        state.tracks[id] = { ...state.tracks[id], [field]: value };
+      });
+      break;
+    }
 
-    onSelectedTracks(state, focusedTrackID, id => {
-      const track = { ...state.tracks[id] };
-      const existing = track.artwork || [];
-      track.artwork = [ ...existing, artKey ];
-      track.artworkSelected = existing.length;
-      state.tracks[id] = track;
-    });
-    break;
-  }
+    case actions.ARTWORK_SELECT: {
+      const { focusedTrackID, index } = action;
+      state.tracks = { ...state.tracks };
+      state.tracks[focusedTrackID] = { ...state.tracks[focusedTrackID] };
+      state.tracks[focusedTrackID].artworkSelected = index;
+      break;
+    }
 
-  case actions.SAVE_TRACKS: {
-    state.saveProcess = {
-      preparing:    true,
-      targetTracks: [ ...state.selectedTracks ],
-      total:        state.selectedTracks.length,
-    };
-    break;
-  }
+    case actions.ARTWORK_REMOVE: {
+      const { focusedTrackID, index } = action;
+      const track = { ...state.tracks[focusedTrackID] };
+      const currIndex = track.artworkSelected;
 
-  case actions.SAVE_PROCESSING: {
-    state.saveProcess = { ...state.saveProcess, preparing: false };
-    break;
-  }
+      // Remove artwork and offset the artworkSelected index if necessary
+      track.artwork = [...track.artwork];
+      track.artwork.splice(index, 1);
+      track.artworkSelected =
+        currIndex === index
+          ? null
+          : currIndex <= index
+            ? currIndex
+            : currIndex - 1;
 
-  case actions.TRACK_SAVED: {
-    const trackIds = action.items.map(t => t.id);
-    const tracks = lodash.difference(state.saveProcess.targetTracks, trackIds);
+      state.tracks = { ...state.tracks, [focusedTrackID]: track };
+      break;
+    }
 
-    state.saveProcess = { ...state.saveProcess };
-    state.saveProcess.targetTracks = tracks;
-    break;
-  }
+    case actions.ARTWORK_ADD: {
+      const { focusedTrackID, artwork } = action;
+      const artKey = uuid();
 
-  default:
+      state.tracks = { ...state.tracks };
+      state.artwork = { ...state.artwork, [artKey]: artwork };
+
+      onSelectedTracks(state, focusedTrackID, id => {
+        const track = { ...state.tracks[id] };
+        const existing = track.artwork || [];
+        track.artwork = [...existing, artKey];
+        track.artworkSelected = existing.length;
+        state.tracks[id] = track;
+      });
+      break;
+    }
+
+    case actions.SAVE_TRACKS: {
+      state.saveProcess = {
+        preparing: true,
+        targetTracks: [...state.selectedTracks],
+        total: state.selectedTracks.length,
+      };
+      break;
+    }
+
+    case actions.SAVE_PROCESSING: {
+      state.saveProcess = { ...state.saveProcess, preparing: false };
+      break;
+    }
+
+    case actions.TRACK_SAVED: {
+      const trackIds = action.items.map(t => t.id);
+      const tracks = lodash.difference(
+        state.saveProcess.targetTracks,
+        trackIds
+      );
+
+      state.saveProcess = { ...state.saveProcess };
+      state.saveProcess.targetTracks = tracks;
+      break;
+    }
+
+    default:
   }
 
   return state;
 }
 
 function cleanNulls(track) {
-  return lodash.mapValues(track, v => v === null ? '' : v);
+  return lodash.mapValues(track, v => (v === null ? '' : v));
 }
 
 function onSelectedTracks(state, focusedTrack, fn) {
-  lodash.union(state.selectedTracks, [ focusedTrack ]).forEach(fn);
+  lodash.union(state.selectedTracks, [focusedTrack]).forEach(fn);
 }
 
 function computeTrackTree(trackMap) {
@@ -268,9 +274,9 @@ function computeTrackTree(trackMap) {
   const grouped = lodash.groupBy(sortedTracks, t => path.dirname(t.filePath));
 
   return paths.map(p => ({
-    id:        md5(p),
+    id: md5(p),
     pathParts: p.split('/'),
-    tracks:    grouped[p].map(t => t.id),
+    tracks: grouped[p].map(t => t.id),
   }));
 }
 
@@ -286,12 +292,11 @@ function computeTrackTree(trackMap) {
  *        normal: { artists: { 'dj sy': 'DJ Sy' } },
  *      }
  */
-function normalizeKnownValues(knowns) {
-  return lodash.mapValues(knowns, k => ({
-    clean:  k,
+const normalizeKnownValues = knowns =>
+  lodash.mapValues(knowns, k => ({
+    clean: k,
     normal: lodash.keyBy(k, v => v.toLowerCase()),
   }));
-}
 
 /**
  * Compute track disc and track numers given the current state.
@@ -300,15 +305,17 @@ function normalizeKnownValues(knowns) {
  * computed based on how many distinct groups are selected.
  */
 function computeTrackNumbers(state) {
-  const trackTree = [ ...state.trackTree ]
+  const trackTree = [...state.trackTree]
     .map(g => lodash.intersection(g.tracks, state.selectedTracks))
     .filter(x => x.length > 0);
 
-  const list = trackTree.map((tracks, i) => tracks.map((trackId, j) => ({
-    id:    trackId,
-    track: formatTrackNumbers(j + 1, tracks.length),
-    disc:  formatTrackNumbers(i + 1, trackTree.length),
-  })));
+  const list = trackTree.map((tracks, i) =>
+    tracks.map((trackId, j) => ({
+      id: trackId,
+      track: formatTrackNumbers(j + 1, tracks.length),
+      disc: formatTrackNumbers(i + 1, trackTree.length),
+    }))
+  );
 
   return lodash.flatten(list);
 }

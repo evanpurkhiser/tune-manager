@@ -1,8 +1,8 @@
-import * as lodash          from 'lodash';
+import * as lodash from 'lodash';
 import React, { Component } from 'react';
-import classNames           from 'classnames';
-import Fuse                 from 'fuse.js';
-import PropTypes            from 'prop-types';
+import classNames from 'classnames';
+import Fuse from 'fuse.js';
+import PropTypes from 'prop-types';
 
 import { keyMapper } from 'app/util/keyboard';
 
@@ -13,15 +13,15 @@ import { keyMapper } from 'app/util/keyboard';
 const CARET_TIMEOUT = 10;
 
 const FUSE_OPTIONS = {
-  shouldSort:         true,
-  includeMatches:     true,
-  threshold:          0.6,
-  distance:           100,
-  maxPatternLength:   32,
+  shouldSort: true,
+  includeMatches: true,
+  threshold: 0.6,
+  distance: 100,
+  maxPatternLength: 32,
 };
 
 const matchShape = PropTypes.shape({
-  value:   PropTypes.string,
+  value: PropTypes.string,
   indices: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
 });
 
@@ -42,11 +42,15 @@ const Match = p => {
 
   for (let i = 0; i < indices.length; ++i) {
     const indice = indices[i];
-    const next   = indices[i + 1] || [ value.length ];
+    const next = indices[i + 1] || [value.length];
 
     const part = value.slice(indice[0], indice[1] + 1);
 
-    matchParts.push(<span key={i} className="matched-part">{part}</span>);
+    matchParts.push(
+      <span key={i} className="matched-part">
+        {part}
+      </span>
+    );
     matchParts.push(value.slice(indice[1] + 1, next[0]));
   }
 
@@ -56,19 +60,20 @@ const Match = p => {
 };
 
 Match.propTypes = {
-  match:     matchShape.isRequired,
+  match: matchShape.isRequired,
   isFocused: PropTypes.bool,
 };
 
 /**
  * MatchesPopover renders the list of possible matches
  */
-const MatchesPopover = p => <ul className="typeahead-popover">
-  {p.matches.map((m, i) => <Match
-    key={i}
-    match={m}
-    isFocused={i === p.focused} />)}
-</ul>;
+const MatchesPopover = p => (
+  <ul className="typeahead-popover">
+    {p.matches.map((m, i) => (
+      <Match key={i} match={m} isFocused={i === p.focused} />
+    ))}
+  </ul>
+);
 
 MatchesPopover.propTypes = {
   matches: PropTypes.arrayOf(matchShape).isRequired,
@@ -84,18 +89,18 @@ const TypeaheadShadow = p => {
   }
 
   const endIndex = p.match.indices[0][1] + 1;
-  const shadowHead = p.match.value
-    .slice(0, endIndex)
-    .toLowerCase();
+  const shadowHead = p.match.value.slice(0, endIndex).toLowerCase();
 
   if (!p.value.toLowerCase().endsWith(shadowHead)) {
     return null;
   }
 
-  return <div className="typeahead-shadow">
-    <span className="hidden">{p.value}</span>
-    <span className="shadow">{p.match.value.slice(endIndex)}</span>
-  </div>;
+  return (
+    <div className="typeahead-shadow">
+      <span className="hidden">{p.value}</span>
+      <span className="shadow">{p.match.value.slice(endIndex)}</span>
+    </div>
+  );
 };
 
 TypeaheadShadow.propTypes = {
@@ -108,19 +113,19 @@ class TypeaheadInput extends Component {
     super();
 
     this.keyMapper = keyMapper({
-      'escape': _ => this.resetState(),
-      'enter':  e => this.complete(e.target),
-      'tab':    e => this.complete(e.target),
-      'up':     _ => this.moveFocus(-1),
-      'down':   _ => this.moveFocus(+1),
+      escape: _ => this.resetState(),
+      enter: e => this.complete(e.target),
+      tab: e => this.complete(e.target),
+      up: _ => this.moveFocus(-1),
+      down: _ => this.moveFocus(+1),
     });
 
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.onChange  = this.onChange.bind(this);
-    this.onBlur    = this.onBlur.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.onBlur = this.onBlur.bind(this);
 
     this.fuseIndex = null;
-    this.state = { matches: [], focused: 0, range: [ 0, 0 ] };
+    this.state = { matches: [], focused: 0, range: [0, 0] };
   }
 
   rebuildIndex(source) {
@@ -138,14 +143,14 @@ class TypeaheadInput extends Component {
   }
 
   resetState() {
-    this.setState({ matches: [], range: [ 0, 0 ], focused: 0 });
+    this.setState({ matches: [], range: [0, 0], focused: 0 });
   }
 
   onChange(e) {
     this.props.onChange(e);
 
     const value = e.target.value;
-    const range = [ 0, e.target.selectionStart ];
+    const range = [0, e.target.selectionStart];
 
     let partial = value.slice(...range);
 
@@ -155,9 +160,10 @@ class TypeaheadInput extends Component {
       const splitters = partial.match(this.props.splitter) || [];
       const lastSplit = splitters.pop();
 
-      range[0] = lastSplit === undefined
-        ? 0
-        : partial.lastIndexOf(lastSplit) + lastSplit.length;
+      range[0] =
+        lastSplit === undefined
+          ? 0
+          : partial.lastIndexOf(lastSplit) + lastSplit.length;
 
       partial = value.slice(...range);
     }
@@ -170,9 +176,10 @@ class TypeaheadInput extends Component {
       .slice(0, this.props.numSuggestions)
       .map(m => m.matches[0]);
 
-    const focused = matches.length < this.state.focused
-      ? Math.max(0, matches.length - 1)
-      : this.state.focused;
+    const focused =
+      matches.length < this.state.focused
+        ? Math.max(0, matches.length - 1)
+        : this.state.focused;
 
     this.setState({ value, range, matches, focused });
   }
@@ -184,9 +191,10 @@ class TypeaheadInput extends Component {
 
   moveFocus(direction) {
     const matchCount = this.state.matches.length || 1;
-    const focused = this.state.focused + direction < 0
-      ? matchCount - 1
-      : (this.state.focused + direction) % matchCount;
+    const focused =
+      this.state.focused + direction < 0
+        ? matchCount - 1
+        : (this.state.focused + direction) % matchCount;
 
     this.setState({ focused });
 
@@ -199,7 +207,7 @@ class TypeaheadInput extends Component {
     }
 
     const before = this.state.value.slice(0, this.state.range[0]);
-    const after  = this.state.value.slice(this.state.range[1]);
+    const after = this.state.value.slice(this.state.range[1]);
 
     let completedValue = this.state.matches[this.state.focused].value;
 
@@ -236,37 +244,43 @@ class TypeaheadInput extends Component {
 
     // Render the typeahead shadow if we have a match and we're typing at the
     // tail of the input
-    const shadow = matches.length > 0 && range[1] === value.length
-      ? <TypeaheadShadow match={matches[focused]} value={value} />
-      : null;
+    const shadow =
+      matches.length > 0 && range[1] === value.length ? (
+        <TypeaheadShadow match={matches[focused]} value={value} />
+      ) : null;
 
     // Render the matches popover when we have matches.
-    const matchesPopover = matches.length > 0
-      ? <MatchesPopover focused={focused} matches={matches} />
-      : null;
+    const matchesPopover =
+      matches.length > 0 ? (
+        <MatchesPopover focused={focused} matches={matches} />
+      ) : null;
 
     // Extract input props
     const reservedProps = Object.keys(TypeaheadInput.propTypes);
     const inputProps = lodash.omit(this.props, reservedProps);
 
-    return <div className="typeahead">
-      <input {...inputProps}
-        type="text"
-        spellCheck="false"
-        onChange={this.onChange}
-        onBlur={this.onBlur}
-        onKeyDown={this.onKeyDown} />
-      {shadow}
-      {matchesPopover}
-    </div>;
+    return (
+      <div className="typeahead">
+        <input
+          {...inputProps}
+          type="text"
+          spellCheck="false"
+          onChange={this.onChange}
+          onBlur={this.onBlur}
+          onKeyDown={this.onKeyDown}
+        />
+        {shadow}
+        {matchesPopover}
+      </div>
+    );
   }
 }
 
 TypeaheadInput.propTypes = {
   numSuggestions: PropTypes.number,
-  source:         PropTypes.arrayOf(PropTypes.string),
-  splitter:       PropTypes.instanceOf(RegExp),
-  onChange:       PropTypes.func,
+  source: PropTypes.arrayOf(PropTypes.string),
+  splitter: PropTypes.instanceOf(RegExp),
+  onChange: PropTypes.func,
 };
 
 TypeaheadInput.defaultProps = {

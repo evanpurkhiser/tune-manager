@@ -6,14 +6,14 @@
 .artwork {
   outline: none;
 
-  > img, .empty-artwork {
+  > img,
+  .empty-artwork {
     display: block;
     height: 26px;
     width: 26px;
     border-radius: 2px;
     cursor: pointer;
   }
-
 }
 
 .empty-artwork {
@@ -59,7 +59,6 @@
   user-select: none;
   animation: popoverIn 200ms ease-in-out;
 
-
   &:before {
     @extend %popover-arrow;
     border-right-color: #fff !important;
@@ -87,7 +86,8 @@
     border-radius: 3px;
     position: relative;
 
-    &:hover, &.selected {
+    &:hover,
+    &.selected {
       background: #efefef;
       cursor: pointer;
     }
@@ -129,7 +129,9 @@
     }
 
     .remove {
-      &:after { @include fontawesome($fa-var-times); }
+      &:after {
+        @include fontawesome($fa-var-times);
+      }
       background: #f16d6d;
       color: #fff;
     }
@@ -143,17 +145,23 @@
     margin-top: 2px;
     text-align: center;
 
-    .error, .warning {
+    .error,
+    .warning {
       color: #fff;
       border-radius: 2px;
     }
 
-    .error   { background: #ff5151; }
-    .warning { background: #ffbd51; }
+    .error {
+      background: #ff5151;
+    }
+    .warning {
+      background: #ffbd51;
+    }
   }
 
   %uploaderLabelSelected {
-    &:before, &:after {
+    &:before,
+    &:after {
       color: #bbb;
       border-color: #bbb;
     }
@@ -171,13 +179,13 @@
       display: block;
       width: 60px;
       height: 60px;
-      line-height:46px;
+      line-height: 46px;
       border-radius: 5px;
       border: 2px dashed #ddd;
       color: #ddd;
     }
 
-    &:after{
+    &:after {
       content: 'Upload';
       text-transform: uppercase;
       font-size: 8px;
@@ -187,7 +195,6 @@
       left: 8px;
       width: 60px;
       text-align: center;
-
     }
 
     &:hover {

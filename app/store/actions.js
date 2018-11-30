@@ -1,9 +1,9 @@
 // Websocket API events
-export const TRACK_DETAILS    = 'TRACK_DETAILS';
-export const TRACK_REMOVED    = 'TRACK_REMOVED';
+export const TRACK_DETAILS = 'TRACK_DETAILS';
+export const TRACK_REMOVED = 'TRACK_REMOVED';
 export const TRACK_PROCESSING = 'TRACK_PROCESSING';
-export const TRACK_UPDATE     = 'TRACK_UPDATE';
-export const TRACK_SAVED      = 'TRACK_SAVED';
+export const TRACK_UPDATE = 'TRACK_UPDATE';
+export const TRACK_SAVED = 'TRACK_SAVED';
 
 export const trackUpdate = items => ({
   type: TRACK_UPDATE,
@@ -11,9 +11,9 @@ export const trackUpdate = items => ({
 });
 
 // Saga responses
-export const SET_ARTWORK     = 'SET_ARTWORK';
-export const REPLACE_KNOWNS  = 'REPLACE_KNOWNS';
-export const AUTOFIX_FIELDS  = 'AUTOFIX_FIELDS';
+export const SET_ARTWORK = 'SET_ARTWORK';
+export const REPLACE_KNOWNS = 'REPLACE_KNOWNS';
+export const AUTOFIX_FIELDS = 'AUTOFIX_FIELDS';
 export const SAVE_PROCESSING = 'SAVE_PROCESSING';
 
 export const setArtwork = items => ({
@@ -38,15 +38,15 @@ export const saveProcessing = total => ({
 
 // Interface events
 export const TOGGLE_SELECT_ALL = 'TOGGLE_SELECT_ALL';
-export const TOGGLE_SELECT     = 'TOGGLE_SELECT';
-export const CLEAR_SELECTED    = 'CLEAR_SELECTED';
-export const REORDER_GROUPS    = 'REORDER_GROUPS';
-export const NUMBER_SELECTED   = 'NUMBER_SELECTED';
-export const MODIFY_FIELD      = 'MODIFY_FIELD';
-export const ARTWORK_SELECT    = 'ARTWORK_SELECT';
-export const ARTWORK_REMOVE    = 'ARTWORK_REMOVE';
-export const ARTWORK_ADD       = 'ARTWORK_ADD';
-export const SAVE_TRACKS       = 'SAVE_TRACKS';
+export const TOGGLE_SELECT = 'TOGGLE_SELECT';
+export const CLEAR_SELECTED = 'CLEAR_SELECTED';
+export const REORDER_GROUPS = 'REORDER_GROUPS';
+export const NUMBER_SELECTED = 'NUMBER_SELECTED';
+export const MODIFY_FIELD = 'MODIFY_FIELD';
+export const ARTWORK_SELECT = 'ARTWORK_SELECT';
+export const ARTWORK_REMOVE = 'ARTWORK_REMOVE';
+export const ARTWORK_ADD = 'ARTWORK_ADD';
+export const SAVE_TRACKS = 'SAVE_TRACKS';
 
 export const toggleSelectAll = toggle => ({
   type: TOGGLE_SELECT_ALL,

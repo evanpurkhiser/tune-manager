@@ -3,22 +3,22 @@ import { validateFromKnowns } from './utils';
 
 const validationType = makeValidations({
   NOT_EMPTY: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: 'Genre must be specified',
   },
 
   KNOWN_GENRE: {
-    level:   levels.VALID,
+    level: levels.VALID,
     message: '{value} is a known genre',
   },
 
   CASE_INCONSISTENT_GENRE: {
-    level:   levels.WARNING,
+    level: levels.WARNING,
     message: '{value} is known as {knownValue}',
   },
 
   SIMILAR_GENRE: {
-    level:   levels.WARNING,
+    level: levels.WARNING,
     message: '{value} is similar to known genres: {similarList}',
   },
 
@@ -32,8 +32,8 @@ const validationType = makeValidations({
  * Type mapping for similarity validator.
  */
 const typeMapping = {
-  KNOWN:   validationType.KNOWN_GENRE,
-  CASING:  validationType.CASE_INCONSISTENT_GENRE,
+  KNOWN: validationType.KNOWN_GENRE,
+  CASING: validationType.CASE_INCONSISTENT_GENRE,
   SIMILAR: validationType.SIMILAR_GENRE,
   UNKNOWN: validationType.NEW_GENRE,
 };
@@ -62,6 +62,6 @@ function genre(track, options = {}) {
   });
 }
 
-genre.validatesFields = [ 'genre' ];
+genre.validatesFields = ['genre'];
 
 export { genre };

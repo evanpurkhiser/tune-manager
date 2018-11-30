@@ -4,12 +4,12 @@ const formatPattern = /^[A-Z0-9-]{4,}$/;
 
 const validationType = makeValidations({
   INVALID_FORMAT: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: `Releases must match ${formatPattern}`,
   },
 
   VALID_FORMAT: {
-    level:   levels.VALID,
+    level: levels.VALID,
     message: 'Release identifier is in a valid format',
   },
 });
@@ -38,6 +38,6 @@ function release(track) {
   return validations;
 }
 
-release.validatesFields = [ 'release' ];
+release.validatesFields = ['release'];
 
 export { release };

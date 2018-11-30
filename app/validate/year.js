@@ -4,20 +4,20 @@ const yearPattern = /^[0-9]{4}$/;
 
 const validationType = makeValidations({
   EMPTY: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: 'A release year must be specified',
   },
 
   NOT_EMPTY: {
-    level:   levels.VALID,
+    level: levels.VALID,
     message: 'The year is set',
   },
 
   INVALID_FORMAT: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: `The year must match the format ${yearPattern}`,
     autoFix: autoFixTypes.POST_EDIT,
-    fixer:   reformatYear,
+    fixer: reformatYear,
   },
 });
 
@@ -62,6 +62,6 @@ function year(track) {
   return validations;
 }
 
-year.validatesFields = [ 'year' ];
+year.validatesFields = ['year'];
 
 export { year };

@@ -5,29 +5,29 @@ const numberPattern = /^([0-9]{1,3})\/([0-9]{1,3})$/;
 
 const validationType = makeValidations({
   VALID_NUMBER: {
-    level:   levels.VALID,
+    level: levels.VALID,
     message: 'Formatting is correct',
   },
 
   INVALID_FORMAT: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: `Format should match ${numberPattern}`,
     autoFix: autoFixTypes.POST_EDIT,
-    fixer:   formatNumber,
+    fixer: formatNumber,
   },
 
   HAS_ALBUM: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: 'Has album, but no disc number set',
   },
 
   HAS_DISC_NUMBER: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: 'Disc number set, but track is blank',
   },
 
   HAS_TRACK_NUMBER: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: 'Track number set, but disc is blank',
   },
 });
@@ -47,7 +47,7 @@ export function formatNumber(number) {
     return number;
   }
 
-  const [ , first, , second ] = numberMatch;
+  const [, first, , second] = numberMatch;
 
   if (second === undefined) {
     return number;
@@ -74,7 +74,7 @@ function validateNumber(numberString, validations) {
     return validations.add(validationType.INVALID_FORMAT);
   }
 
-  const [ , first, second ] = match;
+  const [, first, second] = match;
 
   if (first.length !== second.length) {
     return validations.add(validationType.INVALID_FORMAT);
@@ -95,7 +95,7 @@ function validateNumber(numberString, validations) {
  */
 function track(track) {
   const trackNumber = track.track || '';
-  const discNumber  = track.disc  || '';
+  const discNumber = track.disc || '';
 
   const validations = new Validations();
 
@@ -110,7 +110,7 @@ function track(track) {
   return validations;
 }
 
-track.validatesFields = [ 'track', 'disc' ];
+track.validatesFields = ['track', 'disc'];
 
 /**
  * Disc number validation will validate the following rules:
@@ -120,7 +120,7 @@ track.validatesFields = [ 'track', 'disc' ];
  * 3. MIXED: The number does not match the `numberPattern`.
  */
 function disc(track) {
-  const discNumber  = track.disc  || '';
+  const discNumber = track.disc || '';
   const trackNumber = track.track || '';
   const album = track.album || '';
 
@@ -142,6 +142,6 @@ function disc(track) {
   return validations;
 }
 
-disc.validatesFields = [ 'track', 'disc', 'album' ];
+disc.validatesFields = ['track', 'disc', 'album'];
 
 export { track, disc };

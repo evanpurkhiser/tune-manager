@@ -1,13 +1,14 @@
 import * as lodash from 'lodash';
 import format from 'string-format';
-import md5    from 'md5';
+import md5 from 'md5';
 
-import * as validate          from 'app/validate';
+import * as validate from 'app/validate';
 import { formatTrackNumbers } from './format';
-import { remixPattern }       from './artistMatch';
+import { remixPattern } from './artistMatch';
 
-const PROXY_URL  = 'http://localhost:8000/discogs-proxy/';
-const SEARCH_URL = 'https://api.discogs.com/database/search?type=release&q={query}';
+const PROXY_URL = 'http://localhost:8000/discogs-proxy/';
+const SEARCH_URL =
+  'https://api.discogs.com/database/search?type=release&q={query}';
 
 /**
  * Construct a discogs API request URL.
@@ -58,7 +59,7 @@ function buildArtistString(artistsList) {
  */
 function mapTracks(release) {
   const tracks = release.tracklist;
-  const label  = release.labels.pop() || {};
+  const label = release.labels.pop() || {};
 
   // Compute total tracks and discs
   const positionMatches = tracks
@@ -70,13 +71,13 @@ function mapTracks(release) {
 
   const discGroups = lodash.groupBy(positionMatches, p => p[1] || '1');
 
-  const totalDiscs  = Object.keys(discGroups).pop() || '1';
+  const totalDiscs = Object.keys(discGroups).pop() || '1';
   const totalTracks = lodash.mapValues(discGroups, p => p.pop()[2]);
 
   // Tracks are grouped into heading keys
-  let currentHeading    = '';
+  let currentHeading = '';
   let currentTrackGroup = [];
-  const mappedTracks    = [ { name: '', tracks: currentTrackGroup } ];
+  const mappedTracks = [{ name: '', tracks: currentTrackGroup }];
 
   for (const t of tracks) {
     if (t.type === 'heading') {
@@ -89,12 +90,12 @@ function mapTracks(release) {
     const artists = t.artists || release.artists || [];
 
     const track = {
-      'artist':    buildArtistString(artists),
-      'title':     t.title,
-      'album':     release.title,
-      'release':   label.catno,
-      'publisher': label.name.replace(differentiatorRegex, ''),
-      'year':      String(release.year),
+      artist: buildArtistString(artists),
+      title: t.title,
+      album: release.title,
+      release: label.catno,
+      publisher: label.name.replace(differentiatorRegex, ''),
+      year: String(release.year),
     };
 
     track.id = md5(currentHeading + track.artist + track.title);
@@ -105,11 +106,11 @@ function mapTracks(release) {
     // Add disc and tracks /if/ we have multiple tracks.
     const positionMatch = t.position.match(positionRegex);
     if (positionMatch !== null && totalTracks[1] > 1) {
-      const discNum  = positionMatch[1] || '1';
+      const discNum = positionMatch[1] || '1';
       const trackNum = positionMatch[2];
 
       track.track = formatTrackNumbers(trackNum, totalTracks[discNum]);
-      track.disc  = formatTrackNumbers(discNum, totalDiscs);
+      track.disc = formatTrackNumbers(discNum, totalDiscs);
     }
 
     // Execute validation autofixes
@@ -117,7 +118,9 @@ function mapTracks(release) {
 
     Object.keys(track)
       .filter(f => validate[f] !== undefined)
-      .forEach(f => track[f] = validate[f](track).autoFix(track[f], fixTypes));
+      .forEach(
+        f => (track[f] = validate[f](track).autoFix(track[f], fixTypes))
+      );
 
     currentTrackGroup.push(track);
   }

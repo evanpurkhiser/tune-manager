@@ -1,10 +1,10 @@
-import classNames    from 'classnames';
-import PropTypes     from 'prop-types';
-import { connect }   from 'react-redux';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import React, { Component } from 'react';
 
-import * as actions  from 'app/store/actions';
-import * as Discogs  from './Discogs';
+import * as actions from 'app/store/actions';
+import * as Discogs from './Discogs';
 import { keyMapper } from 'app/util/keyboard';
 
 class Importer extends Component {
@@ -12,7 +12,7 @@ class Importer extends Component {
     super();
     this.state = {
       selectedRelease: undefined,
-      showMapper:      false,
+      showMapper: false,
     };
 
     this.releaseSelected = this.releaseSelected.bind(this);
@@ -35,27 +35,33 @@ class Importer extends Component {
       'with-mapper': this.state.showMapper,
     });
 
-    return <div className={classes}>
-      <Discogs.Search
-        presetSearch={this.props.presetSearch}
-        onSelected={this.releaseSelected} />
-      <Discogs.Mapper
-        mappingTracks={this.props.tracks}
-        onImport={this.onImport}
-        onCancel={_ => this.setState({ showMapper: false })}
-        release={this.state.selectedRelease} />
-    </div>;
+    return (
+      <div className={classes}>
+        <Discogs.Search
+          presetSearch={this.props.presetSearch}
+          onSelected={this.releaseSelected}
+        />
+        <Discogs.Mapper
+          mappingTracks={this.props.tracks}
+          onImport={this.onImport}
+          onCancel={_ => this.setState({ showMapper: false })}
+          release={this.state.selectedRelease}
+        />
+      </div>
+    );
   }
 }
 
 Importer.propTypes = {
   presetSearch: PropTypes.string,
-  onComplete:   PropTypes.func,
-  tracks:       PropTypes.arrayOf(Discogs.mappableTrackShape),
+  onComplete: PropTypes.func,
+  tracks: PropTypes.arrayOf(Discogs.mappableTrackShape),
 };
 
 Importer.defaultProps = {
-  onComplete: _ => { /* noop */ },
+  onComplete: _ => {
+    /* noop */
+  },
 };
 
 const mapImporterProps = s => ({
@@ -70,7 +76,7 @@ class ImportButton extends Component {
     this.state = { active: false };
 
     this.keyMapper = keyMapper({
-      'escape': _ => this.toggleActive(false),
+      escape: _ => this.toggleActive(false),
     });
 
     this.toggleActive = this.toggleActive.bind(this);
@@ -85,14 +91,16 @@ class ImportButton extends Component {
       active: this.state.active,
     });
 
-    const importer = this.state.active
-      ? <LinkedImporter onComplete={_ => this.toggleActive(false)}/>
-      : null;
+    const importer = this.state.active ? (
+      <LinkedImporter onComplete={_ => this.toggleActive(false)} />
+    ) : null;
 
-    return <div className={classes} onKeyDown={this.keyMapper}>
-      <button className="action-import" onClick={_ => this.toggleActive()} />
-      {importer}
-    </div>;
+    return (
+      <div className={classes} onKeyDown={this.keyMapper}>
+        <button className="action-import" onClick={_ => this.toggleActive()} />
+        {importer}
+      </div>
+    );
   }
 }
 

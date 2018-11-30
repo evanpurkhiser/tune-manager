@@ -2,12 +2,12 @@ import { levels, makeValidations, Validations } from './utils';
 
 const validationType = makeValidations({
   NOT_SQUARE: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: 'Artwork must be square',
   },
 
   TOO_SMALL: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: 'Artwork should be a minimum of 500x500',
   },
 });

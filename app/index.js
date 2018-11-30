@@ -6,23 +6,27 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import * as actions from 'app/store/actions';
-import App          from 'app/App';
-import globalKeys   from 'app/globalKeys';
-import store        from 'app/store';
+import App from 'app/App';
+import globalKeys from 'app/globalKeys';
+import store from 'app/store';
 
 // Start events listener
 const socket = new WebSocket('ws://localhost:8000/events');
 socket.onmessage = m => store.dispatch(camelize(JSON.parse(m.data)));
 
 // Load known values
-fetch('http://localhost:8000/known-values').then(r => r.json()).then(knowns => {
-  store.dispatch(actions.replaceKnowns(camelize(knowns)));
-});
+fetch('http://localhost:8000/known-values')
+  .then(r => r.json())
+  .then(knowns => {
+    store.dispatch(actions.replaceKnowns(camelize(knowns)));
+  });
 
 document.body.addEventListener('keydown', globalKeys);
 
-const providedApp = <Provider store={store}>
-  <App />
-</Provider>;
+const providedApp = (
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
 
 ReactDOM.render(providedApp, document.getElementById('root'));

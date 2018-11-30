@@ -37,9 +37,15 @@
 .field.marked {
   transition: color 200ms ease-in-out;
 
-  &.error:after   { border-color: #ffa4a4; }
-  &.warning:after { border-color: #ffce97; }
-  &.valid:after   { border-color: #a8ffa4; }
+  &.error:after {
+    border-color: #ffa4a4;
+  }
+  &.warning:after {
+    border-color: #ffce97;
+  }
+  &.valid:after {
+    border-color: #a8ffa4;
+  }
 
   &:after {
     content: '';
@@ -70,40 +76,38 @@
 /* Field headings */
 $field-sizes: (
   file-name: 180px,
-  artwork:   33px,
-  artist:    220px,
-  album:     300px,
-  remixer:   160px,
+  artwork: 33px,
+  artist: 220px,
+  album: 300px,
+  remixer: 160px,
   publisher: 150px,
-  release:   100px,
-  year:      40px,
-  genre:     80px,
-  track:     45px,
-  disc:      45px,
-  bpm:       50px,
-  key:       35px,
-  actions:   32px,
+  release: 100px,
+  year: 40px,
+  genre: 80px,
+  track: 45px,
+  disc: 45px,
+  bpm: 50px,
+  key: 35px,
+  actions: 32px,
 );
 
 @each $name, $width in $field-sizes {
-  .#{$name} { width: $width; }
+  .#{$name} {
+    width: $width;
+  }
 }
 
 .title {
   flex-grow: 1;
 }
 
-$centered-fields: (
-  'artwork',
-  'year',
-  'track',
-  'disc',
-  'bpm',
-  'key',
-);
+$centered-fields: ('artwork', 'year', 'track', 'disc', 'bpm', 'key');
 
 @each $field in $centered-fields {
-  .#{$field}, .#{$field} input { text-align: center; }
+  .#{$field},
+  .#{$field} input {
+    text-align: center;
+  }
 }
 
 .listing-check {
@@ -111,7 +115,9 @@ $centered-fields: (
   align-items: center;
   justify-content: center;
 
-  input { cursor: pointer; }
+  input {
+    cursor: pointer;
+  }
 }
 
 .file-name {

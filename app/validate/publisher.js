@@ -3,17 +3,17 @@ import { validateFromKnowns } from './utils';
 
 const validationType = makeValidations({
   KNOWN_PUBLISHER: {
-    level:   levels.VALID,
+    level: levels.VALID,
     message: '{value} is a known publisher',
   },
 
   CASE_INCONSISTENT_PUBLISHER: {
-    level:   levels.WARNING,
+    level: levels.WARNING,
     message: '{value} is known as {knownValue}',
   },
 
   SIMILAR_PUBLISHER: {
-    level:   levels.WARNING,
+    level: levels.WARNING,
     message: '{value} is similar to known publishers: {similarList}',
   },
 
@@ -27,8 +27,8 @@ const validationType = makeValidations({
  * Type mapping for similarity validator.
  */
 const typeMapping = {
-  KNOWN:   validationType.KNOWN_PUBLISHER,
-  CASING:  validationType.CASE_INCONSISTENT_PUBLISHER,
+  KNOWN: validationType.KNOWN_PUBLISHER,
+  CASING: validationType.CASE_INCONSISTENT_PUBLISHER,
   SIMILAR: validationType.SIMILAR_PUBLISHER,
   UNKNOWN: validationType.NEW_PUBLISHER,
 };
@@ -53,6 +53,6 @@ function publisher(track, options = {}) {
   });
 }
 
-publisher.validatesFields = [ 'publisher' ];
+publisher.validatesFields = ['publisher'];
 
 export { publisher };

@@ -4,27 +4,27 @@ import { validateFromKnowns } from './utils';
 
 const validationType = makeValidations({
   EMPTY: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: 'Artist must not be left empty',
   },
 
   NOT_EMPTY: {
-    level:   levels.VALID,
+    level: levels.VALID,
     message: 'Artist is not empty',
   },
 
   KNOWN_ARTIST: {
-    level:   levels.VALID,
+    level: levels.VALID,
     message: '{value} is a known artist',
   },
 
   CASE_INCONSISTENT_ARTIST: {
-    level:   levels.WARNING,
+    level: levels.WARNING,
     message: '{value} is known as {knownValue}',
   },
 
   SIMILAR_ARTIST: {
-    level:   levels.WARNING,
+    level: levels.WARNING,
     message: '{value} is similar to known artists: {similarList}',
   },
 
@@ -34,14 +34,14 @@ const validationType = makeValidations({
   },
 
   BAD_CONNECTORS: {
-    level:   levels.ERROR,
-    fixer:   fixConnectors,
+    level: levels.ERROR,
+    fixer: fixConnectors,
     autoFix: autoFixTypes.IMMEDIATE,
   },
 
   SINGLE_AMPERSAND: {
-    level:   levels.ERROR,
-    fixer:   fixAmpersand,
+    level: levels.ERROR,
+    fixer: fixAmpersand,
     autoFix: autoFixTypes.IMMEDIATE,
   },
 });
@@ -51,9 +51,9 @@ const validationType = makeValidations({
  * connector into it's canonical value.
  */
 const connectorTransforms = [
-  [ 'vs\\.?', 'vs' ],
-  [ 'and', '&' ],
-  [ 'f(?:ea)?t(?:uring)?[.\']?', 'Ft.' ],
+  ['vs\\.?', 'vs'],
+  ['and', '&'],
+  ["f(?:ea)?t(?:uring)?[.']?", 'Ft.'],
 ];
 
 /**
@@ -63,7 +63,7 @@ function fixConnectors(artistsString) {
   let str = artistsString;
 
   for (const item of connectorTransforms) {
-    const [ pattern, replace ] = item;
+    const [pattern, replace] = item;
     str = str.replace(new RegExp(` ${pattern} `, 'gi'), ` ${replace} `);
   }
 
@@ -82,8 +82,8 @@ function fixAmpersand(artistsString) {
  * typeMapping used for similarity validations.
  */
 const typeMapping = {
-  KNOWN:   validationType.KNOWN_ARTIST,
-  CASING:  validationType.CASE_INCONSISTENT_ARTIST,
+  KNOWN: validationType.KNOWN_ARTIST,
+  CASING: validationType.CASE_INCONSISTENT_ARTIST,
   SIMILAR: validationType.SIMILAR_ARTIST,
   UNKNOWN: validationType.NEW_ARTIST,
 };
@@ -170,6 +170,6 @@ function artist(track, options) {
   return validations;
 }
 
-artist.validatesFields = [ 'artist' ];
+artist.validatesFields = ['artist'];
 
 export { artist, validateArtistsString };

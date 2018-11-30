@@ -37,8 +37,7 @@
 
   .drag-handle {
     opacity: 0;
-    transition: color 150ms ease-in-out,
-                opacity 200ms ease-in-out;
+    transition: color 150ms ease-in-out, opacity 200ms ease-in-out;
     position: absolute;
     left: 2px;
     text-decoration: none;
@@ -52,7 +51,7 @@
     }
   }
 
-  &:hover .drag-handle{
+  &:hover .drag-handle {
     color: #8c969a;
   }
 }

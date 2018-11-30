@@ -8,9 +8,13 @@ $fa-font-path: '~font-awesome/fonts/';
 @import '_mixins';
 @import '_placeholders';
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-ol, ul, li {
+ol,
+ul,
+li {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -20,7 +24,10 @@ a:link {
   text-decoration: none;
 }
 
-body, html, #root, .app {
+body,
+html,
+#root,
+.app {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
   color: #4a585f;
@@ -39,10 +46,8 @@ button {
   border: none;
   font-size: 0.6rem;
   padding: 4px 6px;
-  transition: color 200ms ease-in-out,
-              background 200ms ease-in-out,
-              box-shadow 200ms ease-in-out,
-              border-color 200ms ease-in-out;
+  transition: color 200ms ease-in-out, background 200ms ease-in-out,
+    box-shadow 200ms ease-in-out, border-color 200ms ease-in-out;
 }
 
 .button-busy:before {
@@ -61,4 +66,4 @@ button {
 @import '_artwork';
 @import '_typeahead';
 @import '_importer';
-@import "_validation";
+@import '_validation';

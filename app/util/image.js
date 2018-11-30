@@ -12,12 +12,16 @@ export function buildImageObject(imageBlob) {
 
   objectUrlBlobs[objectURL] = imageBlob;
 
-  const promise = new Promise(resolve => image.onload = _ => resolve({
-    url:        objectURL,
-    size:       imageBlob.size,
-    type:       imageBlob.type,
-    dimensions: { height: image.height, width: image.width },
-  }));
+  const promise = new Promise(
+    resolve =>
+      (image.onload = _ =>
+        resolve({
+          url: objectURL,
+          size: imageBlob.size,
+          type: imageBlob.type,
+          dimensions: { height: image.height, width: image.width },
+        }))
+  );
 
   image.src = objectURL;
 

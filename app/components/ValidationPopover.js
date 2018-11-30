@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import PropTypes  from 'prop-types';
+import PropTypes from 'prop-types';
 
 import * as validate from 'app/validate/utils';
 
@@ -10,12 +10,6 @@ const ValidationPopover = p => {
   if (!p.showValid) {
     items = items.filter(i => i.level !== validate.levels.VALID);
   }
-
-
-
-
-
-
 
   if (items.length === 0) {
     return null;
@@ -28,17 +22,16 @@ const ValidationPopover = p => {
     return <li className={i.level}>{i.message}</li>;
   });
 
-  return <div className={tooltipStyles}>
-    <ul>
-      {validationItems}
-    </ul>
-  </div>;
+  return (
+    <div className={tooltipStyles}>
+      <ul>{validationItems}</ul>
+    </div>
+  );
 };
 
 ValidationPopover.propTypes = {
   validations: PropTypes.instanceOf(validate.Validations).isRequired,
-  showValid:   PropTypes.bool,
+  showValid: PropTypes.bool,
 };
-
 
 export default ValidationPopover;

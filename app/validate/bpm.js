@@ -4,15 +4,15 @@ const bpmPattern = /^[0-9]{2,}\.[0-9]{2}$/;
 
 const validationType = makeValidations({
   VALID_FORMAT: {
-    level:   levels.VALID,
+    level: levels.VALID,
     message: 'BPM is correctly formatted',
   },
 
   INVALID_FORMAT: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: `BPM should match ${bpmPattern}`,
     autoFix: autoFixTypes.POST_EDIT,
-    fixer:   formatBPM,
+    fixer: formatBPM,
   },
 });
 
@@ -51,6 +51,6 @@ function bpm(track) {
   return validations;
 }
 
-bpm.validatesFields = [ 'bpm' ];
+bpm.validatesFields = ['bpm'];
 
 export { bpm };

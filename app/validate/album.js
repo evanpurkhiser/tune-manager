@@ -2,7 +2,7 @@ import { levels, makeValidations, Validations } from './utils';
 
 const validationType = makeValidations({
   EMPTY_WITH_DISC_NUMBER: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: 'A disc number is specified, but no album name',
   },
 });
@@ -15,7 +15,7 @@ const validationType = makeValidations({
  */
 function album(track) {
   const album = track.album || '';
-  const disc  = track.disc  || '';
+  const disc = track.disc || '';
 
   const validations = new Validations();
 
@@ -26,6 +26,6 @@ function album(track) {
   return validations;
 }
 
-album.validatesFields = [ 'album', 'disc' ];
+album.validatesFields = ['album', 'disc'];
 
 export { album };

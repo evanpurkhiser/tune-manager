@@ -1,7 +1,7 @@
 import * as lodash from 'lodash';
-import keycomb     from 'keycomb';
-import PropTypes   from 'prop-types';
-import React       from 'react';
+import keycomb from 'keycomb';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 /**
  * actionHandler is a function factory that given a map will produce a keyboard
@@ -32,16 +32,17 @@ const actionHandler = map => e => {
  *
  *  { keys: { keyCode: 64, ctrlKey: true }, action: doSomething }
  */
-const transformMap = map => lodash.map(map, (fn, s) => {
-  const keyObject = keycomb(s);
+const transformMap = map =>
+  lodash.map(map, (fn, s) => {
+    const keyObject = keycomb(s);
 
-  // keycomb supports multiple non-modifier keys, thus makes the keyCode
-  // property an array. Flatten this to the first object since we will be
-  // matching against keyboard events that *do not* have multiple key codes.
-  keyObject.keyCode = keyObject.keyCode.shift();
+    // keycomb supports multiple non-modifier keys, thus makes the keyCode
+    // property an array. Flatten this to the first object since we will be
+    // matching against keyboard events that *do not* have multiple key codes.
+    keyObject.keyCode = keyObject.keyCode.shift();
 
-  return { keys: keyObject, action: fn };
-});
+    return { keys: keyObject, action: fn };
+  });
 
 /**
  * keyMapper is a factory function which given a map of the shape:
@@ -60,13 +61,12 @@ const keyMapper = map => actionHandler(transformMap(map));
 function KeyboardNavigatable(props) {
   const { count, index, onMoveFocus, extraKeys, children, ...rest } = props;
 
-  const incrementIndex = delta => onMoveFocus(index + delta < 0
-    ? count - 1
-    : (index + delta) % count);
+  const incrementIndex = delta =>
+    onMoveFocus(index + delta < 0 ? count - 1 : (index + delta) % count);
 
   const handler = keyMapper({
     right: _ => incrementIndex(1),
-    left:  _ => incrementIndex(-1),
+    left: _ => incrementIndex(-1),
     ...extraKeys,
   });
 
@@ -76,14 +76,18 @@ function KeyboardNavigatable(props) {
     delete rest.elementRef;
   }
 
-  return <div onKeyDown={handler} {...rest}>{children}</div>;
+  return (
+    <div onKeyDown={handler} {...rest}>
+      {children}
+    </div>
+  );
 }
 
 KeyboardNavigatable.propTypes = {
-  count:       PropTypes.number.isRequired,
-  index:       PropTypes.number.isRequired,
+  count: PropTypes.number.isRequired,
+  index: PropTypes.number.isRequired,
   onMoveFocus: PropTypes.func.isRequired,
-  extraKeys:   PropTypes.object,
+  extraKeys: PropTypes.object,
 };
 
 export { keyMapper, KeyboardNavigatable };

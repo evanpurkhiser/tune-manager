@@ -3,18 +3,18 @@ import { remixPattern } from 'app/util/artistMatch';
 
 const validationType = makeValidations({
   EMPTY: {
-    level:   levels.ERROR,
+    level: levels.ERROR,
     message: 'Title must not be left empty',
   },
 
   NOT_EMPTY: {
-    level:   levels.VALID,
+    level: levels.VALID,
     message: 'Title is not empty',
   },
 
   NO_ORIGINAL_MIX: {
-    level:   levels.ERROR,
-    fixer:   removeOriginalMix,
+    level: levels.ERROR,
+    fixer: removeOriginalMix,
     autoFix: autoFixTypes.POST_EDIT,
   },
 
@@ -39,8 +39,8 @@ const validationType = makeValidations({
   },
 
   BAD_REMIX_FORMAT: {
-    level:   levels.ERROR,
-    fixer:   fixRemixCasing,
+    level: levels.ERROR,
+    fixer: fixRemixCasing,
     autoFix: autoFixTypes.IMMEDIATE,
   },
 });
@@ -94,7 +94,7 @@ const featPattern = /[ [(]f(?:ea)?t\.?/i;
  *       note.
  */
 function title(track) {
-  const title   = track.title   || '';
+  const title = track.title || '';
   const remixer = track.remixer || '';
 
   const validations = new Validations();
@@ -148,6 +148,6 @@ function title(track) {
   return validations;
 }
 
-title.validatesFields = [ 'title', 'remixer' ];
+title.validatesFields = ['title', 'remixer'];
 
 export { title, remixPattern };

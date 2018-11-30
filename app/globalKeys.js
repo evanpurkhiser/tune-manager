@@ -1,9 +1,9 @@
-import * as action   from 'app/store/actions';
+import * as action from 'app/store/actions';
 import { keyMapper } from 'app/util/keyboard';
-import store         from 'app/store';
+import store from 'app/store';
 
-const DIRECTION_UP   = -1;
-const DIRECTION_DOWN =  1;
+const DIRECTION_UP = -1;
+const DIRECTION_DOWN = 1;
 
 function toggleSelectFocused(e) {
   const track = e.target.closest('.track-listing');
@@ -12,7 +12,7 @@ function toggleSelectFocused(e) {
   }
 
   const state = track.querySelector('.listing-check input').checked;
-  store.dispatch(action.toggleSelect(!state, [ track.dataset.trackid ]));
+  store.dispatch(action.toggleSelect(!state, [track.dataset.trackid]));
   return true;
 }
 
@@ -22,9 +22,9 @@ function toggleGroupFocused(e) {
     return;
   }
 
-  const tracks   = [ ...group.querySelectorAll('.track-listing') ];
+  const tracks = [...group.querySelectorAll('.track-listing')];
   const trackIds = tracks.map(n => n.dataset.trackid);
-  const state    = group.querySelector('.listing-name input').checked;
+  const state = group.querySelector('.listing-name input').checked;
 
   store.dispatch(action.toggleSelect(!state, trackIds));
   return true;
@@ -36,13 +36,11 @@ function unselectAll() {
 }
 
 function nextInTargetParent(target, direction) {
-  const loopAroundSelector = direction > 0
-    ? ':scope > :first-child'
-    : ':scope > :last-child';
+  const loopAroundSelector =
+    direction > 0 ? ':scope > :first-child' : ':scope > :last-child';
 
-  const nextTarget = direction > 0
-    ? target.nextElementSibling
-    : target.previousElementSibling;
+  const nextTarget =
+    direction > 0 ? target.nextElementSibling : target.previousElementSibling;
 
   // Loop-around if we've reached the last track in the group
   return nextTarget === null
@@ -51,7 +49,7 @@ function nextInTargetParent(target, direction) {
 }
 
 function focusableInTrack(track, fieldIndex) {
-  const targetField  = track.children[fieldIndex];
+  const targetField = track.children[fieldIndex];
   const inputElement = targetField.querySelector('input');
 
   return inputElement === null ? targetField : inputElement;
@@ -73,8 +71,8 @@ function moveTrackFocus(e, direction) {
   }
 
   const track = field.closest('.track-listing');
-  const fieldIndex = [ ...track.children ].indexOf(field);
-  const nextTrack  = nextInTargetParent(track, direction);
+  const fieldIndex = [...track.children].indexOf(field);
+  const nextTrack = nextInTargetParent(track, direction);
 
   const focusTarget = focusableInTrack(nextTrack, fieldIndex);
   setFocusAndSelection(focusTarget);
@@ -91,7 +89,7 @@ function moveGroupFocus(e, direction) {
 
   const group = field.closest('.track-group');
   const track = field.closest('.track-listing');
-  const fieldIndex = [ ...track.children ].indexOf(field);
+  const fieldIndex = [...track.children].indexOf(field);
 
   const nextGroup = nextInTargetParent(group, direction);
   const nextTrack = nextGroup.querySelector('.track-listing');

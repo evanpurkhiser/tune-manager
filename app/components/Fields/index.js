@@ -1,12 +1,12 @@
-import * as path            from 'path';
+import * as path from 'path';
 import React, { Component } from 'react';
-import classNames           from 'classnames';
+import classNames from 'classnames';
 
-import * as action       from 'app/store/actions';
-import * as validate     from 'app/validate';
-import { keyMapper }     from 'app/util/keyboard';
-import { splitOn }       from 'app/util/artistMatch';
-import TypeaheadInput    from 'app/components/TypeaheadInput';
+import * as action from 'app/store/actions';
+import * as validate from 'app/validate';
+import { keyMapper } from 'app/util/keyboard';
+import { splitOn } from 'app/util/artistMatch';
+import TypeaheadInput from 'app/components/TypeaheadInput';
 import ValidationPopover from 'app/components/ValidationPopover';
 
 /**
@@ -19,8 +19,8 @@ class Field extends Component {
     this.acceptChanges = this.acceptChanges.bind(this);
 
     this.keyMapper = keyMapper({
-      'enter':  this.acceptChanges,
-      'escape': this.acceptChanges,
+      enter: this.acceptChanges,
+      escape: this.acceptChanges,
     });
 
     // Allow onAccept to be called immideately after onChange. Using setState
@@ -44,7 +44,7 @@ class Field extends Component {
 
   onChange(value) {
     const validations = this.getValidations(this.props, value);
-    const fixedValue  = validations.autoFix(value);
+    const fixedValue = validations.autoFix(value);
 
     this.immediateValue = fixedValue;
     this.setState({ validations, value: fixedValue });
@@ -63,9 +63,9 @@ class Field extends Component {
   }
 
   acceptChanges() {
-    const id    = this.props.track.id;
-    const name  = this.props.name;
-    let value   = this.immediateValue.trim();
+    const id = this.props.track.id;
+    const name = this.props.name;
+    let value = this.immediateValue.trim();
 
     // Execute post-edit auto fixes
     value = this.state.validations.autoFix(value, [
@@ -98,92 +98,106 @@ class Field extends Component {
     ]);
 
     const props = {
-      onBlur:    _ => this.blurField(),
-      onFocus:   _ => this.focusField(),
-      onChange:  e => this.onChange(e.target.value),
+      onBlur: _ => this.blurField(),
+      onFocus: _ => this.focusField(),
+      onChange: e => this.onChange(e.target.value),
       onKeyDown: this.keyMapper,
-      value:     this.state.value || '',
+      value: this.state.value || '',
     };
 
-    const input = this.props.typeahead
-      ? <TypeaheadInput { ...this.props.typeahead } { ...props } />
-      : <input type="text" spellCheck="false" { ...props } />;
+    const input = this.props.typeahead ? (
+      <TypeaheadInput {...this.props.typeahead} {...props} />
+    ) : (
+      <input type="text" spellCheck="false" {...props} />
+    );
 
-    const validationPopover = this.state.focused
-      ? <ValidationPopover validations={this.state.validations} />
-      : null;
+    const validationPopover = this.state.focused ? (
+      <ValidationPopover validations={this.state.validations} />
+    ) : null;
 
-    return <div className={classes}>
-      {input}
-      {validationPopover}
-    </div>;
+    return (
+      <div className={classes}>
+        {input}
+        {validationPopover}
+      </div>
+    );
   }
 }
 
-export const Artist = p => <Field {...p}
-  name="artist"
-  validator={validate.artist}
-  validatorOptions={{ knownArtists: p.knownValues.artists }}
-  typeahead={{ source: p.knownValues.artists.clean, splitter: splitOn }} />;
+export const Artist = p => (
+  <Field
+    {...p}
+    name="artist"
+    validator={validate.artist}
+    validatorOptions={{ knownArtists: p.knownValues.artists }}
+    typeahead={{ source: p.knownValues.artists.clean, splitter: splitOn }}
+  />
+);
 
-export const Title = p => <Field {...p}
-  name="title"
-  validator={validate.title} />;
+export const Title = p => (
+  <Field {...p} name="title" validator={validate.title} />
+);
 
-export const Remixer = p => <Field {...p}
-  name="remixer"
-  validator={validate.remixer}
-  validatorOptions={{ knownArtists: p.knownValues.artists }}
-  typeahead={{ source: p.knownValues.artists.clean, splitter: splitOn }} />;
+export const Remixer = p => (
+  <Field
+    {...p}
+    name="remixer"
+    validator={validate.remixer}
+    validatorOptions={{ knownArtists: p.knownValues.artists }}
+    typeahead={{ source: p.knownValues.artists.clean, splitter: splitOn }}
+  />
+);
 
-export const Album = p => <Field {...p}
-  name="album"
-  validator={validate.album} />;
+export const Album = p => (
+  <Field {...p} name="album" validator={validate.album} />
+);
 
-export const Publisher = p => <Field {...p}
-  name="publisher"
-  validator={validate.publisher}
-  validatorOptions={{ knownPublishers: p.knownValues.publishers }}
-  typeahead={{ source: p.knownValues.publishers.clean }} />;
+export const Publisher = p => (
+  <Field
+    {...p}
+    name="publisher"
+    validator={validate.publisher}
+    validatorOptions={{ knownPublishers: p.knownValues.publishers }}
+    typeahead={{ source: p.knownValues.publishers.clean }}
+  />
+);
 
-export const Release = p => <Field {...p}
-  name="release"
-  validator={validate.release} />;
+export const Release = p => (
+  <Field {...p} name="release" validator={validate.release} />
+);
 
-export const Year = p => <Field {...p}
-  name="year"
-  validator={validate.year} />;
+export const Year = p => <Field {...p} name="year" validator={validate.year} />;
 
-export const Genre = p => <Field {...p}
-  name="genre"
-  validator={validate.genre}
-  validatorOptions={{ knownGenres: p.knownValues.genres }}
-  typeahead={{ source: p.knownValues.genres.clean }} />;
+export const Genre = p => (
+  <Field
+    {...p}
+    name="genre"
+    validator={validate.genre}
+    validatorOptions={{ knownGenres: p.knownValues.genres }}
+    typeahead={{ source: p.knownValues.genres.clean }}
+  />
+);
 
-export const TrackNumber = p => <Field {...p}
-  name="track"
-  validator={validate.track} />;
+export const TrackNumber = p => (
+  <Field {...p} name="track" validator={validate.track} />
+);
 
-export const DiscNumber = p => <Field {...p}
-  name="disc"
-  validator={validate.disc} />;
+export const DiscNumber = p => (
+  <Field {...p} name="disc" validator={validate.disc} />
+);
 
-export const BPM = p => <Field {...p}
-  name="bpm"
-  validator={validate.bpm} />;
+export const BPM = p => <Field {...p} name="bpm" validator={validate.bpm} />;
 
 export const Key = p => {
   const isComputing = p.processes.includes('KEY_COMPUTING');
 
   const classes = classNames({
     field: true,
-    key:   true,
+    key: true,
     computing: isComputing,
   });
 
-  return <div className={classes}>
-    {p.track.key}
-  </div>;
+  return <div className={classes}>{p.track.key}</div>;
 };
 
 export function FileName(props) {

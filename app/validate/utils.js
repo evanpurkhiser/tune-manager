@@ -1,14 +1,14 @@
 import * as similarity from 'string-similarity';
-import format          from 'string-format';
+import format from 'string-format';
 
 /**
  * Validation levels
  */
 export const levels = {
-  ERROR:   'error',
+  ERROR: 'error',
   WARNING: 'warning',
-  INFO:    'info',
-  VALID:   'valid',
+  INFO: 'info',
+  VALID: 'valid',
 };
 
 /**
@@ -56,7 +56,7 @@ export class Validations {
    * Add a new item to the list of validations.
    */
   add(validation, { fields = {} } = {}) {
-    const item =  { ...validation, fields };
+    const item = { ...validation, fields };
 
     if (typeof item.message === 'string') {
       item.message = format(item.message, fields);
@@ -92,7 +92,7 @@ export class Validations {
    * If a automatic fix is able to be applied, the validation will be removed
    * from the list of validations as it's considered to be 'fixed'.
    */
-  autoFix(value, types = [ autoFixTypes.IMMEDIATE ]) {
+  autoFix(value, types = [autoFixTypes.IMMEDIATE]) {
     const fixers = this.items
       .filter(v => types.includes(v.autoFix))
       .map(v => v.fixer);

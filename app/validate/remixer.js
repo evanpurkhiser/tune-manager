@@ -4,7 +4,7 @@ import { validateArtistsString } from './artist';
 
 const validationType = makeValidations({
   TITLE_HAS_REMIXER: {
-    level:   levels.WARNING,
+    level: levels.WARNING,
     message: 'Title has remixer, but remixer field missing',
   },
 });
@@ -19,7 +19,7 @@ const validationType = makeValidations({
  */
 function remixer(track, options) {
   const remixer = track.remixer || '';
-  const title   = track.title   || '';
+  const title = track.title || '';
 
   const validations = new Validations();
 
@@ -38,6 +38,6 @@ function remixer(track, options) {
   return validations;
 }
 
-remixer.validatesFields = [ 'remixer', 'title' ];
+remixer.validatesFields = ['remixer', 'title'];
 
 export { remixer };

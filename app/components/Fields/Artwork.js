@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import classNames  from 'classnames';
+import classNames from 'classnames';
 import prettyBytes from 'pretty-bytes';
-import PropTypes   from 'prop-types';
+import PropTypes from 'prop-types';
 
-import * as action             from 'app/store/actions';
-import * as validateArt        from 'app/validate/artwork';
-import { buildImageObject }    from 'app/util/image';
+import * as action from 'app/store/actions';
+import * as validateArt from 'app/validate/artwork';
+import { buildImageObject } from 'app/util/image';
 import { KeyboardNavigatable } from 'app/util/keyboard';
 
 const MIME_MAPPING = {
-  'image/png':  'PNG',
+  'image/png': 'PNG',
   'image/jpeg': 'JPEG',
-  'image/gif':  'GIF',
+  'image/gif': 'GIF',
   'image/tiff': 'TIFF',
 };
 
-const ALLOWED_EXTENSIONS = [ '.jpg', '.jpeg', '.png' ].join(',');
+const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png'].join(',');
 
 /**
  * ArtworkEntry renders a single list item in the list of artwork. This
@@ -35,24 +35,28 @@ const ArtworkEntry = p => {
 
   const itemClasses = classNames({ selected: p.isSelected });
 
-  return <li onClick={p.onSelect} className={itemClasses}>
-    <ul className="actions">
-      <li onClick={p.onRemove} className="remove" />
-      <li onClick={p.onMaximize} className="maximize" />
-    </ul>
-    <img src={p.artwork.url} alt="Album Artwork" />
-    <ul className="details">
-      <li>{type} – {size}</li>
-      <li className={dimensionClasses}>{dimensionText}</li>
-    </ul>
-  </li>;
+  return (
+    <li onClick={p.onSelect} className={itemClasses}>
+      <ul className="actions">
+        <li onClick={p.onRemove} className="remove" />
+        <li onClick={p.onMaximize} className="maximize" />
+      </ul>
+      <img src={p.artwork.url} alt="Album Artwork" />
+      <ul className="details">
+        <li>
+          {type} – {size}
+        </li>
+        <li className={dimensionClasses}>{dimensionText}</li>
+      </ul>
+    </li>
+  );
 };
 
 ArtworkEntry.propTypes = {
-  artwork:    PropTypes.object.isRequired,
+  artwork: PropTypes.object.isRequired,
   isSelected: PropTypes.bool,
-  onSelect:   PropTypes.func.isRequired,
-  onRemove:   PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
   onMaximize: PropTypes.func.isRequired,
 };
 
@@ -60,23 +64,25 @@ ArtworkEntry.propTypes = {
  * ArtworkUploader is a artwory entry that is used to select a new artwork
  * file.
  */
-const ArtworkUploader = p => <li
-  className={classNames('uploader', { selected: p.isSelected })}>
-  <label>
-    <ul className="details">
-      <li>PNG or JPEG</li>
-      <li>Min 500 × 500</li>
-    </ul>
-    <input
-      type="file"
-      accept={ALLOWED_EXTENSIONS}
-      onChange={e => p.onFileSelect(e.target.files[0])} />
-  </label>
-</li>;
+const ArtworkUploader = p => (
+  <li className={classNames('uploader', { selected: p.isSelected })}>
+    <label>
+      <ul className="details">
+        <li>PNG or JPEG</li>
+        <li>Min 500 × 500</li>
+      </ul>
+      <input
+        type="file"
+        accept={ALLOWED_EXTENSIONS}
+        onChange={e => p.onFileSelect(e.target.files[0])}
+      />
+    </label>
+  </li>
+);
 
 ArtworkUploader.propTypes = {
   onFileSelect: PropTypes.func,
-  isSelected:   PropTypes.bool,
+  isSelected: PropTypes.bool,
 };
 
 /**
@@ -88,39 +94,49 @@ const ArtworkPopover = p => {
     action(...params);
   };
 
-  const items = p.artwork.filter(x => x).map((a, i) => <ArtworkEntry
-    isSelected={p.selected === i}
-    onSelect={fireAction(p.onSelect, i)}
-    onRemove={fireAction(p.onRemove, i)}
-    onMaximize={fireAction(p.onMaximize, i)}
-    artwork={a}
-    key={i} />);
+  const items = p.artwork
+    .filter(x => x)
+    .map((a, i) => (
+      <ArtworkEntry
+        isSelected={p.selected === i}
+        onSelect={fireAction(p.onSelect, i)}
+        onRemove={fireAction(p.onRemove, i)}
+        onMaximize={fireAction(p.onMaximize, i)}
+        artwork={a}
+        key={i}
+      />
+    ));
 
-  return <ul className="artwork-popover">
-    {items}
-    <ArtworkUploader
-      onFileSelect={p.onFileSelect}
-      isSelected={p.selected === p.artwork.length} />
-  </ul>;
+  return (
+    <ul className="artwork-popover">
+      {items}
+      <ArtworkUploader
+        onFileSelect={p.onFileSelect}
+        isSelected={p.selected === p.artwork.length}
+      />
+    </ul>
+  );
 };
 
 ArtworkPopover.propTypes = {
-  artwork:      PropTypes.arrayOf(PropTypes.object).isRequired,
-  shown:        PropTypes.bool,
-  selected:     PropTypes.number,
-  onSelect:     PropTypes.func.isRequired,
-  onMaximize:   PropTypes.func.isRequired,
-  onRemove:     PropTypes.func.isRequired,
+  artwork: PropTypes.arrayOf(PropTypes.object).isRequired,
+  shown: PropTypes.bool,
+  selected: PropTypes.number,
+  onSelect: PropTypes.func.isRequired,
+  onMaximize: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
   onFileSelect: PropTypes.func.isRequired,
 };
 
-const ArtworkFullscreen = p => <div
-  className="fullscreen-artwork"
-  onClick={p.onExit}>
-  <img alt="Full size Album Artwork"
-    src={p.artwork.url}
-    onClick={e => e.stopPropagation()} />
-</div>;
+const ArtworkFullscreen = p => (
+  <div className="fullscreen-artwork" onClick={p.onExit}>
+    <img
+      alt="Full size Album Artwork"
+      src={p.artwork.url}
+      onClick={e => e.stopPropagation()}
+    />
+  </div>
+);
 
 ArtworkPopover.propTypes = {
   artwork: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -132,11 +148,11 @@ class Artwork extends Component {
     super();
 
     this.keyboardMapping = {
-      enter:     _ => this.keyboardEvent(this.onSelectOrUpload),
-      space:     _ => this.keyboardEvent(this.onMaximize),
+      enter: _ => this.keyboardEvent(this.onSelectOrUpload),
+      space: _ => this.keyboardEvent(this.onMaximize),
       backspace: _ => this.keyboardEvent(this.onRemove),
-      delete:    _ => this.keyboardEvent(this.onRemove),
-      escape:    _ => this.onMinimize(),
+      delete: _ => this.keyboardEvent(this.onRemove),
+      escape: _ => this.onMinimize(),
     };
 
     this.DOMNode = undefined;
@@ -144,9 +160,10 @@ class Artwork extends Component {
   }
 
   keyboardEvent(action) {
-    const focusedIndex = this.state.focused === null
-      ? this.props.track.artworkSelected
-      : this.state.focused;
+    const focusedIndex =
+      this.state.focused === null
+        ? this.props.track.artworkSelected
+        : this.state.focused;
 
     action.call(this, focusedIndex);
 
@@ -158,9 +175,10 @@ class Artwork extends Component {
   }
 
   onSelectOrUpload(index) {
-    const action = index < this.props.track.artwork.length
-      ? this.onSelect
-      : this.onOpenFileSelector;
+    const action =
+      index < this.props.track.artwork.length
+        ? this.onSelect
+        : this.onOpenFileSelector;
 
     action.call(this, index);
   }
@@ -202,55 +220,62 @@ class Artwork extends Component {
     const track = this.props.track;
 
     const trackArt = track.artwork || [];
-    const artwork  = trackArt.map(k => this.props.artwork[k]);
+    const artwork = trackArt.map(k => this.props.artwork[k]);
 
     const selectedIndex = track.artworkSelected;
     const selectedArt = artwork[selectedIndex];
 
-    const focusedIndex = this.state.focused === null
-      ? selectedIndex
-      : this.state.focused;
+    const focusedIndex =
+      this.state.focused === null ? selectedIndex : this.state.focused;
 
     const loading = trackArt.length > 0 && selectedIndex !== null;
     const emptyClasses = classNames('empty-artwork', { loading });
 
-    const element = selectedArt
-      ? <img src={selectedArt.url} alt="" />
-      : <div className={emptyClasses}></div>;
+    const element = selectedArt ? (
+      <img src={selectedArt.url} alt="" />
+    ) : (
+      <div className={emptyClasses} />
+    );
 
-    const maximizedArt = !this.state.maximized || focusedIndex === artwork.length
-      ? null
-      : <ArtworkFullscreen
-        artwork={artwork[this.state.focused]}
-        onExit={_ => this.onMinimize()} />;
+    const maximizedArt =
+      !this.state.maximized || focusedIndex === artwork.length ? null : (
+        <ArtworkFullscreen
+          artwork={artwork[this.state.focused]}
+          onExit={_ => this.onMinimize()}
+        />
+      );
 
-    const popover = this.state.active === false
-      ? null
-      : <ArtworkPopover
+    const popover =
+      this.state.active === false ? null : (
+        <ArtworkPopover
           artwork={artwork}
           selected={focusedIndex}
           onSelect={i => this.onSelect(i)}
           onRemove={i => this.onRemove(i)}
           onMaximize={i => this.onMaximize(i)}
-          onFileSelect={f => this.onFileSelect(f)} />;
+          onFileSelect={f => this.onFileSelect(f)}
+        />
+      );
 
     const validations = validateArt.individualArtwork(selectedArt);
     const classes = classNames('field marked artwork', validations.level());
 
-    return <KeyboardNavigatable
-      count={artwork.length + 1}
-      index={focusedIndex}
-      onMoveFocus={i => this.onFocused(i)}
-      extraKeys={this.keyboardMapping}
-      className={classes}
-      tabIndex={0}
-      elementRef={e => this.DOMNode = e}
-      onFocus={_ => this.setState({ active: true })}
-      onBlur={_ => this.blur()}>
-      {element}
-      {popover}
-      {maximizedArt}
-    </KeyboardNavigatable>;
+    return (
+      <KeyboardNavigatable
+        count={artwork.length + 1}
+        index={focusedIndex}
+        onMoveFocus={i => this.onFocused(i)}
+        extraKeys={this.keyboardMapping}
+        className={classes}
+        tabIndex={0}
+        elementRef={e => (this.DOMNode = e)}
+        onFocus={_ => this.setState({ active: true })}
+        onBlur={_ => this.blur()}>
+        {element}
+        {popover}
+        {maximizedArt}
+      </KeyboardNavigatable>
+    );
   }
 }
 

@@ -4,7 +4,7 @@ class ScrollLockList extends PureComponent {
   constructor() {
     super();
     this.disableScroll = this.disableScroll.bind(this);
-    this.enableScroll  = this.enableScroll.bind(this);
+    this.enableScroll = this.enableScroll.bind(this);
   }
 
   componentWillUnmount() {
@@ -20,11 +20,14 @@ class ScrollLockList extends PureComponent {
   }
 
   render() {
-    return <ul { ...this.props }
-      onMouseOver={this.disableScroll}
-      onMouseOut={this.enableScroll}>
-      {this.props.children}
-    </ul>;
+    return (
+      <ul
+        {...this.props}
+        onMouseOver={this.disableScroll}
+        onMouseOut={this.enableScroll}>
+        {this.props.children}
+      </ul>
+    );
   }
 }
 

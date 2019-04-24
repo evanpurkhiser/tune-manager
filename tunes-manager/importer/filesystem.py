@@ -20,11 +20,12 @@ import utils.watchdog
 
 # This list specifies file extensions that are directly supported for
 # importing, without requiring any type of conversion.
-VALID_FORMATS = ['.mp3', '.aif', '.aiff']
+VALID_FORMATS = [".mp3", ".aif", ".aiff"]
 
 
 def future_raise(future):
-    if future.exception(): raise future.exception()
+    if future.exception():
+        raise future.exception()
 
 
 def file_id(path):
@@ -32,20 +33,20 @@ def file_id(path):
     Compute the identifier of a file given it's path. This is simply the md5
     sum of the file path without the file extension.
     """
-    return hashlib.md5(os.path.splitext(path)[0].encode('utf-8')).hexdigest()
+    return hashlib.md5(os.path.splitext(path)[0].encode("utf-8")).hexdigest()
 
 
 class EventType(enum.Enum):
-    TRACK_DETAILS    = enum.auto()
-    TRACK_REMOVED    = enum.auto()
+    TRACK_DETAILS = enum.auto()
+    TRACK_REMOVED = enum.auto()
     TRACK_PROCESSING = enum.auto()
-    TRACK_UPDATE     = enum.auto()
-    TRACK_SAVED      = enum.auto()
+    TRACK_UPDATE = enum.auto()
+    TRACK_SAVED = enum.auto()
 
 
 class TrackProcesses(enum.Enum):
-    CONVERTING      = enum.auto()
-    KEY_COMPUTING   = enum.auto()
+    CONVERTING = enum.auto()
+    KEY_COMPUTING = enum.auto()
     BEATPORT_IMPORT = enum.auto()
 
 
@@ -107,6 +108,7 @@ class TrackProcessor(object):
 
     The websocket connection is available at ws://localhost:9000.
     """
+
     def __init__(self, import_path, batch_period=300, loop=None):
         self.import_path = import_path
         self.batch_period = batch_period
@@ -143,7 +145,8 @@ class TrackProcessor(object):
 
         async def file_dispatcher():
             observer.start()
-            while True: await asyncio.sleep(1)
+            while True:
+                await asyncio.sleep(1)
 
         # kickoff coroutines
         asyncio.ensure_future(file_dispatcher(), loop=self.loop)
@@ -154,7 +157,8 @@ class TrackProcessor(object):
         self.report_state(ws)
 
         try:
-            while True: await ws.recv()
+            while True:
+                await ws.recv()
         except Exception:
             self.connections.remove(ws)
 
@@ -185,10 +189,7 @@ class TrackProcessor(object):
         import collection this method will be called, triggering the
         appropriate action.
         """
-        commands = {
-            'created': self.add_safe,
-            'deleted': self.remove,
-        }
+        commands = {"created": self.add_safe, "deleted": self.remove}
 
         if event.is_directory or event.event_type not in commands:
             return
@@ -196,25 +197,25 @@ class TrackProcessor(object):
         commands[event.event_type](event.src_path)
 
     def group_events(self, events):
-        key_on = lambda k: k['type']
+        key_on = lambda k: k["type"]
 
         events.sort(key=key_on)
 
         for event_type, items in itertools.groupby(events, key=key_on):
-            items = [e['item'] for e in items]
-            yield { 'type': event_type, 'items': items }
+            items = [e["item"] for e in items]
+            yield {"type": event_type, "items": items}
 
     def send_event(self, event_type, identifier, **kwargs):
-        item = { 'id': identifier }
+        item = {"id": identifier}
         item.update(kwargs)
 
-        self.events.put_nowait({ 'type': event_type.name, 'item': item })
+        self.events.put_nowait({"type": event_type.name, "item": item})
 
     def send_details(self, identifier, track):
         self.send_event(EventType.TRACK_DETAILS, identifier, **track)
 
     def send_processing(self, identifier, process):
-        item = {'process': process.name}
+        item = {"process": process.name}
         self.send_event(EventType.TRACK_PROCESSING, identifier, **item)
 
     def add_processing(self, identifier, process):
@@ -224,7 +225,7 @@ class TrackProcessor(object):
     def done_processing(self, identifier, completed_process, **kwargs):
         self.processing.remove((identifier, completed_process))
 
-        item = {'completed_process': completed_process.name}
+        item = {"completed_process": completed_process.name}
         item.update(kwargs)
         self.send_event(EventType.TRACK_UPDATE, identifier, **item)
 
@@ -256,29 +257,29 @@ class TrackProcessor(object):
         media.key = keyfinder.key(media.file_path).camelot().zfill(3)
         self.done_processing(identifier, process, key=media.key)
 
-        #media.save()
+        # media.save()
 
     def beatport_update(self, identifier, media):
         process = TrackProcesses.BEATPORT_IMPORT
         self.add_processing(identifier, process)
 
-        fields = importer.beatport.process(media);
+        fields = importer.beatport.process(media)
         self.done_processing(identifier, process, **fields)
 
-        #media.save()
+        # media.save()
 
     def save_track(self, track, options={}):
-        identifier = track['id']
+        identifier = track["id"]
         assert identifier in self.mediafiles
 
         media = self.mediafiles[identifier]
 
-        artwork = self.artwork.get(track['artwork'])
+        artwork = self.artwork.get(track["artwork"])
         if artwork:
             artwork = utils.image.normalize_artwork(artwork)
-            track['artwork'] = artwork
+            track["artwork"] = artwork
         else:
-            track['artwork'] = None
+            track["artwork"] = None
 
         track = [(k, v) for k, v in track.items() if hasattr(media, k) and v]
 
@@ -290,7 +291,7 @@ class TrackProcessor(object):
         media.save()
 
         standard_path = utils.file.determine_path(media)
-        migrate_path = options.get('migrate_path')
+        migrate_path = options.get("migrate_path")
         if migrate_path:
             # Expect that this will be removed, do not notify the client, it
             # will handle removal of the track listing itself.
@@ -304,7 +305,7 @@ class TrackProcessor(object):
             media.reload()
 
         # Link the track to it's other specified paths
-        for link_path in options.get('link_paths', []):
+        for link_path in options.get("link_paths", []):
             path = os.path.join(link_path, standard_path)
             os.makedirs(os.path.dirname(path), exist_ok=True)
             os.symlink(media.file_path, new_path)
@@ -319,7 +320,7 @@ class TrackProcessor(object):
         """
         Add all existing tracks in the import path
         """
-        path  = self.import_path
+        path = self.import_path
         types = tuple(VALID_FORMATS + importer.convert.CONVERTABLE_FORMATS)
 
         for path in utils.file.collect_files([path], recursive=True, types=types):
@@ -350,9 +351,9 @@ class TrackProcessor(object):
         identifier = file_id(path)
         ext = os.path.splitext(path)[1]
 
-        if ext == '.aiff':
-            ext = '.aif'
-            new_path = path[:-5]+ext
+        if ext == ".aiff":
+            ext = ".aif"
+            new_path = path[:-5] + ext
             os.rename(path, new_path)
             path = new_path
 
@@ -367,7 +368,7 @@ class TrackProcessor(object):
 
         # Apple likes to litter these files into directories, don't even
         # attempt to read them as it will just immediately fail
-        if os.path.basename(path).startswith('._'):
+        if os.path.basename(path).startswith("._"):
             return
 
         # Track ready to be reported
@@ -376,8 +377,8 @@ class TrackProcessor(object):
         # Recompute the key if it is missing or invalid
         valid_keys = keyfinder.notations.camelot.values()
 
-        if not media.key or not media.key.strip('0') in valid_keys:
-            media.key = ''
+        if not media.key or not media.key.strip("0") in valid_keys:
+            media.key = ""
             self.execute_paralell(self.compute_key, identifier, media)
 
         # Request more details from beatport
@@ -386,6 +387,8 @@ class TrackProcessor(object):
 
         self.mediafiles[identifier] = media
         self.cache_art(media.artwork)
+
+        print("Added track!!")
 
         # Report track details
         track = mediafile.serialize(media, trim_path=self.import_path)

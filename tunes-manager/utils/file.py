@@ -18,7 +18,8 @@ PATH_REPLACMENTS = {
 
 
 def determine_path(media):
-    """Determine the filename and path of a track based on it's tags
+    """
+    Determine the filename and path of a track based on it's tags
     """
     path_parts = []
     name_parts = []
@@ -82,7 +83,8 @@ def determine_path(media):
 
 
 def track_path(path, library_path):
-    """Normalize track path by removing the library path
+    """
+    Normalize track path by removing the library path
     """
     if not path.startswith(library_path):
         raise RuntimeError('Track path is not within the library')
@@ -94,7 +96,8 @@ def track_path(path, library_path):
 
 
 def collect_files(paths, recursive=False, types=FILE_TYPES):
-    """Collect paths to all supported media files given a list of directories
+    """
+    Collect paths to all supported media files given a list of directories
     """
     files = set()
 

@@ -5,12 +5,12 @@ import subprocess
 import tempfile
 
 # This list specifies file extensions that can be automatically converted.
-CONVERTABLE_FORMATS = ['.wav', '.flac']
+CONVERTABLE_FORMATS = [".wav", ".flac"]
 
 remap = {
-    'TXXX:ARRANGER':     ID3.TPE4,
-    'TXXX:ORGANIZATION': ID3.TPUB,
-    'TXXX:COMMENT':      ID3.COMM,
+    "TXXX:ARRANGER": ID3.TPE4,
+    "TXXX:ORGANIZATION": ID3.TPUB,
+    "TXXX:COMMENT": ID3.COMM,
 }
 
 
@@ -26,7 +26,7 @@ def remap_id3tags(path):
         if tag_name not in track:
             continue
 
-        new_tag = mapped_tag(encoding=3, desc='', text=track[tag_name].text[0])
+        new_tag = mapped_tag(encoding=3, desc="", text=track[tag_name].text[0])
         track[new_tag.FrameID] = new_tag
         del track[tag_name]
 
@@ -38,7 +38,7 @@ def convert_track(path):
     Execute an ffmpeg dance to convert the provided file from a convertable
     format into a AIFF file.
     """
-    new_path = os.path.splitext(path)[0] + '.aif'
+    new_path = os.path.splitext(path)[0] + ".aif"
 
     # We create a temporary file to write the converted file into so that the
     # ImporterWatcher doesn't pickup on the new file until *after* we have
@@ -49,14 +49,14 @@ def convert_track(path):
     # ffmpeg incantation for transforming the file to a AIFF file *while
     # preserving* the ID3 tags. Some transformations to these may need to be
     # done later.
-    options = '-loglevel quiet -y -f aiff -write_id3v2 1'.split(' ')
-    command = ['ffmpeg', '-i', path] + options + ['--', temp_file.name]
+    options = "-loglevel quiet -y -f aiff -write_id3v2 1".split(" ")
+    command = ["ffmpeg", "-i", path] + options + ["--", temp_file.name]
 
     process = subprocess.Popen(command)
     process.communicate(timeout=10)
 
     if process.returncode != 0:
-        raise Exception('Failed to convert file: {}'.format(path))
+        raise Exception("Failed to convert file: {}".format(path))
 
     remap_id3tags(temp_file.name)
 

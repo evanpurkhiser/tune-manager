@@ -12,8 +12,10 @@ import utils.watchdog
 
 
 class MetadataIndexer(object):
-    """Sync file libray to a database backed catalog
     """
+    Sync file libray to a database backed catalog
+    """
+
     def __init__(self, library_path, session, loop=None):
         # Normalize library path
         library_path = os.path.realpath(library_path)
@@ -23,12 +25,13 @@ class MetadataIndexer(object):
         self.loop = loop or asyncio.get_event_loop()
 
     def reindex(self):
-        """Reindex new or changed tracks.
+        """
+        Reindex new or changed tracks.
         """
         files = utils.file.collect_files([self.library_path], recursive=True)
 
         # Query {file_path: mtime} mappings
-        query  = self.session.query(db.Track.file_path, db.Track.mtime)
+        query = self.session.query(db.Track.file_path, db.Track.mtime)
         mtimes = {t.file_path: t.mtime for t in query.all()}
 
         for path in files:
@@ -44,28 +47,31 @@ class MetadataIndexer(object):
             try:
                 self.add_or_update(path)
             except Exception as e:
-                print(f'Failed to update {short_path}: {e}')
+                print(f"Failed to update {short_path}: {e}")
 
         self.session.commit()
 
     def watch_collection(self):
-        """Watch all files for changes in the collection.
+        """
+        Watch all files for changes in the collection.
         """
         handler = CatalogWatchHandler(self)
         handler = utils.watchdog.AsyncHandler(self.loop, handler.dispatch)
 
         watcher = watchdog.observers.Observer()
         watcher.schedule(handler, self.library_path, recursive=True)
-        print('watcher started')
+        print("watcher started")
 
         async def file_dispatcher():
             watcher.start()
-            while True: await asyncio.sleep(1)
+            while True:
+                await asyncio.sleep(1)
 
         asyncio.ensure_future(file_dispatcher(), loop=self.loop)
 
     def add_or_update(self, path):
-        """Add or update a libray track in the catalog.
+        """
+        Add or update a libray track in the catalog.
 
         It's important to note, that if a track has both changed paths and
         changed metadata, the path and file checksum will no longer match, thus
@@ -76,8 +82,7 @@ class MetadataIndexer(object):
 
         # Get ID of the track with matching path or MD5
         track_filter = sqlalchemy.or_(
-            db.Track.file_path == track.file_path,
-            db.Track.file_hash == track.file_hash
+            db.Track.file_path == track.file_path, db.Track.file_hash == track.file_hash
         )
 
         try:
@@ -90,8 +95,10 @@ class MetadataIndexer(object):
 
 
 class CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
-    """Watchdog catalog file change handler
     """
+    Watchdog catalog file change handler
+    """
+
     def __init__(self, indexer):
         self.indexer = indexer
 
@@ -120,15 +127,16 @@ class CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
 
 
 def mediafile_to_track(media, library_path):
-    """Converts a MediaFile object into a Track object
+    """
+    Converts a MediaFile object into a Track object
     """
     path = media.file_path
 
-    with open(path, 'rb') as track_file:
+    with open(path, "rb") as track_file:
         file_hash = hashlib.md5(track_file.read()).hexdigest()
 
     # Compute artwork hash
-    artwork  = media.mg_file.tags.getall('APIC')
+    artwork = media.mg_file.tags.getall("APIC")
     art_hash = None
 
     if len(artwork) > 0:

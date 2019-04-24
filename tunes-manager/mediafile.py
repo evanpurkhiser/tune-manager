@@ -6,7 +6,9 @@ from collections import namedtuple
 
 
 class TextField(object):
-    """A plain-text field stored in the mutagen tags"""
+    """
+    A plain-text field stored in the mutagen tags
+    """
 
     def __init__(self, frame_type):
         self.frame_type = frame_type
@@ -34,7 +36,8 @@ class TextField(object):
 
 
 class SizeField(TextField):
-    """A size field stored in the mutagen tags
+    """
+    A size field stored in the mutagen tags
 
     A size field consists of a 'number' and 'total'. These properties are
     unpacked from the raw plain-text field delimited by a slash. When this
@@ -46,13 +49,15 @@ class SizeField(TextField):
     class Size(object):
         @classmethod
         def unpack(self, value, **kwargs):
-            """Construct a Size object by unpacking the values from a string"""
+            """
+            Construct a Size object by unpacking the values from a string
+            """
             if not value:
                 return self(value, **kwargs)
 
             # Ensure a list of exactly two integers
             try:
-                values  = list(map(int, value.split('/')[:2]))
+                values = list(map(int, value.split("/")[:2]))
                 values += [0] * (2 - len(values))
             except ValueError:
                 values = []
@@ -60,24 +65,23 @@ class SizeField(TextField):
             return self(value, *values, **kwargs)
 
         def __init__(self, raw, number=0, total=0, writeback=None):
-            self.__dict__['writeback'] = writeback
-            self.__dict__['packed'] = raw
-            self.__dict__['number'] = number
-            self.__dict__['total'] = total
+            self.__dict__["writeback"] = writeback
+            self.__dict__["packed"] = raw
+            self.__dict__["number"] = number
+            self.__dict__["total"] = total
 
         def __setattr__(self, name, value):
             self.__dict__[name] = value
-            self.__dict__['packed'] = self.pack()
+            self.__dict__["packed"] = self.pack()
             self.sync()
 
         def pack(self):
             if self.number == 0 and self.total == 0:
-                return ''
+                return ""
 
-            return '{number:0{width}}/{total}'.format(
-                number=self.number,
-                total=self.total,
-                width=len(str(self.total)))
+            return "{number:0{width}}/{total}".format(
+                number=self.number, total=self.total, width=len(str(self.total))
+            )
 
         __repr__ = pack
         __str__ = pack
@@ -88,7 +92,9 @@ class SizeField(TextField):
                 self.writeback(self.pack())
 
     def __get__(self, media_file, owner=None):
-        """Unpack the field into a Size object"""
+        """
+        Unpack the field into a Size object
+        """
         value = super(SizeField, self).__get__(media_file, owner)
 
         # Setup the writeback function to update the field on change
@@ -98,11 +104,13 @@ class SizeField(TextField):
         return self.Size.unpack(value, writeback=writeback)
 
 
-Artwork = namedtuple('Artwork', ['key', 'mime', 'data', 'type'])
+Artwork = namedtuple("Artwork", ["key", "mime", "data", "type"])
 
 
 class ArtworkField(object):
-    """A artwork list field"""
+    """
+    A artwork list field
+    """
 
     class ArtworkList(list):
         pass
@@ -116,54 +124,75 @@ class ArtworkField(object):
         if media_file.mg_file.tags is None:
             return []
 
-        artworks = media_file.mg_file.tags.getall('APIC')
+        artworks = media_file.mg_file.tags.getall("APIC")
 
         return self.ArtworkList(self.make_artwork(a) for a in artworks)
 
     def __set__(self, media_file, artwork):
         apic = ID3.APIC(data=artwork.data, mime=artwork.mime)
-        media_file.mg_file['APIC'] = apic
+        media_file.mg_file["APIC"] = apic
 
 
 class MediaFile(object):
-    """Representation of a media file with it's assorted meta data"""
+    """
+    Representation of a media file with it's assorted meta data
+    """
 
-    artist    = TextField(ID3.TPE1)
-    title     = TextField(ID3.TIT2)
-    album     = TextField(ID3.TALB)
-    remixer   = TextField(ID3.TPE4)
+    artist = TextField(ID3.TPE1)
+    title = TextField(ID3.TIT2)
+    album = TextField(ID3.TALB)
+    remixer = TextField(ID3.TPE4)
     publisher = TextField(ID3.TPUB)
-    release   = TextField(ID3.COMM)
-    bpm       = TextField(ID3.TBPM)
-    key       = TextField(ID3.TKEY)
-    year      = TextField(ID3.TDRC)
-    genre     = TextField(ID3.TCON)
-    track     = SizeField(ID3.TRCK)
-    disc      = SizeField(ID3.TPOS)
-    artwork   = ArtworkField()
+    release = TextField(ID3.COMM)
+    bpm = TextField(ID3.TBPM)
+    key = TextField(ID3.TKEY)
+    year = TextField(ID3.TDRC)
+    genre = TextField(ID3.TCON)
+    track = SizeField(ID3.TRCK)
+    disc = SizeField(ID3.TPOS)
+    artwork = ArtworkField()
 
     def __init__(self, filename):
         self.file_path = os.path.realpath(filename)
         self.reload()
 
-        if not hasattr(self.mg_file, 'tags'):
-            raise ValueError('Loaded file does not have ID3 tags')
+        if not hasattr(self.mg_file, "tags"):
+            raise ValueError("Loaded file does not have ID3 tags")
 
     def __dir__(self):
-        return ['file_path', 'artwork', 'artist', 'title', 'album', 'remixer',
-                'publisher', 'release', 'key', 'bpm', 'year', 'genre', 'track',
-                'disc']
+        return [
+            "file_path",
+            "artwork",
+            "artist",
+            "title",
+            "album",
+            "remixer",
+            "publisher",
+            "release",
+            "key",
+            "bpm",
+            "year",
+            "genre",
+            "track",
+            "disc",
+        ]
 
     def reload(self):
-        """Load the mutagen file from the media files path"""
+        """
+        Load the mutagen file from the media files path
+        """
         self.mg_file = mutagen.File(self.file_path)
 
     def clear(self):
-        """Remove all tags from the mediafile"""
+        """
+        Remove all tags from the mediafile
+        """
         self.mg_file.delete()
 
     def save(self):
-        """Save the metadata of the file"""
+        """
+        Save the metadata of the file
+        """
         self.mg_file.tags.save(self.file_path)
 
 
@@ -180,16 +209,16 @@ def serialize(media, trim_path=None):
         if isinstance(val, ArtworkField.ArtworkList):
             vals[key] = [a.key for a in val]
 
-    if trim_path and vals['file_path'].startswith(trim_path):
-        path = os.path.normpath(trim_path) + '/'
-        vals['file_path'] = vals['file_path'][len(path):]
+    if trim_path and vals["file_path"].startswith(trim_path):
+        path = os.path.normpath(trim_path) + "/"
+        vals["file_path"] = vals["file_path"][len(path) :]
 
     # The selected artwork will always be the 'Front Cover'
     artTypes = [a.type for a in media.artwork]
 
     try:
-        vals['artwork_selected'] = artTypes.index(ID3.PictureType.COVER_FRONT)
+        vals["artwork_selected"] = artTypes.index(ID3.PictureType.COVER_FRONT)
     except ValueError:
-        vals['artwork_selected'] = 0 if len(media.artwork) > 0 else None
+        vals["artwork_selected"] = 0 if len(media.artwork) > 0 else None
 
     return vals

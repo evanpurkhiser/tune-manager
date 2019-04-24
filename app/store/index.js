@@ -52,7 +52,7 @@ const initialState = {
   saveProcess: {
     preparing: false,
     targetTracks: [],
-    total: undefined,
+    total: null,
   },
 
   // knownValues contains various lists of known values of fields that exist
@@ -202,8 +202,8 @@ function reducer(oldState = initialState, action) {
         currIndex === index
           ? null
           : currIndex <= index
-            ? currIndex
-            : currIndex - 1;
+          ? currIndex
+          : currIndex - 1;
 
       state.tracks = { ...state.tracks, [focusedTrackID]: track };
       break;

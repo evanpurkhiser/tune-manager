@@ -155,8 +155,8 @@ const App = p => (
       />
     </header>
     <TrackGroups
-      useDragHandle={true}
-      lockToContainerEdges={true}
+      useDragHandle
+      lockToContainerEdges
       lockAxis="y"
       pressDelay={80}
       helperClass="group-reordering"

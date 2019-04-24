@@ -24,7 +24,7 @@ const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png'].join(',');
 const ArtworkEntry = p => {
   const type = MIME_MAPPING[p.artwork.type];
   const size = prettyBytes(p.artwork.size);
-  const dimensions = p.artwork.dimensions;
+  const { dimensions } = p.artwork;
 
   const dimensionText = dimensions
     ? `${dimensions.height} × ${dimensions.width}`
@@ -155,7 +155,7 @@ class Artwork extends Component {
       escape: _ => this.onMinimize(),
     };
 
-    this.DOMNode = undefined;
+    this.DOMNode = React.createRef();
     this.state = { active: false, focused: null, maximized: false };
   }
 
@@ -193,7 +193,7 @@ class Artwork extends Component {
   }
 
   onMaximize(index) {
-    this.setState({ focused: index, maximized: !this.state.maximized });
+    this.setState(s => ({ focused: index, maximized: !s.maximized }));
   }
 
   onMinimize() {
@@ -201,23 +201,24 @@ class Artwork extends Component {
   }
 
   onOpenFileSelector() {
-    this.DOMNode.querySelector('input[type=file]').click();
+    this.DOMNode.current.querySelector('input[type=file]').click();
   }
 
   onFileSelect(file) {
-    const dispatch = this.props.dispatch;
+    const { dispatch } = this.props;
     const artPromise = buildImageObject(file);
 
     artPromise.then(a => dispatch(action.addArtwork(this.props.track.id, a)));
   }
 
   blur() {
-    const active = document.activeElement === this.DOMNode;
+    const active = document.activeElement === this.DOMNode.current;
     this.setState({ active, maximized: false, focused: null });
   }
 
   render() {
-    const track = this.props.track;
+    const { track } = this.props;
+    const { active, maximized, focused } = this.state;
 
     const trackArt = track.artwork || [];
     const artwork = trackArt.map(k => this.props.artwork[k]);
@@ -225,8 +226,7 @@ class Artwork extends Component {
     const selectedIndex = track.artworkSelected;
     const selectedArt = artwork[selectedIndex];
 
-    const focusedIndex =
-      this.state.focused === null ? selectedIndex : this.state.focused;
+    const focusedIndex = focused === null ? selectedIndex : focused;
 
     const loading = trackArt.length > 0 && selectedIndex !== null;
     const emptyClasses = classNames('empty-artwork', { loading });
@@ -238,15 +238,15 @@ class Artwork extends Component {
     );
 
     const maximizedArt =
-      !this.state.maximized || focusedIndex === artwork.length ? null : (
+      !maximized || focusedIndex === artwork.length ? null : (
         <ArtworkFullscreen
-          artwork={artwork[this.state.focused]}
+          artwork={artwork[focused]}
           onExit={_ => this.onMinimize()}
         />
       );
 
     const popover =
-      this.state.active === false ? null : (
+      active === false ? null : (
         <ArtworkPopover
           artwork={artwork}
           selected={focusedIndex}
@@ -268,7 +268,7 @@ class Artwork extends Component {
         extraKeys={this.keyboardMapping}
         className={classes}
         tabIndex={0}
-        elementRef={e => (this.DOMNode = e)}
+        elementRef={this.DOMNode}
         onFocus={_ => this.setState({ active: true })}
         onBlur={_ => this.blur()}>
         {element}

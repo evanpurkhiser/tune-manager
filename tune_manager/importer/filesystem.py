@@ -149,8 +149,8 @@ class TrackProcessor(object):
                 await asyncio.sleep(1)
 
         # kickoff coroutines
-        asyncio.ensure_future(file_dispatcher(), loop=self.loop)
-        asyncio.ensure_future(self.dispatcher(), loop=self.loop)
+        self.loop.create_task(file_dispatcher())
+        self.loop.create_task(self.dispatcher())
 
     async def open_connection(self, ws):
         self.connections.add(ws)

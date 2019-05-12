@@ -1,6 +1,9 @@
 import asyncio
 import hashlib
 import os
+import concurrent.futures
+import logging
+
 import sqlalchemy
 import sqlalchemy.orm.exc
 import watchdog.observers
@@ -11,27 +14,30 @@ import utils.file
 import utils.watchdog
 
 
+log = logging.getLogger("indexer")
+
+
 class MetadataIndexer(object):
     """
     Sync file libray to a database backed catalog
     """
 
-    def __init__(self, library_path, session, loop=None):
+    def __init__(self, library_path, db_session, loop=None):
         # Normalize library path
         library_path = os.path.realpath(library_path)
 
         self.library_path = library_path
-        self.session = session
+        self.db_session = db_session
         self.loop = loop or asyncio.get_event_loop()
 
-    def reindex(self):
+    def reindex_sync(self):
         """
         Reindex new or changed tracks.
         """
         files = utils.file.collect_files([self.library_path], recursive=True)
 
         # Query {file_path: mtime} mappings
-        query = self.session.query(db.Track.file_path, db.Track.mtime)
+        query = self.db_session.query(db.Track.file_path, db.Track.mtime)
         mtimes = {t.file_path: t.mtime for t in query.all()}
 
         for path in files:
@@ -47,27 +53,36 @@ class MetadataIndexer(object):
             try:
                 self.add_or_update(path)
             except Exception as e:
-                print(f"Failed to update {short_path}: {e}")
+                log.warn(f"Failed to update {short_path}: {e}")
 
-        self.session.commit()
+        self.db_session.commit()
 
-    def watch_collection(self):
+    async def reindex(self):
+        await self.loop.run_in_executor(None, self.reindex_sync)
+
+    async def watch_collection(self):
         """
         Watch all files for changes in the collection.
         """
         handler = CatalogWatchHandler(self)
         handler = utils.watchdog.AsyncHandler(self.loop, handler.dispatch)
 
-        watcher = watchdog.observers.Observer()
-        watcher.schedule(handler, self.library_path, recursive=True)
-        print("watcher started")
+        # The watchdog observer can take some time to setup as it has to add
+        # inode watchers to all files. Set it up in a threaded executor.
+        def prepare_watcher():
+            watcher = watchdog.observers.Observer()
+            watcher.schedule(handler, self.library_path, recursive=True)
+
+            return watcher
+
+        watcher = await self.loop.run_in_executor(None, prepare_watcher)
 
         async def file_dispatcher():
             watcher.start()
             while True:
                 await asyncio.sleep(1)
 
-        asyncio.ensure_future(file_dispatcher(), loop=self.loop)
+        self.loop.create_task(file_dispatcher())
 
     def add_or_update(self, path):
         """
@@ -86,12 +101,12 @@ class MetadataIndexer(object):
         )
 
         try:
-            old_track = self.session.query(db.Track).filter(track_filter).one()
+            old_track = self.db_session.query(db.Track).filter(track_filter).one()
             track.id = old_track.id
         except sqlalchemy.orm.exc.NoResultFound:
             pass
 
-        self.session.merge(track)
+        self.db_session.merge(track)
 
 
 class CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
@@ -104,13 +119,13 @@ class CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
 
     async def dispatch(self, event):
         super().dispatch(event)
-        self.indexer.session.commit()
+        self.indexer.db_session.commit()
 
     def on_created(self, event):
         media = mediafile.MediaFile(event.src_path)
         track = mediafile_to_track(media, self.indexer.library_path)
 
-        self.indexer.session.add(track)
+        self.indexer.db_session.add(track)
 
     def on_modified(self, event):
         self.indexer.add_or_update(event.src_path)
@@ -121,7 +136,9 @@ class CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
         src = utils.file.track_path(event.src_path, library_path)
         dst = utils.file.track_path(event.dest_path, library_path)
 
-        track = self.indexer.session.query(db.Track).filter(db.Track.file_path == src)
+        track = self.indexer.db_session.query(db.Track).filter(
+            db.Track.file_path == src
+        )
 
         track.file_path = dst
 

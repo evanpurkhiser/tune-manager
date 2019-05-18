@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React from 'react';
 
-import * as action from 'app/store/actions';
+import * as action from 'app/importer/store/actions';
 
 const o = {
   migrate_path: '/Users/evan/Server/multimedia/djing/tracks/',

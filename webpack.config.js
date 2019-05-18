@@ -7,9 +7,7 @@ const IS_PROD =
   process.argv.find(a => a.includes('mode=production')) !== undefined;
 
 const plugins = [
-  new HtmlWebpackPlugin({
-    template: 'app/index.html',
-  }),
+  new HtmlWebpackPlugin({ template: 'app/index.html' }),
   new webpack.DefinePlugin({
     IS_PROD,
     VERSION: JSON.stringify(process.env.VERSION || 'dev'),
@@ -30,6 +28,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '../build'),
     filename: '[name].[hash].js',
+    publicPath: '/',
   },
   resolve: {
     alias: { app: path.resolve(__dirname, 'app') },
@@ -38,6 +37,7 @@ module.exports = {
   devServer: {
     port: 9000,
     hot: true,
+    historyApiFallback: true,
     proxy: {
       '/api': 'http://localhost:8080',
       '/api/events': { target: 'ws://localhost:8080', ws: true },
@@ -52,10 +52,7 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         options: {
-          presets: [
-            ['@babel/preset-env', { targets: { chrome: '64' } }],
-            ['@babel/preset-react'],
-          ],
+          presets: [['@babel/preset-env'], ['@babel/preset-react']],
           plugins: babelPlugins.filter(x => x !== null),
           compact: true,
         },

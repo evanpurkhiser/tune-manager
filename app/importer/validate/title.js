@@ -1,5 +1,5 @@
 import { autoFixTypes, levels, makeValidations, Validations } from './utils';
-import { remixPattern } from 'app/util/artistMatch';
+import { remixPattern } from 'app/importer/util/artistMatch';
 
 const validationType = makeValidations({
   EMPTY: {

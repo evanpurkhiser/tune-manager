@@ -4,9 +4,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import * as discogs from 'app/util/discogs';
-import { buildImageObject } from 'app/util/image';
-import ScrollLockList from 'app/components/ScrollLockList';
+import * as discogs from 'app/importer/util/discogs';
+import { buildImageObject } from 'app/importer/util/image';
+import ScrollLockList from 'app/importer/components/ScrollLockList';
 
 const mappableTrackShape = PropTypes.shape({
   id: PropTypes.string.isRequired,
@@ -121,13 +121,15 @@ class Search extends Component {
 
     let request = fetch(url, { signal: this.activeRequest.signal });
 
-    request = request.then(r => r.json()).then(json =>
-      this.setState({
-        results: camelize(json.results),
-        isQuerying: false,
-        queryFailed: false,
-      })
-    );
+    request = request
+      .then(r => r.json())
+      .then(json =>
+        this.setState({
+          results: camelize(json.results),
+          isQuerying: false,
+          queryFailed: false,
+        })
+      );
 
     request.catch(e =>
       this.setState({

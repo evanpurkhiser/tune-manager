@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import Fuse from 'fuse.js';
 import PropTypes from 'prop-types';
 
-import { keyMapper } from 'app/util/keyboard';
+import { keyMapper } from 'app/importer/util/keyboard';
 
 // After completion the caret will be moved to just after the completion. Due
 // to react rendering considerations we must wait before moving the caret, or

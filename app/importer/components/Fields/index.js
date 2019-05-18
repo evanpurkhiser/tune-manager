@@ -2,12 +2,12 @@ import * as path from 'path';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 
-import * as action from 'app/store/actions';
-import * as validate from 'app/validate';
-import { keyMapper } from 'app/util/keyboard';
-import { splitOn } from 'app/util/artistMatch';
-import TypeaheadInput from 'app/components/TypeaheadInput';
-import ValidationPopover from 'app/components/ValidationPopover';
+import * as action from 'app/importer/store/actions';
+import * as validate from 'app/importer/validate';
+import { keyMapper } from 'app/importer/util/keyboard';
+import { splitOn } from 'app/importer/util/artistMatch';
+import TypeaheadInput from 'app/importer/components/TypeaheadInput';
+import ValidationPopover from 'app/importer/components/ValidationPopover';
 
 /**
  * Generic track Field

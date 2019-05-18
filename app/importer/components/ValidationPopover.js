@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
-import * as validate from 'app/validate/utils';
+import * as validate from 'app/importer/validate/utils';
 
 const ValidationPopover = p => {
-  let items = p.validations.items;
+  let { items } = p.validations;
 
   if (!p.showValid) {
     items = items.filter(i => i.level !== validate.levels.VALID);

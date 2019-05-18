@@ -1,20 +1,19 @@
 import 'app/scss/app.scss';
 
-import {
-  SortableContainer,
-  SortableElement,
-  SortableHandle,
-} from 'react-sortable-hoc';
-import { connect } from 'react-redux';
 import React from 'react';
+import * as sortable from 'react-sortable-hoc';
+import { Provider, connect } from 'react-redux';
 import classNames from 'classnames';
 import * as lodash from 'lodash';
+import camelize from 'camelize';
 
-import { ImportButton } from 'app/components/Importer';
-import { SaveButton, SaveStatus } from 'app/components/Save';
-import * as Field from 'app/components/Fields';
-import FieldHeadings from 'app/components/FieldHeadings';
-import * as action from 'app/store/actions';
+import { ImportButton } from 'app/importer/components/Importer';
+import { SaveButton, SaveStatus } from 'app/importer/components/Save';
+import * as Field from 'app/importer/components/Fields';
+import * as actions from 'app/importer/store/actions';
+import globalKeys from 'app/importer/globalKeys';
+import store from 'app/importer/store';
+import FieldHeadings from 'app/importer/components/FieldHeadings';
 
 let TrackItem = p => {
   const fieldProps = {
@@ -29,7 +28,7 @@ let TrackItem = p => {
           type="checkbox"
           tabIndex="-1"
           onChange={e =>
-            p.dispatch(action.toggleSelect(e.target.checked, [p.id]))
+            p.dispatch(actions.toggleSelect(e.target.checked, [p.id]))
           }
           checked={p.selected}
         />
@@ -80,7 +79,7 @@ const PathParts = ({ parts }) => (
  */
 let TrackGroup = p => {
   const toggleGroup = toggle => {
-    p.dispatch(action.toggleSelect(toggle, p.tracks));
+    p.dispatch(actions.toggleSelect(toggle, p.tracks));
   };
 
   const pathParts = p.pathParts[0] === '.' ? [] : p.pathParts;
@@ -90,7 +89,7 @@ let TrackGroup = p => {
     'root-listing': pathParts.length === 0,
   });
 
-  const GroupHeading = SortableHandle(_ => (
+  const GroupHeading = sortable.SortableHandle(_ => (
     <label className={classes}>
       <span className="drag-handle" />
       <input
@@ -120,7 +119,7 @@ const mapTrackGroupingState = (s, props) => ({
 });
 
 TrackGroup = connect(mapTrackGroupingState)(TrackGroup);
-TrackGroup = SortableElement(TrackGroup);
+TrackGroup = sortable.SortableElement(TrackGroup);
 
 /**
  * Track group listings
@@ -136,40 +135,74 @@ let TrackGroups = props => (
 const mapEditorState = ({ trackTree }) => ({ trackTree });
 
 TrackGroups = connect(mapEditorState)(TrackGroups);
-TrackGroups = SortableContainer(TrackGroups);
+TrackGroups = sortable.SortableContainer(TrackGroups);
 
 /**
- * The main application
+ 
  */
-const App = p => (
-  <div className="app">
-    <header>
-      <nav>
-        <SaveButton />
-        <ImportButton />
-        <button className="action-config" />
-        <SaveStatus />
-      </nav>
-      <FieldHeadings
-        onCheck={e => p.dispatch(action.toggleSelectAll(e.target.checked))}
-        checked={p.allSelected}
-      />
-    </header>
-    <TrackGroups
-      useDragHandle
-      lockToContainerEdges
-      lockAxis="y"
-      pressDelay={80}
-      helperClass="group-reordering"
-      onSortEnd={indicies => p.dispatch(action.reorderGroups(indicies))}
-    />
-  </div>
-);
+class Importer extends React.Component {
+  componentDidMount() {
+    // Start events listener
+    this.socket = new WebSocket(`ws://${window.location.host}/api/events`);
+    this.socket.onmessage = m => store.dispatch(camelize(JSON.parse(m.data)));
 
-const mapAppState = s => ({
+    // Load known values
+    fetch('/api/known-values')
+      .then(r => r.json())
+      .then(knowns => {
+        store.dispatch(actions.replaceKnowns(camelize(knowns)));
+      });
+
+    document.body.addEventListener('keydown', globalKeys);
+  }
+
+  componentDidUnmount() {
+    this.socket.close();
+    document.body.removeEventListener('keydown', globalKeys);
+  }
+
+  render() {
+    const p = this.props;
+
+    return (
+      <div className="app">
+        <header>
+          <nav>
+            <SaveButton />
+            <ImportButton />
+            <button className="action-config" />
+            <SaveStatus />
+          </nav>
+          <FieldHeadings
+            onCheck={e => p.dispatch(actions.toggleSelectAll(e.target.checked))}
+            checked={p.allSelected}
+          />
+        </header>
+        <TrackGroups
+          useDragHandle
+          lockToContainerEdges
+          lockAxis="y"
+          pressDelay={80}
+          helperClass="group-reordering"
+          onSortEnd={indicies => p.dispatch(actions.reorderGroups(indicies))}
+        />
+      </div>
+    );
+  }
+}
+
+const mapImporterState = s => ({
   allSelected:
     Object.keys(s.tracks).length > 0 &&
     Object.keys(s.tracks).length === s.selectedTracks.length,
 });
 
-export default connect(mapAppState)(App);
+const ConnectedImporter = connect(mapImporterState)(Importer);
+
+const ImporterApp = _ => (
+  <Provider store={store}>
+    <ConnectedImporter />
+  </Provider>
+);
+
+export default ImporterApp;

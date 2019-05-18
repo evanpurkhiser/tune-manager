@@ -3,10 +3,10 @@ import classNames from 'classnames';
 import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 
-import * as action from 'app/store/actions';
-import * as validateArt from 'app/validate/artwork';
-import { buildImageObject } from 'app/util/image';
-import { KeyboardNavigatable } from 'app/util/keyboard';
+import * as action from 'app/importer/store/actions';
+import * as validateArt from 'app/importer/validate/artwork';
+import { buildImageObject } from 'app/importer/util/image';
+import { KeyboardNavigatable } from 'app/importer/util/keyboard';
 
 const MIME_MAPPING = {
   'image/png': 'PNG',

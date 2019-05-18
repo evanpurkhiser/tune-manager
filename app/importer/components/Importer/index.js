@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 
-import * as actions from 'app/store/actions';
+import * as actions from 'app/importer/store/actions';
+import { keyMapper } from 'app/importer/util/keyboard';
+
 import * as Discogs from './Discogs';
-import { keyMapper } from 'app/util/keyboard';
 
 class Importer extends Component {
   constructor() {

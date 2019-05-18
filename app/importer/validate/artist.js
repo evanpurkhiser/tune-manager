@@ -1,6 +1,10 @@
 import { autoFixTypes, levels, makeValidations, Validations } from './utils';
-import { splitArtists, splitOn, strictSplitOn } from 'app/util/artistMatch';
 import { validateFromKnowns } from './utils';
+import {
+  splitArtists,
+  splitOn,
+  strictSplitOn,
+} from 'app/importer/util/artistMatch';
 
 const validationType = makeValidations({
   EMPTY: {

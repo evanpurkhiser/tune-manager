@@ -6,9 +6,10 @@ import createSagaMiddleware from 'redux-saga';
 import md5 from 'md5';
 import uuid from 'uuid/v4';
 
+import { formatTrackNumbers } from 'app/importer/util/format';
+
 import * as actions from './actions';
 import appSaga from './sagas';
-import { formatTrackNumbers } from 'app/util/format';
 
 const initialState = {
   // tracks is a mapping of the unique track ID to the track object.

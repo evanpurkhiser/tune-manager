@@ -15,8 +15,8 @@ import * as action from './actions';
 import * as validate from '../validate';
 import { blobForImage, buildImageObject } from '../util/image';
 
-const ARTWORK_URL = 'http://localhost:8000/artwork/{}';
-const SAVE_URL = 'http://localhost:8000/save';
+const ARTWORK_URL = '/api/artwork/{}';
+const SAVE_URL = '/api/save';
 
 /**
  * Download and store an artwork item. Artwork will not be downloaded twice.

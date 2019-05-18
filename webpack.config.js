@@ -1,3 +1,4 @@
+/* eslint-env node */
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -34,7 +35,14 @@ module.exports = {
     alias: { app: path.resolve(__dirname, 'app') },
   },
   devtool: IS_PROD ? 'source-map' : 'cheap-module-eval-source-map',
-  devServer: { port: 9000, hot: true },
+  devServer: {
+    port: 9000,
+    hot: true,
+    proxy: {
+      '/api': 'http://localhost:8080',
+      '/api/events': { target: 'ws://localhost:8080', ws: true },
+    },
+  },
   optimization: {
     splitChunks: { chunks: 'all' },
   },

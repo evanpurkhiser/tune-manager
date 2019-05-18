@@ -4,6 +4,9 @@ LIBRARY = "/Users/evan/Music/Tracks"
 # Path to locate unsorted music
 IMPORT_PATH = "/Users/evan/music-to-import"
 
+# Path to on system artwork cache
+ARTWORK_PATH = "/Users/evan/Coding/tune-manager/artwork"
+
 # Discogs configuration
 DISCOGS_TOKEN = "ZTMTrzXddIDNOTLCTKEpQmFsjGyGNHlIeXpgzRNL"
 DISCOGS_AUTH = f"Discogs token={DISCOGS_TOKEN}"

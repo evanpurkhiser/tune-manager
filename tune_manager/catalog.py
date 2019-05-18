@@ -22,12 +22,13 @@ class MetadataIndexer(object):
     Sync file libray to a database backed catalog
     """
 
-    def __init__(self, library_path, db_session, loop=None):
+    def __init__(self, library_path, artwork_path, db_session, loop=None):
         # Normalize library path
         library_path = os.path.realpath(library_path)
 
         self.library_path = library_path
         self.db_session = db_session
+        self.artwork_path = artwork_path
         self.loop = loop or asyncio.get_event_loop()
 
     def reindex_sync(self):
@@ -94,6 +95,10 @@ class MetadataIndexer(object):
         """
         media = mediafile.MediaFile(path)
         track = mediafile_to_track(media, self.library_path)
+
+        # Update artwork cache
+        if track.artwork_hash:
+            ensure_artwork_cache(prefix=self.artwork_path, media=media, track=track)
 
         # Get ID of the track with matching path or MD5
         track_filter = sqlalchemy.or_(
@@ -172,3 +177,19 @@ def mediafile_to_track(media, library_path):
     track.artwork_hash = art_hash
 
     return track
+
+
+def ensure_artwork_cache(prefix, track, media):
+    artwork_path = os.path.join(prefix, track.artwork_hash[0:2], track.artwork_hash)
+    print(artwork_path)
+
+    if os.path.exists(artwork_path):
+        return
+
+    artwork_dir = os.path.dirname(artwork_path)
+    if not os.path.exists(artwork_dir):
+        os.makedirs(artwork_dir)
+
+    with open(artwork_path, "wb") as file:
+        artwork = media.mg_file.tags.getall("APIC")
+        file.write(artwork[0].data)

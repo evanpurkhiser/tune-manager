@@ -6,7 +6,7 @@ import * as validate from 'app/validate';
 import { formatTrackNumbers } from './format';
 import { remixPattern } from './artistMatch';
 
-const PROXY_URL = 'http://localhost:8000/discogs-proxy/';
+const PROXY_URL = '/api/discogs-proxy/';
 const SEARCH_URL =
   'https://api.discogs.com/database/search?type=release&q={query}';
 

@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.pardir))
 
-from tune_manager.api import importer
+from tune_manager.api import importer, catalog
 from tune_manager import settings
 from tune_manager import db
 
@@ -27,8 +27,8 @@ CORS(app)
 db.init(create_engine(app.config.DATABASE_PATH))
 app.db_session = db.Session()
 
-app.blueprint(importer.blueprint)
-
+app.blueprint(importer.blueprint, url_prefix="/api")
+app.blueprint(catalog.blueprint, url_prefix="/api/catalog")
 
 if __name__ == "__main__":
     app.run(host=args.host, port=args.port, workers=args.workers, debug=args.debug)

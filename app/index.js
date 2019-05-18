@@ -11,11 +11,11 @@ import globalKeys from 'app/globalKeys';
 import store from 'app/store';
 
 // Start events listener
-const socket = new WebSocket('ws://localhost:8000/events');
+const socket = new WebSocket(`ws://${window.location.host}/api/events`);
 socket.onmessage = m => store.dispatch(camelize(JSON.parse(m.data)));
 
 // Load known values
-fetch('http://localhost:8000/known-values')
+fetch('/api/known-values')
   .then(r => r.json())
   .then(knowns => {
     store.dispatch(actions.replaceKnowns(camelize(knowns)));

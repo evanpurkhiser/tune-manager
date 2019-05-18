@@ -1,19 +1,20 @@
-import * as lodash from 'lodash';
+import 'app/scss/app.scss';
+
 import {
   SortableContainer,
   SortableElement,
   SortableHandle,
 } from 'react-sortable-hoc';
-import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React from 'react';
+import classNames from 'classnames';
+import * as lodash from 'lodash';
 
-import 'app/scss/app.scss';
-import * as action from 'app/store/actions';
-import * as Field from 'app/components/Fields';
-import FieldHeadings from 'app/components/FieldHeadings';
 import { ImportButton } from 'app/components/Importer';
 import { SaveButton, SaveStatus } from 'app/components/Save';
+import * as Field from 'app/components/Fields';
+import FieldHeadings from 'app/components/FieldHeadings';
+import * as action from 'app/store/actions';
 
 let TrackItem = p => {
   const fieldProps = {

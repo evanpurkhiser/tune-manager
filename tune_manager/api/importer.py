@@ -24,25 +24,27 @@ def start_processor(app, loop):
 #       expands into a general music server.
 @blueprint.listener("before_server_start")
 def index_collection(app, loop):
-    index = catalog.MetadataIndexer(app.config.LIBRARY, app.db_session, loop)
-    loop.create_task(index.watch_collection())
-    loop.create_task(index.reindex())
+    indexer = catalog.MetadataIndexer(
+        app.config.LIBRARY, app.config.ARTWORK_PATH, app.db_session, loop
+    )
+    loop.create_task(indexer.watch_collection())
+    loop.create_task(indexer.reindex())
 
 
 # Application handlers
 @blueprint.websocket("/events")
 async def events(request, ws):
-    await app.processor.open_connection(ws)
+    await request.app.processor.open_connection(ws)
 
 
 @blueprint.websocket("/static")
 async def statics(request):
-
-    await app.processor.open_connection(ws)
+    await request.app.processor.open_connection(ws)
 
 
 @blueprint.route("/known-values")
 async def known_values(request):
+    app = request.app
     return response.json(
         {
             "artists": app.known_values.individual_artists,
@@ -54,6 +56,7 @@ async def known_values(request):
 
 @blueprint.route("/save", methods=["POST"])
 async def save(request):
+    app = request.app
     artwork = request.files.getlist("artwork", [])
     artwork = [Artwork(f.name, f.type, f.body, None) for f in artwork]
     app.processor.cache_art(artwork)
@@ -66,6 +69,7 @@ async def save(request):
 
 @blueprint.route("/artwork/<key>")
 async def artwork(request, key):
+    app = request.app
     if key not in app.processor.artwork:
         return response.json({"message": "invalid artwork ID"}, status=404)
 

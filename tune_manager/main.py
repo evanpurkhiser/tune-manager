@@ -1,8 +1,9 @@
 import argparse
+import os
 import os.path
 import sys
 
-from sanic import Sanic
+from sanic import Sanic, response
 from sanic_cors import CORS
 from sqlalchemy import create_engine
 
@@ -17,6 +18,7 @@ parser.add_argument("--host", default="0.0.0.0")
 parser.add_argument("--port", default="8080")
 parser.add_argument("--workers", type=int, default=1)
 parser.add_argument("--debug", action="store_true")
+parser.add_argument("--statics", default="dist/")
 args = parser.parse_args()
 
 app = Sanic(__name__)
@@ -29,6 +31,20 @@ app.db_session = db.Session()
 
 app.blueprint(importer.blueprint, url_prefix="/api")
 app.blueprint(catalog.blueprint, url_prefix="/api/catalog")
+
+statics_path = os.path.join(os.getcwd(), args.statics)
+
+# Static file serving
+@app.route("/")
+@app.route("/<path:path>")
+async def serve_statics(request, path=""):
+    file_path = os.path.join(statics_path, path)
+    return await (
+        response.file(file_path)
+        if os.path.isfile(file_path)
+        else response.file(os.path.join(statics_path, "index.html"))
+    )
+
 
 if __name__ == "__main__":
     app.run(host=args.host, port=args.port, workers=args.workers, debug=args.debug)

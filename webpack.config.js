@@ -26,7 +26,7 @@ const babelPlugins = [
 module.exports = {
   entry: { app: './app/index.js' },
   output: {
-    path: path.resolve(__dirname, '../build'),
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].[hash].js',
     publicPath: '/',
   },

@@ -8,32 +8,6 @@ $fa-font-path: '~font-awesome/fonts/';
 @import '_mixins';
 @import '_placeholders';
 
-* {
-  box-sizing: border-box;
-}
-
-ol,
-ul,
-li {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-a:link {
-  text-decoration: none;
-}
-
-body,
-html,
-#root,
-.app {
-  margin: 0;
-  font-family: 'Open Sans', sans-serif;
-  color: #4a585f;
-  height: 100%;
-}
-
 input::placeholder {
   color: #ccc;
 }

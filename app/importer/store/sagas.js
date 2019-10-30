@@ -5,9 +5,10 @@ import {
   fork,
   put,
   select,
+  delay,
   takeEvery,
 } from 'redux-saga/effects';
-import { buffers, channel, delay, END } from 'redux-saga';
+import { buffers, channel, END } from 'redux-saga';
 import format from 'string-format';
 import lodash from 'lodash';
 
@@ -63,7 +64,7 @@ function* requestArtwork(payload) {
   yield fork(loadAllArtwork, uniqueArt, completed);
 
   while (true) {
-    yield call(delay, DEBOUNCE_TIME);
+    yield delay(DEBOUNCE_TIME);
     const results = yield flush(completed);
 
     if (results === END) {

@@ -136,9 +136,9 @@ class TypeaheadInput extends Component {
     this.rebuildIndex(this.props.source);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.source !== this.props.source) {
-      this.rebuildIndex(nextProps.source);
+  componentDidUpdate(prevProps) {
+    if (prevProps.source !== this.props.source) {
+      this.rebuildIndex(this.props.source);
     }
   }
 
@@ -149,7 +149,7 @@ class TypeaheadInput extends Component {
   onChange(e) {
     this.props.onChange(e);
 
-    const value = e.target.value;
+    const { value } = e.target;
     const range = [0, e.target.selectionStart];
 
     let partial = value.slice(...range);

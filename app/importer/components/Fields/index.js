@@ -30,7 +30,7 @@ class Field extends Component {
     this.state = { value: '', validations: new validate.Validations() };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.componentWillReceiveProps(this.props);
   }
 

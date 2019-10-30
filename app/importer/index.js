@@ -156,7 +156,7 @@ class Importer extends React.Component {
     document.body.addEventListener('keydown', globalKeys);
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.socket.close();
     document.body.removeEventListener('keydown', globalKeys);
   }

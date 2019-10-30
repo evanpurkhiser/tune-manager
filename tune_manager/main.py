@@ -19,11 +19,35 @@ parser.add_argument("--port", default="8080")
 parser.add_argument("--workers", type=int, default=1)
 parser.add_argument("--debug", action="store_true")
 parser.add_argument("--statics", default="dist/")
+parser.add_argument("--storage-path", default="db/")
+parser.add_argument("--library-path", required=True)
+parser.add_argument("--staging-path", required=True)
+
 args = parser.parse_args()
 
 app = Sanic(__name__)
-app.config.from_object(settings)
 CORS(app)
+
+# Configuration
+storage_path = os.path.abspath(args.storage_path)
+db_path = os.path.join(storage_path, "database.db")
+
+print(db_path)
+
+if not os.path.exists(storage_path):
+    os.makedirs(storage_path)
+
+args_config = {
+    "LIBRARY_PATH": args.library_path,
+    "STAGING_PATH": args.staging_path,
+    "DATABASE_PATH": f"sqlite:///{db_path}",
+    "ARTWORK_PATH": os.path.join(storage_path, "artwork"),
+}
+
+app.config.from_object(settings)
+app.config.update(args_config)
+
+print(app.config)
 
 # Setup the database and assign it on the app object
 db.init(create_engine(app.config.DATABASE_PATH))

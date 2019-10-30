@@ -3,8 +3,6 @@ import requests
 import json
 
 from mediafile import Artwork
-import catalog
-import db
 import importer.filesystem
 import knowns
 
@@ -13,22 +11,10 @@ blueprint = Blueprint("importer")
 # Begin processing track file events
 @blueprint.listener("before_server_start")
 def start_processor(app, loop):
-    processor = importer.filesystem.TrackProcessor(app.config.IMPORT_PATH, loop=loop)
+    processor = importer.filesystem.TrackProcessor(app.config.STAGING_PATH, loop=loop)
     processor.add_all()
     app.processor = processor
     app.known_values = knowns.KnownValues(app.db_session)
-
-
-# Begin indexing the collection
-# TODO: Maybe this will go away soon or move somewhere else as this application
-#       expands into a general music server.
-@blueprint.listener("before_server_start")
-def index_collection(app, loop):
-    indexer = catalog.MetadataIndexer(
-        app.config.LIBRARY, app.config.ARTWORK_PATH, app.db_session, loop
-    )
-    loop.create_task(indexer.watch_collection())
-    loop.create_task(indexer.reindex())
 
 
 # Application handlers
@@ -83,7 +69,7 @@ async def artwork(request, key):
 @blueprint.route("/discogs-proxy", strict_slashes=False)
 async def discogs_proxy(request):
     url = request.args["url"][0]
-    headers = {"Authorization": DISCOGS_AUTH}
+    headers = {"Authorization": request.app.config.DISCOGS_AUTH}
 
     res = requests.get(url, headers=headers)
     return response.raw(res.content, content_type=res.headers["content-type"])

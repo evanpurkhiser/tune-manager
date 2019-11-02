@@ -3,9 +3,12 @@ import os
 import os.path
 import sys
 
+import sentry_sdk
 from sanic import Sanic, response
 from sanic_cors import CORS
 from sqlalchemy import create_engine
+
+sentry_sdk.init("https://208c1692ec594314acbc4e63a3fd775e@sentry.io/1805605")
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.pardir))
 

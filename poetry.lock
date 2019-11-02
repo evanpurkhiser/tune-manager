@@ -160,6 +160,18 @@ sanic = ">=0.8.3"
 
 [[package]]
 category = "main"
+description = "Python client for Sentry (https://getsentry.com)"
+name = "sentry-sdk"
+optional = false
+python-versions = "*"
+version = "0.13.1"
+
+[package.dependencies]
+certifi = "*"
+urllib3 = ">=1.10.0"
+
+[[package]]
+category = "main"
 description = "A modern CSS selector implementation for Beautiful Soup."
 name = "soupsieve"
 optional = false
@@ -222,7 +234,7 @@ python-versions = ">=3.4"
 version = "6.0"
 
 [metadata]
-content-hash = "287aff2ba9b36a54c944ab8ddb957bcd636a7c19aeb4167fdd9303587370a152"
+content-hash = "841b25e12b3dd5c87a7c3e266ebfef5277f470075c75694581edb361bc15c7eb"
 python-versions = "^3.5"
 
 [metadata.hashes]
@@ -243,6 +255,7 @@ requests = ["11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4", 
 sanic = ["4ce5ffd9588557caff844da0f4b478d263d0e836fa0204480a2a17958b333fe0", "e1f291cfc44627baad7e0855512c821fe3dbfe23f7d2a26561abb808d4511f14"]
 sanic-cors = ["b66a6046eeb8e1e48ed704f9d7002963646d070bf66198aef149e58971b1850b", "c58007c42fc4323c47ce9ec5aaa3123b938fb43cba3b4b78a38a020a9b2b769d"]
 sanic-plugins-framework = ["7bfa4d4e2b7e0ff487b2297d3e8b8697f6bc49b0c2c3967289716d30cb44d881", "9b1f8f3fa8dcbcc0397adafe919665cce10b82cc41d543ee2f317ac31513a78d"]
+sentry-sdk = ["cf4b0f8401f4d146e6b8c5579b24397273126c9a0576fa7eb9581ad27b330f13", "f6e850f304382d87c5c52c01db8c0004d2ced6a0b073df2f2257168cf31b31aa"]
 soupsieve = ["72b5f1aea9101cf720a36bb2327ede866fd6f1a07b1e87c92a1cc18113cbc946", "e4e9c053d59795e440163733a7fec6c5972210e1790c507e4c7b051d6c5259de"]
 sqlalchemy = ["0459bf0ea6478f3e904de074d65769a11d74cdc34438ab3159250c96d089aef0"]
 ujson = ["f66073e5506e91d204ab0c614a148d5aa938bdbf104751be66f8ad7a222f5f86"]

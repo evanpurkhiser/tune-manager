@@ -1,13 +1,16 @@
-import { levels, makeValidations, Validations } from './utils';
+import { Artwork } from 'app/importer/types';
+
+import { ValidationLevel } from './types';
+import { makeValidations, Validations } from './utils';
 
 const validationType = makeValidations({
   NOT_SQUARE: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: 'Artwork must be square',
   },
 
   TOO_SMALL: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: 'Artwork should be a minimum of 500x500',
   },
 });
@@ -20,7 +23,7 @@ const MIN_SIZE = 500;
  * 1. ERROR: The demensions must be square.
  * 2. ERROR: The artwork must be larger than MIN_SIZE x MIN_SIZE.
  */
-function individualArtwork(artwork) {
+function individualArtwork(artwork: Artwork) {
   const validations = new Validations();
 
   if (artwork === undefined) {

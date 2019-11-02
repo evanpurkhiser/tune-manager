@@ -1,10 +1,37 @@
-import * as lodash from 'lodash';
+import { cloneDeep, groupBy, mapValues } from 'lodash';
 import format from 'string-format';
 import md5 from 'md5';
 
 import * as validate from 'app/importer/validate';
 import { formatTrackNumbers } from './format';
 import { remixPattern } from './artistMatch';
+import { Track } from 'app/importer/types';
+
+type DiscogsArtist = {
+  name: string;
+  anv: string;
+  join: string;
+};
+
+type DiscogsTrack = {
+  type: 'track' | 'heading';
+  title: string;
+  position: string;
+  artists: DiscogsArtist[];
+};
+
+type DiscogsLabel = {
+  catno: string;
+  name: string;
+};
+
+type DiscogsRelease = {
+  title: string;
+  year: number;
+  artists: DiscogsArtist[];
+  tracklist: DiscogsTrack[];
+  labels: DiscogsLabel[];
+};
 
 const PROXY_URL = '/api/discogs-proxy/';
 const SEARCH_URL =
@@ -13,7 +40,7 @@ const SEARCH_URL =
 /**
  * Construct a discogs API request URL.
  */
-function url(url, ...args) {
+function url(url: string, ...args: Parameters<typeof format>[1][]) {
   const queryURL = encodeURIComponent(format(url, ...args));
 
   return `${PROXY_URL}?url=${queryURL}`;
@@ -33,8 +60,8 @@ const positionRegex = /(?:([0-9]+)-)?([0-9]+)/;
 /**
  * Join the discogs artists object using the provided joiner.
  */
-function buildArtistString(artistsList) {
-  const artists = lodash.cloneDeep(artistsList);
+function buildArtistString(artistsList: DiscogsArtist[]) {
+  const artists = cloneDeep(artistsList);
 
   // Use the ANV (artist name variation) if provided
   artists.forEach(a => {
@@ -57,9 +84,9 @@ function buildArtistString(artistsList) {
 /**
  * Given a Discogs release JSON object, map the tracks into our track format.
  */
-function mapTracks(release) {
+function mapTracks(release: DiscogsRelease) {
   const tracks = release.tracklist;
-  const label = release.labels.pop() || {};
+  const label = release.labels.pop()! || {};
 
   // Compute total tracks and discs
   const positionMatches = tracks
@@ -69,14 +96,14 @@ function mapTracks(release) {
     .map(p => p.match(positionRegex))
     .filter(p => p !== null);
 
-  const discGroups = lodash.groupBy(positionMatches, p => p[1] || '1');
+  const discGroups = groupBy(positionMatches, p => (p && p[1]) || '1');
 
   const totalDiscs = Object.keys(discGroups).pop() || '1';
-  const totalTracks = lodash.mapValues(discGroups, p => p.pop()[2]);
+  const totalTracks = mapValues(discGroups, p => p.pop()![2]);
 
   // Tracks are grouped into heading keys
   let currentHeading = '';
-  let currentTrackGroup = [];
+  let currentTrackGroup: Partial<Track>[] = [];
   const mappedTracks = [{ name: '', tracks: currentTrackGroup }];
 
   for (const t of tracks) {
@@ -89,7 +116,7 @@ function mapTracks(release) {
 
     const artists = t.artists || release.artists || [];
 
-    const track = {
+    const track: Partial<Track> = {
       artist: buildArtistString(artists),
       title: t.title,
       album: release.title,
@@ -105,7 +132,7 @@ function mapTracks(release) {
 
     // Add disc and tracks /if/ we have multiple tracks.
     const positionMatch = t.position.match(positionRegex);
-    if (positionMatch !== null && totalTracks[1] > 1) {
+    if (positionMatch !== null && parseInt(totalTracks[1], 10) > 1) {
       const discNum = positionMatch[1] || '1';
       const trackNum = positionMatch[2];
 

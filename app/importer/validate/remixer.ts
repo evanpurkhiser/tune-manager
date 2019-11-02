@@ -1,13 +1,18 @@
-import { levels, makeValidations, Validations } from './utils';
+import { Track } from 'app/importer/types';
+
+import { ValidationLevel, KnownValues } from './types';
+import { makeValidations, Validations } from './utils';
 import { remixPattern } from './title';
 import { validateArtistsString } from './artist';
 
 const validationType = makeValidations({
   TITLE_HAS_REMIXER: {
-    level: levels.WARNING,
+    level: ValidationLevel.WARNING,
     message: 'Title has remixer, but remixer field missing',
   },
 });
+
+type Options = { knownArtists: KnownValues };
 
 /**
  * Remixer validation will validate the following rules:
@@ -17,7 +22,7 @@ const validationType = makeValidations({
  *
  * 2. MIXED: Validate the artists
  */
-function remixer(track, options) {
+function remixer(track: Track, options: Options) {
   const remixer = track.remixer || '';
   const title = track.title || '';
 

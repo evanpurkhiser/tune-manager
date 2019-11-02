@@ -1,52 +1,56 @@
-import { autoFixTypes, levels, makeValidations, Validations } from './utils';
-import { validateFromKnowns } from './utils';
+import { Track } from 'app/importer/types';
 import {
   splitArtists,
   splitOn,
   strictSplitOn,
 } from 'app/importer/util/artistMatch';
 
+import { ValidationLevel, ValidationAutoFix, KnownValues } from './types';
+import { validateFromKnowns, makeValidations, Validations } from './utils';
+
 const validationType = makeValidations({
   EMPTY: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: 'Artist must not be left empty',
   },
 
   NOT_EMPTY: {
-    level: levels.VALID,
+    level: ValidationLevel.VALID,
     message: 'Artist is not empty',
   },
 
   KNOWN_ARTIST: {
-    level: levels.VALID,
+    level: ValidationLevel.VALID,
     message: '{value} is a known artist',
   },
 
   CASE_INCONSISTENT_ARTIST: {
-    level: levels.WARNING,
+    level: ValidationLevel.WARNING,
     message: '{value} is known as {knownValue}',
   },
 
   SIMILAR_ARTIST: {
-    level: levels.WARNING,
+    level: ValidationLevel.WARNING,
     message: '{value} is similar to known artists: {similarList}',
   },
 
   NEW_ARTIST: {
-    level: levels.WARNING,
+    level: ValidationLevel.WARNING,
     message: '{value} is not similar to any known artists',
   },
 
   BAD_CONNECTORS: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     fixer: fixConnectors,
-    autoFix: autoFixTypes.IMMEDIATE,
+    autoFix: ValidationAutoFix.IMMEDIATE,
+    message: 'Invalid connectors',
   },
 
   SINGLE_AMPERSAND: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     fixer: fixAmpersand,
-    autoFix: autoFixTypes.IMMEDIATE,
+    autoFix: ValidationAutoFix.IMMEDIATE,
+    message: 'Use ampersands with two artists',
   },
 });
 
@@ -58,12 +62,12 @@ const connectorTransforms = [
   ['vs\\.?', 'vs'],
   ['and', '&'],
   ["f(?:ea)?t(?:uring)?[.']?", 'Ft.'],
-];
+] as const;
 
 /**
  * Replace invalid artist connectors within an artist string.
  */
-function fixConnectors(artistsString) {
+function fixConnectors(artistsString: string) {
   let str = artistsString;
 
   for (const item of connectorTransforms) {
@@ -78,7 +82,7 @@ function fixConnectors(artistsString) {
  * Fix an artist with one comma separator by replacing the comma with an
  * ampersand.
  */
-function fixAmpersand(artistsString) {
+function fixAmpersand(artistsString: string) {
   return artistsString.replace(', ', ' & ');
 }
 
@@ -90,12 +94,16 @@ const typeMapping = {
   CASING: validationType.CASE_INCONSISTENT_ARTIST,
   SIMILAR: validationType.SIMILAR_ARTIST,
   UNKNOWN: validationType.NEW_ARTIST,
-};
+} as const;
 
 /**
  * Validate a single artist name. See `utils.validateFromKnowns`.
  */
-function validateOneArtist(artist, validations, knowns) {
+function validateOneArtist(
+  artist: string,
+  validations: Validations,
+  knowns: KnownValues
+) {
   const similarValidations = validateFromKnowns(artist, {
     knowns,
     typeMapping,
@@ -110,7 +118,7 @@ function validateOneArtist(artist, validations, knowns) {
  * ERROR: Artist separators should match the defined strict format. This can
  * be automatically fixed.
  */
-function validateConnectors(artistsString, validations) {
+function validateConnectors(artistsString: string, validations: Validations) {
   const fuzzy = artistsString.match(splitOn);
 
   // There are no detectable artist connectors
@@ -132,13 +140,19 @@ function validateConnectors(artistsString, validations) {
   validations.add(validationType.BAD_CONNECTORS);
 }
 
+type Options = { knownArtists: KnownValues };
+
 /**
  * Validate a given artist string.
  *
  * 1. MIXED: Validate each individual artist. See `validateOneArtist`.
  * 2. ERROR: Validate the artists connectors. See `validateConnectors`.
  */
-function validateArtistsString(artistsString, options = {}, validations) {
+function validateArtistsString(
+  artistsString: string,
+  options: Options,
+  validations: Validations
+) {
   const { knownArtists } = options;
 
   // 1. Check split artist names
@@ -156,7 +170,7 @@ function validateArtistsString(artistsString, options = {}, validations) {
  * 1. ERROR: The artist field must not be left empty.
  * 2. MIXED: Validate the artist string. See `validateArtistsString`.
  */
-function artist(track, options) {
+function artist(track: Track, options: Options) {
   const artistsString = track.artist || '';
 
   const validations = new Validations();

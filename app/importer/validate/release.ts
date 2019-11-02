@@ -1,15 +1,18 @@
-import { levels, makeValidations, Validations } from './utils';
+import { Track } from 'app/importer/types';
+
+import { ValidationLevel } from './types';
+import { makeValidations, Validations } from './utils';
 
 const formatPattern = /^[A-Z0-9-]{4,}$/;
 
 const validationType = makeValidations({
   INVALID_FORMAT: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: `Releases must match ${formatPattern}`,
   },
 
   VALID_FORMAT: {
-    level: levels.VALID,
+    level: ValidationLevel.VALID,
     message: 'Release identifier is in a valid format',
   },
 });
@@ -19,7 +22,7 @@ const validationType = makeValidations({
  *
  * 1. ERROR: The release field should conform to the `formatPattern`.
  */
-function release(track) {
+function release(track: Track) {
   const release = track.release || '';
 
   const validations = new Validations();

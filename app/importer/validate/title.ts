@@ -1,54 +1,59 @@
-import { autoFixTypes, levels, makeValidations, Validations } from './utils';
+import { Track } from 'app/importer/types';
 import { remixPattern } from 'app/importer/util/artistMatch';
+
+import { makeValidations, Validations } from './utils';
+import { ValidationLevel, ValidationAutoFix } from './types';
 
 const validationType = makeValidations({
   EMPTY: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: 'Title must not be left empty',
   },
 
   NOT_EMPTY: {
-    level: levels.VALID,
+    level: ValidationLevel.VALID,
     message: 'Title is not empty',
   },
 
   NO_ORIGINAL_MIX: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     fixer: removeOriginalMix,
-    autoFix: autoFixTypes.POST_EDIT,
+    autoFix: ValidationAutoFix.POST_EDIT,
+    message: 'Title should not inclue original mix',
   },
 
   NO_FEATURING: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: 'Title should not include featuring artist',
   },
 
   REMIX_MATCHED: {
-    level: levels.VALID,
+    level: ValidationLevel.VALID,
     message: 'Remix note matches remixer field',
   },
 
   REMIX_NOTE_MISSING: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: 'Remix field set, but title is missing remix note',
   },
 
   REMIX_MISMATCH: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: 'Remix field set, but title artists are different',
   },
 
   BAD_REMIX_FORMAT: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     fixer: fixRemixCasing,
-    autoFix: autoFixTypes.IMMEDIATE,
+    autoFix: ValidationAutoFix.IMMEDIATE,
+    message: 'Invalid remix format',
   },
 });
 
 /**
  * Correct the format of tracks matching the remixPattern.
  */
-function fixRemixCasing(title) {
+function fixRemixCasing(title: string) {
   const match = title.match(remixPattern);
 
   if (match === null) {
@@ -63,7 +68,7 @@ const originalMixPattern = / ?\(original mix\)/i;
 /**
  * Remove the '(Original Mix)' string from the title.
  */
-function removeOriginalMix(title) {
+function removeOriginalMix(title: string) {
   return title.replace(originalMixPattern, '');
 }
 
@@ -93,7 +98,7 @@ const featPattern = /[ [(]f(?:ea)?t\.?/i;
  *    c. ERROR: The title doesn't container anything that looks like a remix
  *       note.
  */
-function title(track) {
+function title(track: Track) {
   const title = track.title || '';
   const remixer = track.remixer || '';
 

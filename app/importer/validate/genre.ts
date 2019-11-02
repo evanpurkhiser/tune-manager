@@ -1,29 +1,31 @@
-import { levels, makeValidations, Validations } from './utils';
-import { validateFromKnowns } from './utils';
+import { Track } from 'app/importer/types';
+
+import { ValidationLevel, KnownValues } from './types';
+import { makeValidations, validateFromKnowns, Validations } from './utils';
 
 const validationType = makeValidations({
   NOT_EMPTY: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: 'Genre must be specified',
   },
 
   KNOWN_GENRE: {
-    level: levels.VALID,
+    level: ValidationLevel.VALID,
     message: '{value} is a known genre',
   },
 
   CASE_INCONSISTENT_GENRE: {
-    level: levels.WARNING,
+    level: ValidationLevel.WARNING,
     message: '{value} is known as {knownValue}',
   },
 
   SIMILAR_GENRE: {
-    level: levels.WARNING,
+    level: ValidationLevel.WARNING,
     message: '{value} is similar to known genres: {similarList}',
   },
 
   NEW_GENRE: {
-    level: levels.WARNING,
+    level: ValidationLevel.WARNING,
     message: '{value} is not similar to any known genres',
   },
 });
@@ -38,13 +40,17 @@ const typeMapping = {
   UNKNOWN: validationType.NEW_GENRE,
 };
 
+type Options = {
+  knownGenres?: KnownValues;
+};
+
 /**
  * Genre validation will validate the following rules:
  *
  * 1. ERROR: Genre must not be left blank.
  * 1. MIXED: Validate the genre string. See `utils.validateFromKnowns`.
  */
-function genre(track, options = {}) {
+function genre(track: Track, options: Options = {}) {
   const genre = track.genre || '';
   const { knownGenres } = options;
 

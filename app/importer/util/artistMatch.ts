@@ -20,7 +20,7 @@ const remixPattern = /\((.*) (re?mi?x)\)/i;
  * Split an artists string on common separators into a list of individual
  * artists.
  */
-function splitArtists(artistString) {
+function splitArtists(artistString: string) {
   return artistString.split(splitOn).filter(x => x);
 }
 

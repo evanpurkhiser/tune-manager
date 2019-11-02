@@ -1,3 +1,5 @@
+import { Artwork } from 'app/importer/types';
+
 /**
  * Cache objectURL -> BLOB mappings
  */
@@ -6,13 +8,13 @@ const objectUrlBlobs = {};
 /**
  * Generate a simple object representation of an image Blob.
  */
-export function buildImageObject(imageBlob) {
+export function buildImageObject(imageBlob: Blob) {
   const objectURL = window.URL.createObjectURL(imageBlob);
   const image = new Image();
 
   objectUrlBlobs[objectURL] = imageBlob;
 
-  const promise = new Promise(
+  const promise = new Promise<Artwork>(
     resolve =>
       (image.onload = _ =>
         resolve({
@@ -31,6 +33,6 @@ export function buildImageObject(imageBlob) {
 /**
  * Lookup the BLOB for the given image object.
  */
-export function blobForImage(image) {
+export function blobForImage(image: Artwork) {
   return objectUrlBlobs[image.url];
 }

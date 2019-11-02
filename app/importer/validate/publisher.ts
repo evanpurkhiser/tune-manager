@@ -1,24 +1,26 @@
-import { levels, makeValidations, Validations } from './utils';
-import { validateFromKnowns } from './utils';
+import { Track } from 'app/importer/types';
+
+import { ValidationLevel, KnownValues } from './types';
+import { makeValidations, validateFromKnowns, Validations } from './utils';
 
 const validationType = makeValidations({
   KNOWN_PUBLISHER: {
-    level: levels.VALID,
+    level: ValidationLevel.VALID,
     message: '{value} is a known publisher',
   },
 
   CASE_INCONSISTENT_PUBLISHER: {
-    level: levels.WARNING,
+    level: ValidationLevel.WARNING,
     message: '{value} is known as {knownValue}',
   },
 
   SIMILAR_PUBLISHER: {
-    level: levels.WARNING,
+    level: ValidationLevel.WARNING,
     message: '{value} is similar to known publishers: {similarList}',
   },
 
   NEW_PUBLISHER: {
-    level: levels.WARNING,
+    level: ValidationLevel.WARNING,
     message: '{value} is not similar to any known publishers',
   },
 });
@@ -33,12 +35,16 @@ const typeMapping = {
   UNKNOWN: validationType.NEW_PUBLISHER,
 };
 
+type Options = {
+  knownPublishers?: KnownValues;
+};
+
 /**
  * Publisher validation will validate the following rules:
  *
  * 1. MIXED: Validate the publisher string. See `utils.validateFromKnowns`.
  */
-function publisher(track, options = {}) {
+function publisher(track: Track, options: Options = {}) {
   const publisher = track.publisher || '';
   const { knownPublishers } = options;
 

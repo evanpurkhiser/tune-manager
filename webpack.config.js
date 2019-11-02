@@ -24,13 +24,14 @@ const babelPlugins = [
 ];
 
 module.exports = {
-  entry: { app: './app/index.js' },
+  entry: { app: './app/index.tsx' },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[hash].js',
     publicPath: '/',
   },
   resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
     alias: { app: path.resolve(__dirname, 'app') },
   },
   devtool: IS_PROD ? 'source-map' : 'cheap-module-eval-source-map',
@@ -49,13 +50,17 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(t|j)sx?$/,
         loader: 'babel-loader',
         options: {
           presets: [['@babel/preset-env'], ['@babel/preset-react']],
           plugins: babelPlugins.filter(x => x !== null),
           compact: true,
         },
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
       },
       {
         test: /\.ne/,

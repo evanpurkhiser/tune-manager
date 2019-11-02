@@ -1,22 +1,25 @@
-import { autoFixTypes, levels, makeValidations, Validations } from './utils';
+import { Track } from 'app/importer/types';
+
+import { ValidationLevel, ValidationAutoFix } from './types';
+import { makeValidations, Validations } from './utils';
 
 const yearPattern = /^[0-9]{4}$/;
 
 const validationType = makeValidations({
   EMPTY: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: 'A release year must be specified',
   },
 
   NOT_EMPTY: {
-    level: levels.VALID,
+    level: ValidationLevel.VALID,
     message: 'The year is set',
   },
 
   INVALID_FORMAT: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: `The year must match the format ${yearPattern}`,
-    autoFix: autoFixTypes.POST_EDIT,
+    autoFix: ValidationAutoFix.POST_EDIT,
     fixer: reformatYear,
   },
 });
@@ -27,7 +30,7 @@ const fuzzyYearPattern = /[0-9]{4}/;
  * Attempt to reformat the year into a valid format. This simply looks for a 4
  * digit string within the year and assumes that is the year.
  */
-function reformatYear(year) {
+function reformatYear(year: string) {
   const possibleYear = year.match(fuzzyYearPattern);
 
   if (possibleYear !== null) {
@@ -43,7 +46,7 @@ function reformatYear(year) {
  * 1. ERROR: The year must be specified.
  * 2. ERROR: The year must match the `yearPattern`.
  */
-function year(track) {
+function year(track: Track) {
   const year = track.year || '';
 
   const validations = new Validations();

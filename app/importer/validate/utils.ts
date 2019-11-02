@@ -1,7 +1,16 @@
 import * as similarity from 'string-similarity';
 import format from 'string-format';
 
+import {
+  ValidationLevel,
+  Validation,
+  ValidationAutoFix,
+  KnownValidations,
+  KnownValues,
+} from './types';
+
 /**
+ * @deprecated REPLCAE WITH ENUM
  * Validation levels
  */
 export const levels = {
@@ -9,37 +18,38 @@ export const levels = {
   WARNING: 'warning',
   INFO: 'info',
   VALID: 'valid',
-};
+} as const;
+
+/**
+ * @deprecated REPLCAE WITH ENUM
+ * Validation autoFix supports a few different types of autofixers.
+ */
+export const autoFixTypes = {
+  IMMEDIATE: 'immediate',
+  POST_EDIT: 'post_edit',
+} as const;
 
 /**
  * levelPrecedence specifies the order of validation levels in order of
  * importance.
  */
 export const levelPresedence = [
-  levels.ERROR,
-  levels.WARNING,
-  levels.INFO,
-  levels.VALID,
-];
-
-/**
- * Validation autoFix supports a few different types of autofixers.
- */
-export const autoFixTypes = {
-  IMMEDIATE: 'immediate',
-  POST_EDIT: 'post_edit',
-};
+  ValidationLevel.ERROR,
+  ValidationLevel.WARNING,
+  ValidationLevel.INFO,
+  ValidationLevel.VALID,
+] as const;
 
 /**
  * Make validation inserts the validation type into each validation object. The
  * type is derived from the validations key.
  */
-export function makeValidations(validationObject) {
-  for (const type in validationObject) {
-    validationObject[type].type = type;
+export function makeValidations<T>(config: { [K in keyof T]: Validation<K> }) {
+  for (const type in config) {
+    config[type].type = type;
   }
 
-  return validationObject;
+  return config;
 }
 
 /**
@@ -48,14 +58,15 @@ export function makeValidations(validationObject) {
  * validations.
  */
 export class Validations {
-  constructor() {
-    this.items = [];
-  }
+  items: Validation[] = [];
 
   /**
    * Add a new item to the list of validations.
    */
-  add(validation, { fields = {} } = {}) {
+  add(
+    validation: Validation,
+    { fields = {} }: { fields?: Validation['fields'] } = {}
+  ) {
     const item = { ...validation, fields };
 
     if (typeof item.message === 'string') {
@@ -70,7 +81,7 @@ export class Validations {
   /**
    * Merge another validation object.
    */
-  merge(validations) {
+  merge(validations: Validations) {
     this.items = this.items.concat(validations.items);
 
     return this;
@@ -92,10 +103,10 @@ export class Validations {
    * If a automatic fix is able to be applied, the validation will be removed
    * from the list of validations as it's considered to be 'fixed'.
    */
-  autoFix(value, types = [autoFixTypes.IMMEDIATE]) {
+  autoFix(value: string, types = [ValidationAutoFix.IMMEDIATE]) {
     const fixers = this.items
-      .filter(v => types.includes(v.autoFix))
-      .map(v => v.fixer);
+      .filter(v => types.includes(v.autoFix!) && v.fixer !== undefined)
+      .map(v => v.fixer!);
 
     if (fixers.length === 0) {
       return value;
@@ -116,6 +127,11 @@ export class Validations {
     return newValue;
   }
 }
+
+type Options = {
+  knowns?: KnownValues;
+  typeMapping: KnownValidations;
+};
 
 /**
  * Specifies the threshold that the similarity rating of known values must
@@ -138,21 +154,6 @@ const SIMILARITY_CUTOFF = 0.75;
  *
  *  4. WARNING: Does the value not exist in the list of known values.
  *
- * Options should take the shape:
- *
- *   options = {
- *     knowns: [ ... listOfKnowns ],
- *
- *     // typeMapping allows you to specify the validation types to use when
- *     // inserting validations.
- *     typeMapping: {
- *       KNOWN:   ..., // known value
- *       CASING:  ..., // inconsistently cased
- *       SIMILAR: ..., // similar to a known value
- *       UNKNOWN: ..., // value is not known
- *     },
- *   }
- *
  * When validations are generate, the following field names will be used. Use
  * these parameters in the validation type messages:
  *
@@ -161,7 +162,7 @@ const SIMILARITY_CUTOFF = 0.75;
  *   - similarList:   The string representation of similar values for SIMILAR.
  *   - similarKnowns: The similar values list for SIMILAR.
  */
-export function validateFromKnowns(value, options = {}) {
+export function validateFromKnowns(value: string, options: Options) {
   const { knowns, typeMapping } = options;
 
   const validations = new Validations();
@@ -184,7 +185,7 @@ export function validateFromKnowns(value, options = {}) {
   }
 
   // 3. Is the value similar to any of the known values.
-  let similarKnowns = [];
+  let similarKnowns: string[] = [];
 
   // Do not look for similar values if the list of knowns is empty.
   // Unfortunately similarity.findBestMatch will raise an exception if the list

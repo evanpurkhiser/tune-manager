@@ -1,33 +1,36 @@
-import { autoFixTypes, levels, makeValidations, Validations } from './utils';
 import { formatTrackNumbers } from 'app/importer/util/format';
+
+import { makeValidations, Validations } from './utils';
+import { ValidationLevel, ValidationAutoFix } from './types';
+import { Track } from 'app/importer/types';
 
 const numberPattern = /^([0-9]{1,3})\/([0-9]{1,3})$/;
 
 const validationType = makeValidations({
   VALID_NUMBER: {
-    level: levels.VALID,
+    level: ValidationLevel.VALID,
     message: 'Formatting is correct',
   },
 
   INVALID_FORMAT: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: `Format should match ${numberPattern}`,
-    autoFix: autoFixTypes.POST_EDIT,
+    autoFix: ValidationAutoFix.POST_EDIT,
     fixer: formatNumber,
   },
 
   HAS_ALBUM: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: 'Has album, but no disc number set',
   },
 
   HAS_DISC_NUMBER: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: 'Disc number set, but track is blank',
   },
 
   HAS_TRACK_NUMBER: {
-    level: levels.ERROR,
+    level: ValidationLevel.ERROR,
     message: 'Track number set, but disc is blank',
   },
 });
@@ -40,7 +43,7 @@ const fuzzyNumberPattern = /^([0-9]{1,3})( ?\/ ?([0-9]{1,3}))?$/;
 /**
  * Attempt to coerce a track or disc number into our format.
  */
-export function formatNumber(number) {
+export function formatNumber(number: string) {
   const numberMatch = number.match(fuzzyNumberPattern);
 
   if (numberMatch === null) {
@@ -63,7 +66,7 @@ export function formatNumber(number) {
  *  - The first number matches the string length of the total.
  *  - The first number is not larger than the total.
  */
-function validateNumber(numberString, validations) {
+function validateNumber(numberString: string, validations: Validations) {
   if (numberString === '') {
     return;
   }
@@ -84,7 +87,7 @@ function validateNumber(numberString, validations) {
     return validations.add(validationType.INVALID_FORMAT);
   }
 
-  validations.add(validationType.VALID_NUMBER);
+  return validations.add(validationType.VALID_NUMBER);
 }
 
 /**
@@ -93,7 +96,7 @@ function validateNumber(numberString, validations) {
  * 1. ERROR: A disc number is set, but the track number is empty.
  * 2. MIXED: The number does not match the `numberPattern`.
  */
-function track(track) {
+function track(track: Track) {
   const trackNumber = track.track || '';
   const discNumber = track.disc || '';
 
@@ -110,7 +113,7 @@ function track(track) {
   return validations;
 }
 
-track.validatesFields = ['track', 'disc'];
+track.validatesFields = ['track', 'disc'] as const;
 
 /**
  * Disc number validation will validate the following rules:
@@ -119,7 +122,7 @@ track.validatesFields = ['track', 'disc'];
  * 2. ERROR: A track number is set, but the disc number is blank.
  * 3. MIXED: The number does not match the `numberPattern`.
  */
-function disc(track) {
+function disc(track: Track) {
   const discNumber = track.disc || '';
   const trackNumber = track.track || '';
   const album = track.album || '';
@@ -142,6 +145,6 @@ function disc(track) {
   return validations;
 }
 
-disc.validatesFields = ['track', 'disc', 'album'];
+disc.validatesFields = ['track', 'disc', 'album'] as const;
 
 export { track, disc };

@@ -35,8 +35,6 @@ CORS(app)
 storage_path = os.path.abspath(args.storage_path)
 db_path = os.path.join(storage_path, "database.db")
 
-print(db_path)
-
 if not os.path.exists(storage_path):
     os.makedirs(storage_path)
 
@@ -49,8 +47,6 @@ args_config = {
 
 app.config.from_object(settings)
 app.config.update(args_config)
-
-print(app.config)
 
 # Setup the database and assign it on the app object
 app.db_session = db.init(create_engine(app.config.DATABASE_PATH))

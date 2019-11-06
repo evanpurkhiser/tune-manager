@@ -180,8 +180,8 @@ class TrackProcessor(object):
 
             for event in self.group_events(events):
                 data = json.dumps(event)
-                futures = [ws.send(data) for ws in self.connections]
-                asyncio.ensure_future(*futures)
+                for ws in self.connections:
+                    asyncio.create_task(ws.send(data))
 
     async def file_event(self, event):
         """
@@ -189,6 +189,7 @@ class TrackProcessor(object):
         import collection this method will be called, triggering the
         appropriate action.
         """
+
         commands = {"created": self.add_safe, "deleted": self.remove}
 
         if event.is_directory or event.event_type not in commands:
@@ -197,11 +198,12 @@ class TrackProcessor(object):
         commands[event.event_type](event.src_path)
 
     def group_events(self, events):
-        key_on = lambda k: k["type"]
+        def key_on_type(k):
+            return k["type"]
 
-        events.sort(key=key_on)
+        events.sort(key=key_on_type)
 
-        for event_type, items in itertools.groupby(events, key=key_on):
+        for event_type, items in itertools.groupby(events, key=key_on_type):
             items = [e["item"] for e in items]
             yield {"type": event_type, "items": items}
 
@@ -327,35 +329,40 @@ class TrackProcessor(object):
             self.add(path)
 
     def add_safe(self, path):
-        """
-        Add a track to the tracked import list, first checking that the file is
-        not still being written into the directory. Will wait until the files
-        size is no longer changing.
-        """
-        size = os.stat(path).st_size
+        self.add(path, safe_add=True)
 
-        # Ensure the file isn't still being written
-        while True:
-            time.sleep(0.5)
-            latest_size = os.stat(path).st_size
-            if latest_size == size:
-                break
-            size = latest_size
-
-        return self.add(path)
-
-    def add(self, path):
+    def add(self, path, safe_add=False):
         """
         Add a track to the tracked import list.
         """
+        # Apple likes to litter these files into directories, don't even
+        # attempt to read them as it will just immediately fail
+        if os.path.basename(path).startswith("._"):
+            return
+
+        # Track ready to be reported
+        self.execute_paralell(self.process_add, path, safe_add)
+
+    def process_add(self, path, safe_add):
         identifier = file_id(path)
         ext = os.path.splitext(path)[1]
+
+        # Ensure the file isn't still being written
+        if safe_add:
+            size = os.stat(path).st_size
+            while True:
+                time.sleep(0.5)
+                latest_size = os.stat(path).st_size
+                if latest_size == size:
+                    break
+                size = latest_size
 
         if ext == ".aiff":
             ext = ".aif"
             new_path = path[:-5] + ext
             os.rename(path, new_path)
             path = new_path
+            identifier = file_id(path)
 
         # File may need to be transformed before it can be processed for
         # importing.
@@ -366,12 +373,6 @@ class TrackProcessor(object):
         if ext not in VALID_FORMATS:
             return
 
-        # Apple likes to litter these files into directories, don't even
-        # attempt to read them as it will just immediately fail
-        if os.path.basename(path).startswith("._"):
-            return
-
-        # Track ready to be reported
         media = mediafile.MediaFile(path)
 
         # Recompute the key if it is missing or invalid
@@ -387,8 +388,6 @@ class TrackProcessor(object):
 
         self.mediafiles[identifier] = media
         self.cache_art(media.artwork)
-
-        print("Added track!!")
 
         # Report track details
         track = mediafile.serialize(media, trim_path=self.import_path)

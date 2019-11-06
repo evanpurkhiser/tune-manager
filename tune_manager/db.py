@@ -1,16 +1,16 @@
 import os.path
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import Column, String, Integer
 
 Base = declarative_base()
-Session = sessionmaker()
 
 
 def init(engine):
-    Session.configure(bind=engine)
     Base.metadata.create_all(engine)
+    factory = sessionmaker(bind=engine)
+    return scoped_session(factory)
 
 
 class Track(Base):

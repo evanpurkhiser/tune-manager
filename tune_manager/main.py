@@ -53,8 +53,7 @@ app.config.update(args_config)
 print(app.config)
 
 # Setup the database and assign it on the app object
-db.init(create_engine(app.config.DATABASE_PATH))
-app.db_session = db.Session()
+app.db_session = db.init(create_engine(app.config.DATABASE_PATH))
 
 app.blueprint(importer.blueprint, url_prefix="/api")
 app.blueprint(catalog.blueprint, url_prefix="/api/catalog")

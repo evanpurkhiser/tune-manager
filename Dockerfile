@@ -30,7 +30,7 @@ VOLUME /storage
 
 # Build javascript app
 COPY app /app/app/
-COPY webpack.config.js /app/
+COPY webpack.config.js tsconfig.json /app/
 RUN yarn build
 
 # Copy application source

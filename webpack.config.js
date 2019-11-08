@@ -2,12 +2,14 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const IS_PROD =
   process.argv.find(a => a.includes('mode=production')) !== undefined;
 
 const plugins = [
   new HtmlWebpackPlugin({ template: 'app/index.html' }),
+  new ForkTsCheckerWebpackPlugin(),
   new webpack.DefinePlugin({
     IS_PROD,
     VERSION: JSON.stringify(process.env.VERSION || 'dev'),
@@ -53,14 +55,14 @@ module.exports = {
         test: /\.(t|j)sx?$/,
         loader: 'babel-loader',
         options: {
-          presets: [['@babel/preset-env'], ['@babel/preset-react']],
+          presets: [
+            '@babel/preset-env',
+            '@babel/preset-typescript',
+            '@babel/preset-react',
+          ],
           plugins: babelPlugins.filter(x => x !== null),
           compact: true,
         },
-      },
-      {
-        test: /\.tsx?$/,
-        loader: 'ts-loader',
       },
       {
         test: /\.ne/,

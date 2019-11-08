@@ -1,20 +1,13 @@
 import argparse
 import os
 import os.path
-import sys
 
-import sentry_sdk
 from sanic import Sanic, response
 from sanic_cors import CORS
 from sqlalchemy import create_engine
 
-sentry_sdk.init("https://208c1692ec594314acbc4e63a3fd775e@sentry.io/1805605")
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.pardir))
-
+from tune_manager import settings, db
 from tune_manager.api import importer, catalog
-from tune_manager import settings
-from tune_manager import db
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--host", default="0.0.0.0")
@@ -68,5 +61,5 @@ async def serve_statics(request, path=""):
     )
 
 
-if __name__ == "__main__":
+def main():
     app.run(host=args.host, port=args.port, workers=args.workers, debug=args.debug)

@@ -2,24 +2,21 @@ import bs4
 import requests
 from urllib.parse import urljoin
 
-import mediafile
+from tune_manager import mediafile
 
 
 # Beatports Genre mappings are pretty poor. For now, since I purchase *mostly
 # hardcore* remap a few genres automatically.
-genre_remapping = {
-    'Hard Dance':             'Hardcore',
-    'Hardcore / Hard Techno': 'Hardcore',
-}
+genre_remapping = {"Hard Dance": "Hardcore", "Hardcore / Hard Techno": "Hardcore"}
 
 
 def has_metadata(media):
     """
     Determine if the provided mediafile contains beatport metadat.
     """
-    webpage = media.mg_file.tags.get('WOAF')
+    webpage = media.mg_file.tags.get("WOAF")
 
-    return webpage is not None and 'beatport.com' in webpage.url
+    return webpage is not None and "beatport.com" in webpage.url
 
 
 def process(media):
@@ -31,42 +28,42 @@ def process(media):
     This *modifies* the media file passed in.
     """
     # Beatport seems to prefix the field with this control character
-    track_url = media.mg_file.tags.get('WOAF').url.strip('\x03')
+    track_url = media.mg_file.tags.get("WOAF").url.strip("\x03")
 
     response = requests.get(track_url)
 
-    track = bs4.BeautifulSoup(response.content, 'html.parser')
-    release_link = track.select('a.interior-track-release-artwork-link')[0]
-    release_url = urljoin('http://www.beatport.com', release_link['href'])
+    track = bs4.BeautifulSoup(response.content, "html.parser")
+    release_link = track.select("a.interior-track-release-artwork-link")[0]
+    release_url = urljoin("http://www.beatport.com", release_link["href"])
 
     response = requests.get(release_url)
-    release = bs4.BeautifulSoup(response.content, 'html.parser')
+    release = bs4.BeautifulSoup(response.content, "html.parser")
 
     # Get the list of tracks
-    tracks = release.select('div.bucket.tracks ul.bucket-items li')
+    tracks = release.select("div.bucket.tracks ul.bucket-items li")
 
     # Get a mapping of track details (under the artwork)
-    details = release.select('ul.interior-release-chart-content-list')[0]
-    details = details.select('li')
+    details = release.select("ul.interior-release-chart-content-list")[0]
+    details = details.select("li")
 
-    details = [i.find_all('span') for i in details]
+    details = [i.find_all("span") for i in details]
     details = {s[0].text.lower(): s[1].text.strip() for s in details}
 
     # Update the track, reporting only modified fields.
     orig = mediafile.serialize(media)
 
-    media.release = details['catalog']
+    media.release = details["catalog"]
 
     # Track is a single
     if len(tracks) == 1:
-        media.disc  = ''
-        media.track = ''
-        media.album = ''
+        media.disc = ""
+        media.track = ""
+        media.album = ""
 
     # Track is part of an album (multiple tracks)
     else:
         media.track.total = len(tracks)
-        media.disc = '1/1'
+        media.disc = "1/1"
 
     if media.genre in genre_remapping:
         media.genre = genre_remapping[media.genre]

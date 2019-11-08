@@ -1,7 +1,7 @@
 import itertools
 import re
 
-import db
+from tune_manager import db
 
 # regex for splitting apart individual artist names
 individual_artists = re.compile("(?:,| vs| &| Ft\.) ")

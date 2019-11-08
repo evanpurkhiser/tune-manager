@@ -1,5 +1,6 @@
 import os.path
 import hashlib
+
 import mutagen
 import mutagen.id3 as ID3
 from collections import namedtuple

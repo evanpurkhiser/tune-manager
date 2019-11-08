@@ -11,12 +11,8 @@ import shutil
 import watchdog.observers
 import time
 
-import importer.convert
-import importer.beatport
-import mediafile
-import utils.file
-import utils.image
-import utils.watchdog
+from tune_manager.importer import convert, beatport
+from tune_manager import mediafile, utils
 
 # This list specifies file extensions that are directly supported for
 # importing, without requiring any type of conversion.
@@ -248,12 +244,14 @@ class TrackProcessor(object):
         process = TrackProcesses.CONVERTING
         self.add_processing(identifier, process)
 
-        importer.convert.convert_track(path)
+        convert.convert_track(path)
         self.done_processing(identifier, process)
 
     def compute_key(self, identifier, media):
         process = TrackProcesses.KEY_COMPUTING
         self.add_processing(identifier, process)
+
+        return
 
         # Prefix key with leading zeros
         media.key = keyfinder.key(media.file_path).camelot().zfill(3)
@@ -265,7 +263,7 @@ class TrackProcessor(object):
         process = TrackProcesses.BEATPORT_IMPORT
         self.add_processing(identifier, process)
 
-        fields = importer.beatport.process(media)
+        fields = beatport.process(media)
         self.done_processing(identifier, process, **fields)
 
         # media.save()
@@ -323,7 +321,7 @@ class TrackProcessor(object):
         Add all existing tracks in the import path
         """
         path = self.import_path
-        types = tuple(VALID_FORMATS + importer.convert.CONVERTABLE_FORMATS)
+        types = tuple(VALID_FORMATS + convert.CONVERTABLE_FORMATS)
 
         for path in utils.file.collect_files([path], recursive=True, types=types):
             self.add(path)
@@ -366,7 +364,7 @@ class TrackProcessor(object):
 
         # File may need to be transformed before it can be processed for
         # importing.
-        if ext in importer.convert.CONVERTABLE_FORMATS:
+        if ext in convert.CONVERTABLE_FORMATS:
             self.execute_paralell(self.convert_track, identifier, path)
             return
 
@@ -383,7 +381,7 @@ class TrackProcessor(object):
             self.execute_paralell(self.compute_key, identifier, media)
 
         # Request more details from beatport
-        if importer.beatport.has_metadata(media):
+        if beatport.has_metadata(media):
             self.execute_paralell(self.beatport_update, identifier, media)
 
         self.mediafiles[identifier] = media

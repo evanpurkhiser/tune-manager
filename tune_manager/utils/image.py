@@ -1,16 +1,14 @@
 import io
 from PIL import Image
 
-from mediafile import Artwork
+from tune_manager.mediafile import Artwork
 
 NORMAL_SIZE = 500
 
 
 def normalize_artwork(art, size=NORMAL_SIZE):
-    ""
-
     image = Image.open(io.BytesIO(art.data))
-    h, w  = image.size
+    h, w = image.size
 
     if h < size or w < size:
         return art

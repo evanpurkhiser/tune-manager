@@ -1,11 +1,9 @@
 import os
 
 from sqlalchemy import inspect
-
 from sanic import Blueprint, response
 
-import catalog
-import db
+from tune_manager import catalog, db
 
 blueprint = Blueprint("catalog")
 

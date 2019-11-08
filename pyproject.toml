@@ -17,6 +17,9 @@ beautifulsoup4 = "^4.7"
 keyfinder = "^1.1"
 sentry_sdk = "^0.13.1"
 
+[tool.poetry.scripts]
+tunemanager= 'tune_manager:main'
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"

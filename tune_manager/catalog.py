@@ -1,17 +1,15 @@
 import asyncio
 import hashlib
 import os
-import concurrent.futures
 import logging
 
 import sqlalchemy
 import sqlalchemy.orm.exc
 import watchdog.observers
 
-import db
-import mediafile
-import utils.file
-import utils.watchdog
+from tune_manager import db, mediafile
+from tune_manager.utils import file
+from tune_manager.utils.watchdog import AsyncHandler
 
 
 log = logging.getLogger("indexer")
@@ -35,7 +33,7 @@ class MetadataIndexer(object):
         """
         Reindex new or changed tracks.
         """
-        files = utils.file.collect_files([self.library_path], recursive=True)
+        files = file.collect_files([self.library_path], recursive=True)
 
         # Query {file_path: mtime} mappings
         query = self.db_session.query(db.Track.file_path, db.Track.mtime)
@@ -45,7 +43,7 @@ class MetadataIndexer(object):
             path = os.path.realpath(path)
             last_mtime = int(os.path.getmtime(path))
 
-            short_path = utils.file.track_path(path, self.library_path)
+            short_path = file.track_path(path, self.library_path)
 
             # Track is unchanged
             if short_path in mtimes and mtimes[short_path] == last_mtime:
@@ -53,10 +51,9 @@ class MetadataIndexer(object):
 
             try:
                 self.add_or_update(path)
+                self.db_session.commit()
             except Exception as e:
                 log.warn(f"Failed to update {short_path}: {e}")
-
-        self.db_session.commit()
 
     async def reindex(self):
         await self.loop.run_in_executor(None, self.reindex_sync)
@@ -66,7 +63,7 @@ class MetadataIndexer(object):
         Watch all files for changes in the collection.
         """
         handler = CatalogWatchHandler(self)
-        handler = utils.watchdog.AsyncHandler(self.loop, handler.dispatch)
+        handler = AsyncHandler(self.loop, handler.dispatch)
 
         # The watchdog observer can take some time to setup as it has to add
         # inode watchers to all files. Set it up in a threaded executor.
@@ -138,8 +135,8 @@ class CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
     def on_moved(self, event):
         library_path = self.indexer.library_path
 
-        src = utils.file.track_path(event.src_path, library_path)
-        dst = utils.file.track_path(event.dest_path, library_path)
+        src = file.track_path(event.src_path, library_path)
+        dst = file.track_path(event.dest_path, library_path)
 
         track = self.indexer.db_session.query(db.Track).filter(
             db.Track.file_path == src
@@ -172,7 +169,7 @@ def mediafile_to_track(media, library_path):
         setattr(track, k, str(getattr(media, k)))
 
     track.mtime = int(os.path.getmtime(path))
-    track.file_path = utils.file.track_path(path, library_path)
+    track.file_path = file.track_path(path, library_path)
     track.file_hash = file_hash
     track.artwork_hash = art_hash
 
@@ -181,7 +178,6 @@ def mediafile_to_track(media, library_path):
 
 def ensure_artwork_cache(prefix, track, media):
     artwork_path = os.path.join(prefix, track.artwork_hash[0:2], track.artwork_hash)
-    print(artwork_path)
 
     if os.path.exists(artwork_path):
         return

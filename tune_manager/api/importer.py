@@ -2,16 +2,16 @@ from sanic import Blueprint, response
 import requests
 import json
 
-from mediafile import Artwork
-import importer.filesystem
-import knowns
+from tune_manager import knowns
+from tune_manager.mediafile import Artwork
+from tune_manager.importer import filesystem
 
 blueprint = Blueprint("importer")
 
 # Begin processing track file events
 @blueprint.listener("before_server_start")
 def start_processor(app, loop):
-    processor = importer.filesystem.TrackProcessor(app.config.STAGING_PATH, loop=loop)
+    processor = filesystem.TrackProcessor(app.config.STAGING_PATH, loop=loop)
     processor.add_all()
     app.processor = processor
     app.known_values = knowns.KnownValues(app.db_session)

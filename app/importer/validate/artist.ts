@@ -170,7 +170,7 @@ function validateArtistsString(
  * 1. ERROR: The artist field must not be left empty.
  * 2. MIXED: Validate the artist string. See `validateArtistsString`.
  */
-function artist(track: Track, options: Options) {
+function artist(track: Track, options?: Options) {
   const artistsString = track.artist || '';
 
   const validations = new Validations();
@@ -181,6 +181,10 @@ function artist(track: Track, options: Options) {
   }
 
   validations.add(validationType.NOT_EMPTY);
+
+  if (options === undefined) {
+    options = { knownArtists: { clean: [], normal: {} } };
+  }
 
   // 2. Validate the entire artists string
   validateArtistsString(artistsString, options, validations);

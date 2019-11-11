@@ -22,7 +22,7 @@ type Options = { knownArtists: KnownValues };
  *
  * 2. MIXED: Validate the artists
  */
-function remixer(track: Track, options: Options) {
+function remixer(track: Track, options?: Options) {
   const remixer = track.remixer || '';
   const title = track.title || '';
 
@@ -35,6 +35,10 @@ function remixer(track: Track, options: Options) {
 
   if (remixer === '') {
     return validations;
+  }
+
+  if (options === undefined) {
+    options = { knownArtists: { clean: [], normal: {} } };
   }
 
   // 2. Validate artist names

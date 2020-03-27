@@ -11,8 +11,10 @@ import shutil
 import watchdog.observers
 import time
 
+from tune_manager import mediafile
 from tune_manager.importer import convert, beatport
-from tune_manager import mediafile, utils
+from tune_manager.utils import image, file
+from tune_manager.utils.watchdog import AsyncHandler
 
 # This list specifies file extensions that are directly supported for
 # importing, without requiring any type of conversion.
@@ -134,7 +136,7 @@ class TrackProcessor(object):
         self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=cores)
 
         # Setup filesystem watchdog
-        watcher = utils.watchdog.AsyncHandler(self.loop, self.file_event)
+        watcher = AsyncHandler(self.loop, self.file_event)
 
         observer = watchdog.observers.Observer()
         observer.schedule(watcher, import_path, recursive=True)
@@ -251,13 +253,11 @@ class TrackProcessor(object):
         process = TrackProcesses.KEY_COMPUTING
         self.add_processing(identifier, process)
 
-        return
-
         # Prefix key with leading zeros
         media.key = keyfinder.key(media.file_path).camelot().zfill(3)
         self.done_processing(identifier, process, key=media.key)
 
-        # media.save()
+        media.save()
 
     def beatport_update(self, identifier, media):
         process = TrackProcesses.BEATPORT_IMPORT
@@ -266,7 +266,7 @@ class TrackProcessor(object):
         fields = beatport.process(media)
         self.done_processing(identifier, process, **fields)
 
-        # media.save()
+        media.save()
 
     def save_track(self, track, options={}):
         identifier = track["id"]
@@ -276,7 +276,7 @@ class TrackProcessor(object):
 
         artwork = self.artwork.get(track["artwork"])
         if artwork:
-            artwork = utils.image.normalize_artwork(artwork)
+            artwork = image.normalize_artwork(artwork)
             track["artwork"] = artwork
         else:
             track["artwork"] = None
@@ -290,7 +290,7 @@ class TrackProcessor(object):
         self.cache_art(media.artwork)
         media.save()
 
-        standard_path = utils.file.determine_path(media)
+        standard_path = file.determine_path(media)
         migrate_path = options.get("migrate_path")
         if migrate_path:
             # Expect that this will be removed, do not notify the client, it
@@ -323,7 +323,7 @@ class TrackProcessor(object):
         path = self.import_path
         types = tuple(VALID_FORMATS + convert.CONVERTABLE_FORMATS)
 
-        for path in utils.file.collect_files([path], recursive=True, types=types):
+        for path in file.collect_files([path], recursive=True, types=types):
             self.add(path)
 
     def add_safe(self, path):

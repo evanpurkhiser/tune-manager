@@ -1,6 +1,7 @@
 FROM python:3.7.4-alpine3.10
 
 RUN apk add --update \
+      curl \
       build-base \
       musl-dev \
       zlib-dev \
@@ -12,14 +13,19 @@ RUN apk add --update \
       libkeyfinder-dev \
     && rm -rf /var/cache/apk/*
 
-ENV PIP_DISABLE_PIP_VERSION_CHECK=on
 WORKDIR /app
 
-# Setup python dependencies
-RUN pip3 install poetry
+# Setup poetry
+ENV PIP_DISABLE_PIP_VERSION_CHECK=on \
+    POETRY_HOME="/opt/poetry" \
+    POETRY_VIRTUALENVS_CREATE=0 \
+    POETRY_NO_INTERACTION=1
+ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+
+# install python deps
 COPY poetry.lock pyproject.toml /app/
-RUN poetry config virtualenvs.create false
-RUN poetry install --no-interaction
+RUN poetry install
 
 # Setup frontend dependencies
 COPY package.json yarn.lock /app/
@@ -30,15 +36,18 @@ VOLUME /library
 VOLUME /staging
 VOLUME /storage
 
+# Add python source
+COPY tune_manager /app/tune_manager/
+RUN poetry install
+
 # Build javascript app
-COPY app /app/app/
 COPY webpack.config.js tsconfig.json /app/
+COPY app /app/app/
 RUN yarn build
 
-# Copy application source
-COPY . /app/
+# Setup 
 
-CMD ["python", "/app/tune_manager/main.py", \
+CMD ["tunemanager", \
      "--port=80", \
      "--library-path=/library", \
      "--staging-path=/staging", \

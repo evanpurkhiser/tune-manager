@@ -48,7 +48,7 @@ async def save(request):
     app.processor.cache_art(artwork)
 
     data = json.loads(request.form.get("data"))
-    app.processor.save_all(data["tracks"], data["options"])
+    app.processor.save_all(data["tracks"], {"migrate_path": app.config.LIBRARY_PATH})
 
     return response.text("")
 

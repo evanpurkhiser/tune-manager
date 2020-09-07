@@ -1,20 +1,11 @@
-import {
-  all,
-  call,
-  flush,
-  fork,
-  put,
-  select,
-  delay,
-  takeEvery,
-} from 'redux-saga/effects';
-import { buffers, channel, END } from 'redux-saga';
+import {all, flush, fork, put, select, delay, takeEvery} from 'redux-saga/effects';
+import {buffers, channel, END} from 'redux-saga';
 import format from 'string-format';
 import lodash from 'lodash';
 
 import * as action from './actions';
 import * as validate from '../validate';
-import { blobForImage, buildImageObject } from '../util/image';
+import {blobForImage, buildImageObject} from '../util/image';
 
 const ARTWORK_URL = '/api/artwork/{}';
 const SAVE_URL = '/api/save';
@@ -39,7 +30,7 @@ function* loadArtwork(key, completed) {
   // ignore uploading this artwork.
   art.isOriginal = true;
 
-  yield completed.put({ [key]: art });
+  yield completed.put({[key]: art});
 }
 
 function* loadAllArtwork(artKeys, completed) {
@@ -114,7 +105,7 @@ function* autoFix(payload) {
  */
 function* saveTracks(payload) {
   const state = yield select();
-  const tracks = state.selectedTracks.map(id => ({ ...state.tracks[id] }));
+  const tracks = state.selectedTracks.map(id => ({...state.tracks[id]}));
   const data = new FormData();
 
   tracks.forEach(t => (t.artwork = t.artwork[t.artworkSelected] || null));
@@ -123,7 +114,7 @@ function* saveTracks(payload) {
   const artworkKeys = tracks
     .map(t => t.artwork)
     .filter(key => key !== null)
-    .filter(key => state.artwork[key].isOriginal !== true);
+    .filter(key => state.artwork[key]?.isOriginal !== true);
 
   // Add artwork to the form
   lodash.uniq(artworkKeys).forEach(key => {
@@ -134,11 +125,11 @@ function* saveTracks(payload) {
   const options = payload.options || {};
 
   // Add track data and save options
-  const json = JSON.stringify({ tracks, options });
-  const file = new File([json], '', { type: 'application/json' });
+  const json = JSON.stringify({tracks, options});
+  const file = new File([json], '', {type: 'application/json'});
   data.append('data', file);
 
-  yield fetch(SAVE_URL, { method: 'POST', body: data });
+  yield fetch(SAVE_URL, {method: 'POST', body: data});
   yield put(action.saveProcessing(tracks.length));
 }
 

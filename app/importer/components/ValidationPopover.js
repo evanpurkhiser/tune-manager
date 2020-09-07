@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import * as validate from 'app/importer/validate/utils';
 
 const ValidationPopover = p => {
-  let { items } = p.validations;
+  let {items} = p.validations;
 
   if (!p.showValid) {
     items = items.filter(i => i.level !== validate.levels.VALID);

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 
 class ScrollLockList extends PureComponent {
   constructor() {
@@ -21,10 +21,7 @@ class ScrollLockList extends PureComponent {
 
   render() {
     return (
-      <ul
-        {...this.props}
-        onMouseOver={this.disableScroll}
-        onMouseOut={this.enableScroll}>
+      <ul {...this.props} onMouseOver={this.disableScroll} onMouseOut={this.enableScroll}>
         {this.props.children}
       </ul>
     );

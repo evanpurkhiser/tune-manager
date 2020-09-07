@@ -1,7 +1,7 @@
-import { Track } from 'app/importer/types';
+import {Track} from 'app/importer/types';
 
-import { ValidationLevel, ValidationAutoFix } from './types';
-import { makeValidations, Validations } from './utils';
+import {ValidationLevel, ValidationAutoFix} from './types';
+import {makeValidations, Validations} from './utils';
 
 const yearPattern = /^[0-9]{4}$/;
 
@@ -47,7 +47,7 @@ function reformatYear(year: string) {
  * 2. ERROR: The year must match the `yearPattern`.
  */
 function year(track: Track) {
-  const year = track.year || '';
+  const year = track.year ?? '';
 
   const validations = new Validations();
 
@@ -67,4 +67,4 @@ function year(track: Track) {
 
 year.validatesFields = ['year'];
 
-export { year };
+export {year};

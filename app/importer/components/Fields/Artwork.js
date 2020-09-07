@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import classNames from 'classnames';
 import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 
 import * as action from 'app/importer/store/actions';
 import * as validateArt from 'app/importer/validate/artwork';
-import { buildImageObject } from 'app/importer/util/image';
-import { KeyboardNavigatable } from 'app/importer/util/keyboard';
+import {buildImageObject} from 'app/importer/util/image';
+import {KeyboardNavigatable} from 'app/importer/util/keyboard';
 
 const MIME_MAPPING = {
   'image/png': 'PNG',
@@ -24,7 +24,7 @@ const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png'].join(',');
 const ArtworkEntry = p => {
   const type = MIME_MAPPING[p.artwork.type];
   const size = prettyBytes(p.artwork.size);
-  const { dimensions } = p.artwork;
+  const {dimensions} = p.artwork;
 
   const dimensionText = dimensions
     ? `${dimensions.height} × ${dimensions.width}`
@@ -33,7 +33,7 @@ const ArtworkEntry = p => {
   const validations = validateArt.individualArtwork(p.artwork);
   const dimensionClasses = classNames(validations.level());
 
-  const itemClasses = classNames({ selected: p.isSelected });
+  const itemClasses = classNames({selected: p.isSelected});
 
   return (
     <li onClick={p.onSelect} className={itemClasses}>
@@ -65,7 +65,7 @@ ArtworkEntry.propTypes = {
  * file.
  */
 const ArtworkUploader = p => (
-  <li className={classNames('uploader', { selected: p.isSelected })}>
+  <li className={classNames('uploader', {selected: p.isSelected})}>
     <label>
       <ul className="details">
         <li>PNG or JPEG</li>
@@ -156,14 +156,12 @@ class Artwork extends Component {
     };
 
     this.DOMNode = React.createRef();
-    this.state = { active: false, focused: null, maximized: false };
+    this.state = {active: false, focused: null, maximized: false};
   }
 
   keyboardEvent(action) {
     const focusedIndex =
-      this.state.focused === null
-        ? this.props.track.artworkSelected
-        : this.state.focused;
+      this.state.focused === null ? this.props.track.artworkSelected : this.state.focused;
 
     action.call(this, focusedIndex);
 
@@ -171,14 +169,12 @@ class Artwork extends Component {
   }
 
   onFocused(index) {
-    this.setState({ focused: index });
+    this.setState({focused: index});
   }
 
   onSelectOrUpload(index) {
     const action =
-      index < this.props.track.artwork.length
-        ? this.onSelect
-        : this.onOpenFileSelector;
+      index < this.props.track.artwork.length ? this.onSelect : this.onOpenFileSelector;
 
     action.call(this, index);
   }
@@ -193,11 +189,11 @@ class Artwork extends Component {
   }
 
   onMaximize(index) {
-    this.setState(s => ({ focused: index, maximized: !s.maximized }));
+    this.setState(s => ({focused: index, maximized: !s.maximized}));
   }
 
   onMinimize() {
-    this.setState({ maximized: false });
+    this.setState({maximized: false});
   }
 
   onOpenFileSelector() {
@@ -205,7 +201,7 @@ class Artwork extends Component {
   }
 
   onFileSelect(file) {
-    const { dispatch } = this.props;
+    const {dispatch} = this.props;
     const artPromise = buildImageObject(file);
 
     artPromise.then(a => dispatch(action.addArtwork(this.props.track.id, a)));
@@ -213,12 +209,12 @@ class Artwork extends Component {
 
   blur() {
     const active = document.activeElement === this.DOMNode.current;
-    this.setState({ active, maximized: false, focused: null });
+    this.setState({active, maximized: false, focused: null});
   }
 
   render() {
-    const { track } = this.props;
-    const { active, maximized, focused } = this.state;
+    const {track} = this.props;
+    const {active, maximized, focused} = this.state;
 
     const trackArt = track.artwork || [];
     const artwork = trackArt.map(k => this.props.artwork[k]);
@@ -229,7 +225,7 @@ class Artwork extends Component {
     const focusedIndex = focused === null ? selectedIndex : focused;
 
     const loading = trackArt.length > 0 && selectedIndex !== null;
-    const emptyClasses = classNames('empty-artwork', { loading });
+    const emptyClasses = classNames('empty-artwork', {loading});
 
     const element = selectedArt ? (
       <img src={selectedArt.url} alt="" />
@@ -239,10 +235,7 @@ class Artwork extends Component {
 
     const maximizedArt =
       !maximized || focusedIndex === artwork.length ? null : (
-        <ArtworkFullscreen
-          artwork={artwork[focused]}
-          onExit={_ => this.onMinimize()}
-        />
+        <ArtworkFullscreen artwork={artwork[focused]} onExit={_ => this.onMinimize()} />
       );
 
     const popover =
@@ -269,8 +262,9 @@ class Artwork extends Component {
         className={classes}
         tabIndex={0}
         elementRef={this.DOMNode}
-        onFocus={_ => this.setState({ active: true })}
-        onBlur={_ => this.blur()}>
+        onFocus={_ => this.setState({active: true})}
+        onBlur={_ => this.blur()}
+      >
         {element}
         {popover}
         {maximizedArt}
@@ -279,4 +273,4 @@ class Artwork extends Component {
   }
 }
 
-export { Artwork };
+export {Artwork};

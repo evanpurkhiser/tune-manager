@@ -41,7 +41,7 @@ const transformMap = map =>
     // matching against keyboard events that *do not* have multiple key codes.
     keyObject.keyCode = keyObject.keyCode.shift();
 
-    return { keys: keyObject, action: fn };
+    return {keys: keyObject, action: fn};
   });
 
 /**
@@ -59,7 +59,7 @@ const keyMapper = map => actionHandler(transformMap(map));
  * items, the component manipulates a focus index automatically.
  */
 function KeyboardNavigatable(props) {
-  const { count, index, onMoveFocus, extraKeys, children, ...rest } = props;
+  const {count, index, onMoveFocus, extraKeys, children, ...rest} = props;
 
   const incrementIndex = delta =>
     onMoveFocus(index + delta < 0 ? count - 1 : (index + delta) % count);
@@ -90,4 +90,4 @@ KeyboardNavigatable.propTypes = {
   extraKeys: PropTypes.object,
 };
 
-export { keyMapper, KeyboardNavigatable };
+export {keyMapper, KeyboardNavigatable};

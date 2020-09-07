@@ -1,7 +1,7 @@
-import { Track } from 'app/importer/types';
+import {Track} from 'app/importer/types';
 
-import { ValidationLevel, KnownValues } from './types';
-import { makeValidations, validateFromKnowns, Validations } from './utils';
+import {ValidationLevel, KnownValues} from './types';
+import {makeValidations, validateFromKnowns, Validations} from './utils';
 
 const validationType = makeValidations({
   NOT_EMPTY: {
@@ -51,8 +51,8 @@ type Options = {
  * 1. MIXED: Validate the genre string. See `utils.validateFromKnowns`.
  */
 function genre(track: Track, options: Options = {}) {
-  const genre = track.genre || '';
-  const { knownGenres } = options;
+  const genre = track.genre ?? '';
+  const {knownGenres} = options;
 
   const validations = new Validations();
 
@@ -70,4 +70,4 @@ function genre(track: Track, options: Options = {}) {
 
 genre.validatesFields = ['genre'];
 
-export { genre };
+export {genre};

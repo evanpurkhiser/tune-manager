@@ -1,4 +1,4 @@
-import { Artwork } from 'app/importer/types';
+import {Artwork} from 'app/importer/types';
 
 /**
  * Cache objectURL -> BLOB mappings
@@ -21,7 +21,7 @@ export function buildImageObject(imageBlob: Blob) {
           url: objectURL,
           size: imageBlob.size,
           type: imageBlob.type,
-          dimensions: { height: image.height, width: image.width },
+          dimensions: {height: image.height, width: image.width},
         }))
   );
 

@@ -1,7 +1,7 @@
-import { Track } from 'app/importer/types';
+import {Track} from 'app/importer/types';
 
-import { ValidationLevel } from './types';
-import { makeValidations, Validations } from './utils';
+import {ValidationLevel} from './types';
+import {makeValidations, Validations} from './utils';
 
 const validationType = makeValidations({
   EMPTY_WITH_DISC_NUMBER: {
@@ -17,8 +17,8 @@ const validationType = makeValidations({
  *
  */
 function album(track: Track) {
-  const album = track.album || '';
-  const disc = track.disc || '';
+  const album = track.album ?? '';
+  const disc = track.disc ?? '';
 
   const validations = new Validations();
 
@@ -31,4 +31,4 @@ function album(track: Track) {
 
 album.validatesFields = ['album', 'disc'];
 
-export { album };
+export {album};

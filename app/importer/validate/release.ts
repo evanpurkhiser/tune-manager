@@ -1,7 +1,7 @@
-import { Track } from 'app/importer/types';
+import {Track} from 'app/importer/types';
 
-import { ValidationLevel } from './types';
-import { makeValidations, Validations } from './utils';
+import {ValidationLevel} from './types';
+import {makeValidations, Validations} from './utils';
 
 const formatPattern = /^[A-Z0-9-]{4,}$/;
 
@@ -23,7 +23,7 @@ const validationType = makeValidations({
  * 1. ERROR: The release field should conform to the `formatPattern`.
  */
 function release(track: Track) {
-  const release = track.release || '';
+  const release = track.release ?? '';
 
   const validations = new Validations();
 
@@ -43,4 +43,4 @@ function release(track: Track) {
 
 release.validatesFields = ['release'];
 
-export { release };
+export {release};

@@ -1,12 +1,8 @@
-import { Track } from 'app/importer/types';
-import {
-  splitArtists,
-  splitOn,
-  strictSplitOn,
-} from 'app/importer/util/artistMatch';
+import {Track} from 'app/importer/types';
+import {splitArtists, splitOn, strictSplitOn} from 'app/importer/util/artistMatch';
 
-import { ValidationLevel, ValidationAutoFix, KnownValues } from './types';
-import { validateFromKnowns, makeValidations, Validations } from './utils';
+import {ValidationLevel, ValidationAutoFix, KnownValues} from './types';
+import {validateFromKnowns, makeValidations, Validations} from './utils';
 
 const validationType = makeValidations({
   EMPTY: {
@@ -140,7 +136,7 @@ function validateConnectors(artistsString: string, validations: Validations) {
   validations.add(validationType.BAD_CONNECTORS);
 }
 
-type Options = { knownArtists: KnownValues };
+type Options = {knownArtists: KnownValues};
 
 /**
  * Validate a given artist string.
@@ -153,7 +149,7 @@ function validateArtistsString(
   options: Options,
   validations: Validations
 ) {
-  const { knownArtists } = options;
+  const {knownArtists} = options;
 
   // 1. Check split artist names
   for (const artist of splitArtists(artistsString)) {
@@ -183,7 +179,7 @@ function artist(track: Track, options?: Options) {
   validations.add(validationType.NOT_EMPTY);
 
   if (options === undefined) {
-    options = { knownArtists: { clean: [], normal: {} } };
+    options = {knownArtists: {clean: [], normal: {}}};
   }
 
   // 2. Validate the entire artists string
@@ -194,4 +190,4 @@ function artist(track: Track, options?: Options) {
 
 artist.validatesFields = ['artist'];
 
-export { artist, validateArtistsString };
+export {artist, validateArtistsString};

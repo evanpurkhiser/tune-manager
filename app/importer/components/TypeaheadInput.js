@@ -1,10 +1,10 @@
 import * as lodash from 'lodash';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import classNames from 'classnames';
 import Fuse from 'fuse.js';
 import PropTypes from 'prop-types';
 
-import { keyMapper } from 'app/importer/util/keyboard';
+import {keyMapper} from 'app/importer/util/keyboard';
 
 // After completion the caret will be moved to just after the completion. Due
 // to react rendering considerations we must wait before moving the caret, or
@@ -32,7 +32,7 @@ const matchShape = PropTypes.shape({
  * indices list.
  */
 const Match = p => {
-  const { value, indices } = p.match;
+  const {value, indices} = p.match;
 
   const matchParts = [];
 
@@ -54,7 +54,7 @@ const Match = p => {
     matchParts.push(value.slice(indice[1] + 1, next[0]));
   }
 
-  const classes = classNames({ focused: p.isFocused });
+  const classes = classNames({focused: p.isFocused});
 
   return <li className={classes}>{matchParts}</li>;
 };
@@ -125,7 +125,7 @@ class TypeaheadInput extends Component {
     this.onBlur = this.onBlur.bind(this);
 
     this.fuseIndex = null;
-    this.state = { matches: [], focused: 0, range: [0, 0] };
+    this.state = {matches: [], focused: 0, range: [0, 0]};
   }
 
   rebuildIndex(source) {
@@ -143,13 +143,13 @@ class TypeaheadInput extends Component {
   }
 
   resetState() {
-    this.setState({ matches: [], range: [0, 0], focused: 0 });
+    this.setState({matches: [], range: [0, 0], focused: 0});
   }
 
   onChange(e) {
     this.props.onChange(e);
 
-    const { value } = e.target;
+    const {value} = e.target;
     const range = [0, e.target.selectionStart];
 
     let partial = value.slice(...range);
@@ -161,9 +161,7 @@ class TypeaheadInput extends Component {
       const lastSplit = splitters.pop();
 
       range[0] =
-        lastSplit === undefined
-          ? 0
-          : partial.lastIndexOf(lastSplit) + lastSplit.length;
+        lastSplit === undefined ? 0 : partial.lastIndexOf(lastSplit) + lastSplit.length;
 
       partial = value.slice(...range);
     }
@@ -181,7 +179,7 @@ class TypeaheadInput extends Component {
         ? Math.max(0, matches.length - 1)
         : this.state.focused;
 
-    this.setState({ value, range, matches, focused });
+    this.setState({value, range, matches, focused});
   }
 
   onBlur(e) {
@@ -196,7 +194,7 @@ class TypeaheadInput extends Component {
         ? matchCount - 1
         : (this.state.focused + direction) % matchCount;
 
-    this.setState({ focused });
+    this.setState({focused});
 
     return true;
   }
@@ -223,7 +221,7 @@ class TypeaheadInput extends Component {
     const pos = value.length - after.length;
     setTimeout(_ => target.setSelectionRange(pos, pos), CARET_TIMEOUT);
 
-    this.props.onChange({ target: { value } });
+    this.props.onChange({target: {value}});
     this.resetState();
 
     return true;
@@ -240,7 +238,7 @@ class TypeaheadInput extends Component {
   }
 
   render() {
-    const { matches, focused, value, range } = this.state;
+    const {matches, focused, value, range} = this.state;
 
     // Render the typeahead shadow if we have a match and we're typing at the
     // tail of the input
@@ -251,9 +249,7 @@ class TypeaheadInput extends Component {
 
     // Render the matches popover when we have matches.
     const matchesPopover =
-      matches.length > 0 ? (
-        <MatchesPopover focused={focused} matches={matches} />
-      ) : null;
+      matches.length > 0 ? <MatchesPopover focused={focused} matches={matches} /> : null;
 
     // Extract input props
     const reservedProps = Object.keys(TypeaheadInput.propTypes);

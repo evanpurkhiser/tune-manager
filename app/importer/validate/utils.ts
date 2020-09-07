@@ -44,7 +44,7 @@ export const levelPresedence = [
  * Make validation inserts the validation type into each validation object. The
  * type is derived from the validations key.
  */
-export function makeValidations<T>(config: { [K in keyof T]: Validation<K> }) {
+export function makeValidations<T>(config: {[K in keyof T]: Validation<K>}) {
   for (const type in config) {
     config[type].type = type;
   }
@@ -63,11 +63,8 @@ export class Validations {
   /**
    * Add a new item to the list of validations.
    */
-  add(
-    validation: Validation,
-    { fields = {} }: { fields?: Validation['fields'] } = {}
-  ) {
-    const item = { ...validation, fields };
+  add(validation: Validation, {fields = {}}: {fields?: Validation['fields']} = {}) {
+    const item = {...validation, fields};
 
     if (typeof item.message === 'string') {
       item.message = format(item.message, fields);
@@ -163,7 +160,7 @@ const SIMILARITY_CUTOFF = 0.75;
  *   - similarKnowns: The similar values list for SIMILAR.
  */
 export function validateFromKnowns(value: string, options: Options) {
-  const { knowns, typeMapping } = options;
+  const {knowns, typeMapping} = options;
 
   const validations = new Validations();
 
@@ -173,15 +170,15 @@ export function validateFromKnowns(value: string, options: Options) {
 
   // 1. Does the value already match exactly?
   if (knowns.clean.includes(value)) {
-    return validations.add(typeMapping.KNOWN, { fields: { value } });
+    return validations.add(typeMapping.KNOWN, {fields: {value}});
   }
 
   // 2. Is the values capitalization incorrect?
   const knownValue = knowns.normal[value.toLowerCase()];
 
   if (knownValue !== undefined) {
-    const fields = { value, knownValue };
-    return validations.add(typeMapping.CASING, { fields });
+    const fields = {value, knownValue};
+    return validations.add(typeMapping.CASING, {fields});
   }
 
   // 3. Is the value similar to any of the known values.
@@ -200,13 +197,13 @@ export function validateFromKnowns(value: string, options: Options) {
 
   if (similarKnowns.length > 0) {
     const similarList = similarKnowns.join(', ');
-    const fields = { value, similarKnowns, similarList };
+    const fields = {value, similarKnowns, similarList};
 
-    return validations.add(typeMapping.SIMILAR, { fields });
+    return validations.add(typeMapping.SIMILAR, {fields});
   }
 
   // 4. This is a value we haven't seen anything like before...
-  validations.add(typeMapping.UNKNOWN, { fields: { value } });
+  validations.add(typeMapping.UNKNOWN, {fields: {value}});
 
   return validations;
 }

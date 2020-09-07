@@ -1,7 +1,7 @@
-import { Track } from 'app/importer/types';
+import {Track} from 'app/importer/types';
 
-import { ValidationAutoFix, ValidationLevel } from './types';
-import { makeValidations, Validations } from './utils';
+import {ValidationAutoFix, ValidationLevel} from './types';
+import {makeValidations, Validations} from './utils';
 
 const bpmPattern = /^[0-9]{2,}\.[0-9]{2}$/;
 
@@ -36,7 +36,7 @@ function formatBPM(bpm: string) {
  * 1. ERROR: The BPM does not match the `bpmPattern`.
  */
 function bpm(track: Track) {
-  const bpm = track.bpm || '';
+  const bpm = track.bpm ?? '';
 
   const validations = new Validations();
 
@@ -56,4 +56,4 @@ function bpm(track: Track) {
 
 bpm.validatesFields = ['bpm'];
 
-export { bpm };
+export {bpm};

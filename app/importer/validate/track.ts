@@ -1,8 +1,8 @@
-import { formatTrackNumbers } from 'app/importer/util/format';
+import {formatTrackNumbers} from 'app/importer/util/format';
 
-import { makeValidations, Validations } from './utils';
-import { ValidationLevel, ValidationAutoFix } from './types';
-import { Track } from 'app/importer/types';
+import {makeValidations, Validations} from './utils';
+import {ValidationLevel, ValidationAutoFix} from './types';
+import {Track} from 'app/importer/types';
 
 const numberPattern = /^([0-9]{1,3})\/([0-9]{1,3})$/;
 
@@ -97,8 +97,8 @@ function validateNumber(numberString: string, validations: Validations) {
  * 2. MIXED: The number does not match the `numberPattern`.
  */
 function track(track: Track) {
-  const trackNumber = track.track || '';
-  const discNumber = track.disc || '';
+  const trackNumber = track.track ?? '';
+  const discNumber = track.disc ?? '';
 
   const validations = new Validations();
 
@@ -123,9 +123,9 @@ track.validatesFields = ['track', 'disc'] as const;
  * 3. MIXED: The number does not match the `numberPattern`.
  */
 function disc(track: Track) {
-  const discNumber = track.disc || '';
-  const trackNumber = track.track || '';
-  const album = track.album || '';
+  const discNumber = track.disc ?? '';
+  const trackNumber = track.track ?? '';
+  const album = track.album ?? '';
 
   const validations = new Validations();
 
@@ -147,4 +147,4 @@ function disc(track: Track) {
 
 disc.validatesFields = ['track', 'disc', 'album'] as const;
 
-export { track, disc };
+export {track, disc};

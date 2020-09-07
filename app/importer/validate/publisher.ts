@@ -1,7 +1,7 @@
-import { Track } from 'app/importer/types';
+import {Track} from 'app/importer/types';
 
-import { ValidationLevel, KnownValues } from './types';
-import { makeValidations, validateFromKnowns, Validations } from './utils';
+import {ValidationLevel, KnownValues} from './types';
+import {makeValidations, validateFromKnowns, Validations} from './utils';
 
 const validationType = makeValidations({
   KNOWN_PUBLISHER: {
@@ -46,7 +46,7 @@ type Options = {
  */
 function publisher(track: Track, options: Options = {}) {
   const publisher = track.publisher || '';
-  const { knownPublishers } = options;
+  const {knownPublishers} = options;
 
   if (publisher === '') {
     return new Validations();
@@ -61,4 +61,4 @@ function publisher(track: Track, options: Options = {}) {
 
 publisher.validatesFields = ['publisher'];
 
-export { publisher };
+export {publisher};

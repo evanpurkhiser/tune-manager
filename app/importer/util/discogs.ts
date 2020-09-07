@@ -1,11 +1,11 @@
-import { cloneDeep, groupBy, mapValues } from 'lodash';
+import {cloneDeep, groupBy, mapValues} from 'lodash';
 import format from 'string-format';
 import md5 from 'md5';
 
 import * as validate from 'app/importer/validate';
-import { formatTrackNumbers } from './format';
-import { remixPattern } from './artistMatch';
-import { Track } from 'app/importer/types';
+import {formatTrackNumbers} from './format';
+import {remixPattern} from './artistMatch';
+import {Track} from 'app/importer/types';
 
 type DiscogsArtist = {
   name: string;
@@ -34,8 +34,7 @@ type DiscogsRelease = {
 };
 
 const PROXY_URL = '/api/discogs-proxy/';
-const SEARCH_URL =
-  'https://api.discogs.com/database/search?type=release&q={query}';
+const SEARCH_URL = 'https://api.discogs.com/database/search?type=release&q={query}';
 
 /**
  * Construct a discogs API request URL.
@@ -104,13 +103,13 @@ function mapTracks(release: DiscogsRelease) {
   // Tracks are grouped into heading keys
   let currentHeading = '';
   let currentTrackGroup: Partial<Track>[] = [];
-  const mappedTracks = [{ name: '', tracks: currentTrackGroup }];
+  const mappedTracks = [{name: '', tracks: currentTrackGroup}];
 
   for (const t of tracks) {
     if (t.type === 'heading') {
       currentHeading = t.title;
       currentTrackGroup = [];
-      mappedTracks.push({ name: t.title, tracks: currentTrackGroup });
+      mappedTracks.push({name: t.title, tracks: currentTrackGroup});
       continue;
     }
 
@@ -145,9 +144,7 @@ function mapTracks(release: DiscogsRelease) {
 
     Object.keys(track)
       .filter(f => validate[f] !== undefined)
-      .forEach(
-        f => (track[f] = validate[f](track).autoFix(track[f], fixTypes))
-      );
+      .forEach(f => (track[f] = validate[f](track).autoFix(track[f], fixTypes)));
 
     currentTrackGroup.push(track);
   }
@@ -155,4 +152,4 @@ function mapTracks(release: DiscogsRelease) {
   return mappedTracks;
 }
 
-export { SEARCH_URL, url, mapTracks };
+export {SEARCH_URL, url, mapTracks};

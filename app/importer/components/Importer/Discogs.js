@@ -2,10 +2,10 @@ import * as lodash from 'lodash';
 import camelize from 'camelize';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import * as discogs from 'app/importer/util/discogs';
-import { buildImageObject } from 'app/importer/util/image';
+import {buildImageObject} from 'app/importer/util/image';
 import ScrollLockList from 'app/importer/components/ScrollLockList';
 
 const mappableTrackShape = PropTypes.shape({
@@ -27,11 +27,7 @@ const releaseShape = PropTypes.shape(releaseObjectShape);
 
 const ReleaseItem = p => (
   <div className="importable-release">
-    {p.thumb ? (
-      <img src={p.thumb} alt={p.title} />
-    ) : (
-      <div className="empty-artwork" />
-    )}
+    {p.thumb ? <img src={p.thumb} alt={p.title} /> : <div className="empty-artwork" />}
     <div className="details">
       <div className="title">{p.title}</div>
       <div className="sub-details">
@@ -70,9 +66,7 @@ const STATUS_MESSAGES = {
 };
 
 const StatusMessage = p => (
-  <p className={classNames('status-message', p.type)}>
-    {STATUS_MESSAGES[p.type]}
-  </p>
+  <p className={classNames('status-message', p.type)}>{STATUS_MESSAGES[p.type]}</p>
 );
 
 StatusMessage.propTypes = {
@@ -115,11 +109,11 @@ class Search extends Component {
     this.activeRequest = new AbortController(); // eslint-disable-line no-undef
 
     const query = encodeURIComponent(value);
-    const url = discogs.url(discogs.SEARCH_URL, { query });
+    const url = discogs.url(discogs.SEARCH_URL, {query});
 
-    this.setState({ isQuerying: true, willQuery: false });
+    this.setState({isQuerying: true, willQuery: false});
 
-    let request = fetch(url, { signal: this.activeRequest.signal });
+    let request = fetch(url, {signal: this.activeRequest.signal});
 
     request = request
       .then(r => r.json())
@@ -145,7 +139,7 @@ class Search extends Component {
     const isBlank = value === '';
     const results = isBlank ? [] : this.state.results;
 
-    this.setState({ isBlank, results, willQuery: true });
+    this.setState({isBlank, results, willQuery: true});
     this.throttledQuery(value);
   }
 
@@ -220,10 +214,7 @@ const ImportTrackMapping = p => {
   });
 
   return (
-    <li
-      className={classes}
-      onClick={p.onClick}
-      data-position={`${disc}-${track}`}>
+    <li className={classes} onClick={p.onClick} data-position={`${disc}-${track}`}>
       <div className="title">
         {p.artist} - {p.title}
       </div>
@@ -298,7 +289,7 @@ class Mapper extends Component {
       .then(r => r.json())
       .then(this.recieveNewTracks);
 
-    this.setState({ isQuerying: true, newTracks: [] });
+    this.setState({isQuerying: true, newTracks: []});
   }
 
   recieveNewTracks(json) {
@@ -309,7 +300,7 @@ class Mapper extends Component {
       .reduce((tracks, g) => [...tracks, ...g.tracks], [])
       .map(t => t.id);
 
-    this.setState({ fullRelease, newTracks, selected, isQuerying: false });
+    this.setState({fullRelease, newTracks, selected, isQuerying: false});
   }
 
   onToggleHeading(index) {
@@ -321,7 +312,7 @@ class Mapper extends Component {
         ? lodash.difference(this.state.selected, trackIds)
         : lodash.union(this.state.selected, trackIds);
 
-    this.setState({ selected });
+    this.setState({selected});
   }
 
   onToggleTrack(id) {
@@ -333,7 +324,7 @@ class Mapper extends Component {
       selected.push(id);
     }
 
-    this.setState({ selected });
+    this.setState({selected});
   }
 
   onImport() {
@@ -343,7 +334,7 @@ class Mapper extends Component {
       .reduce((tracks, g) => [...tracks, ...g.tracks], [])
       .filter(t => this.state.selected.includes(t.id))
       .slice(0, mappingTracks.length)
-      .map(t => ({ ...t, id: mappingTracks.shift().id }));
+      .map(t => ({...t, id: mappingTracks.shift().id}));
 
     if (this.state.fullRelease.images.length === 0) {
       this.props.onImport(importTracks);
@@ -351,7 +342,7 @@ class Mapper extends Component {
 
     const imageUrl = this.state.fullRelease.images[0].resourceUrl;
 
-    this.setState({ isImporting: true });
+    this.setState({isImporting: true});
 
     fetch(discogs.url(imageUrl))
       .then(res => res.blob())
@@ -359,7 +350,7 @@ class Mapper extends Component {
       .then(artwork => {
         importTracks.forEach(t => (t.artworkSelected = 0));
         importTracks.forEach(t => (t.artwork = []));
-        this.setState({ isImporting: false });
+        this.setState({isImporting: false});
         this.props.onImport(importTracks, artwork);
       });
   }
@@ -385,10 +376,7 @@ class Mapper extends Component {
 
     return tracks.map((g, index) => {
       const heading = (
-        <li
-          key={index}
-          onClick={_ => this.onToggleHeading(index)}
-          className="heading">
+        <li key={index} onClick={_ => this.onToggleHeading(index)} className="heading">
           {g.name}
         </li>
       );
@@ -415,9 +403,7 @@ class Mapper extends Component {
           numSelected={this.state.selected.length}
           numFiles={this.props.mappingTracks.length}
         />
-        <ScrollLockList className="import-tracks">
-          {this.buildTrackList()}
-        </ScrollLockList>
+        <ScrollLockList className="import-tracks">{this.buildTrackList()}</ScrollLockList>
       </div>
     );
   }
@@ -434,4 +420,4 @@ Mapper.defaultProps = {
   mappingTracks: [],
 };
 
-export { Search, Mapper, mappableTrackShape };
+export {Search, Mapper, mappableTrackShape};

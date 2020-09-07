@@ -28,7 +28,7 @@ export type Validation<T = string> = {
   /**
    * Fields used in the message string
    */
-  fields?: { [k: string]: any };
+  fields?: {[k: string]: any};
   /**
    * The validation error message
    */
@@ -83,5 +83,5 @@ export type KnownValues = {
    * Normal knowns have been normalized to a case insenstive string, with a
    * mapping to the true clean known value.
    */
-  normal: { [k: string]: string };
+  normal: {[k: string]: string};
 };

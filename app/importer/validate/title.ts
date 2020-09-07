@@ -1,8 +1,8 @@
-import { Track } from 'app/importer/types';
-import { remixPattern } from 'app/importer/util/artistMatch';
+import {Track} from 'app/importer/types';
+import {remixPattern} from 'app/importer/util/artistMatch';
 
-import { makeValidations, Validations } from './utils';
-import { ValidationLevel, ValidationAutoFix } from './types';
+import {makeValidations, Validations} from './utils';
+import {ValidationLevel, ValidationAutoFix} from './types';
 
 const validationType = makeValidations({
   EMPTY: {
@@ -99,8 +99,8 @@ const featPattern = /[ [(]f(?:ea)?t\.?/i;
  *       note.
  */
 function title(track: Track) {
-  const title = track.title || '';
-  const remixer = track.remixer || '';
+  const title = track.title ?? '';
+  const remixer = track.remixer ?? '';
 
   const validations = new Validations();
 
@@ -155,4 +155,4 @@ function title(track: Track) {
 
 title.validatesFields = ['title', 'remixer'];
 
-export { title, remixPattern };
+export {title, remixPattern};

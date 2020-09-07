@@ -1,11 +1,11 @@
 import * as path from 'path';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import classNames from 'classnames';
 
 import * as action from 'app/importer/store/actions';
 import * as validate from 'app/importer/validate';
-import { keyMapper } from 'app/importer/util/keyboard';
-import { splitOn } from 'app/importer/util/artistMatch';
+import {keyMapper} from 'app/importer/util/keyboard';
+import {splitOn} from 'app/importer/util/artistMatch';
 import TypeaheadInput from 'app/importer/components/TypeaheadInput';
 import ValidationPopover from 'app/importer/components/ValidationPopover';
 
@@ -27,7 +27,7 @@ class Field extends Component {
     // does not work here since it will batch the state changes together.
     this.immediateValue = '';
 
-    this.state = { value: '', validations: new validate.Validations() };
+    this.state = {value: '', validations: new validate.Validations()};
   }
 
   componentDidMount() {
@@ -39,7 +39,7 @@ class Field extends Component {
     const validations = this.getValidations(nextProps, value);
 
     this.immediateValue = value;
-    this.setState({ validations, value });
+    this.setState({validations, value});
   }
 
   onChange(value) {
@@ -47,7 +47,7 @@ class Field extends Component {
     const fixedValue = validations.autoFix(value);
 
     this.immediateValue = fixedValue;
-    this.setState({ validations, value: fixedValue });
+    this.setState({validations, value: fixedValue});
   }
 
   getValidations(props, value) {
@@ -56,8 +56,8 @@ class Field extends Component {
     }
 
     // Validate the track with the current state of the field
-    const { track, name } = props;
-    const newTrack = { ...track, [name]: value };
+    const {track, name} = props;
+    const newTrack = {...track, [name]: value};
 
     return props.validator(newTrack, props.validatorOptions);
   }
@@ -68,9 +68,7 @@ class Field extends Component {
     let value = this.immediateValue.trim();
 
     // Execute post-edit auto fixes
-    value = this.state.validations.autoFix(value, [
-      validate.autoFixTypes.POST_EDIT,
-    ]);
+    value = this.state.validations.autoFix(value, [validate.autoFixTypes.POST_EDIT]);
 
     // Do not update if nothing has changed. Bluring an unedited field while
     // multiple tracks are selected will update all tracks.
@@ -83,11 +81,11 @@ class Field extends Component {
 
   blurField() {
     this.acceptChanges();
-    this.setState({ focused: false });
+    this.setState({focused: false});
   }
 
   focusField() {
-    this.setState({ focused: true });
+    this.setState({focused: true});
   }
 
   render() {
@@ -129,42 +127,36 @@ export const Artist = p => (
     {...p}
     name="artist"
     validator={validate.artist}
-    validatorOptions={{ knownArtists: p.knownValues.artists }}
-    typeahead={{ source: p.knownValues.artists.clean, splitter: splitOn }}
+    validatorOptions={{knownArtists: p.knownValues.artists}}
+    typeahead={{source: p.knownValues.artists.clean, splitter: splitOn}}
   />
 );
 
-export const Title = p => (
-  <Field {...p} name="title" validator={validate.title} />
-);
+export const Title = p => <Field {...p} name="title" validator={validate.title} />;
 
 export const Remixer = p => (
   <Field
     {...p}
     name="remixer"
     validator={validate.remixer}
-    validatorOptions={{ knownArtists: p.knownValues.artists }}
-    typeahead={{ source: p.knownValues.artists.clean, splitter: splitOn }}
+    validatorOptions={{knownArtists: p.knownValues.artists}}
+    typeahead={{source: p.knownValues.artists.clean, splitter: splitOn}}
   />
 );
 
-export const Album = p => (
-  <Field {...p} name="album" validator={validate.album} />
-);
+export const Album = p => <Field {...p} name="album" validator={validate.album} />;
 
 export const Publisher = p => (
   <Field
     {...p}
     name="publisher"
     validator={validate.publisher}
-    validatorOptions={{ knownPublishers: p.knownValues.publishers }}
-    typeahead={{ source: p.knownValues.publishers.clean }}
+    validatorOptions={{knownPublishers: p.knownValues.publishers}}
+    typeahead={{source: p.knownValues.publishers.clean}}
   />
 );
 
-export const Release = p => (
-  <Field {...p} name="release" validator={validate.release} />
-);
+export const Release = p => <Field {...p} name="release" validator={validate.release} />;
 
 export const Year = p => <Field {...p} name="year" validator={validate.year} />;
 
@@ -173,18 +165,14 @@ export const Genre = p => (
     {...p}
     name="genre"
     validator={validate.genre}
-    validatorOptions={{ knownGenres: p.knownValues.genres }}
-    typeahead={{ source: p.knownValues.genres.clean }}
+    validatorOptions={{knownGenres: p.knownValues.genres}}
+    typeahead={{source: p.knownValues.genres.clean}}
   />
 );
 
-export const TrackNumber = p => (
-  <Field {...p} name="track" validator={validate.track} />
-);
+export const TrackNumber = p => <Field {...p} name="track" validator={validate.track} />;
 
-export const DiscNumber = p => (
-  <Field {...p} name="disc" validator={validate.disc} />
-);
+export const DiscNumber = p => <Field {...p} name="disc" validator={validate.disc} />;
 
 export const BPM = p => <Field {...p} name="bpm" validator={validate.bpm} />;
 
@@ -206,4 +194,4 @@ export function FileName(props) {
   return <div className="field file-name">{filename}</div>;
 }
 
-export { Artwork } from './Artwork';
+export {Artwork} from './Artwork';

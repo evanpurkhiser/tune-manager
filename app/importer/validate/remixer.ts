@@ -1,9 +1,9 @@
-import { Track } from 'app/importer/types';
+import {Track} from 'app/importer/types';
 
-import { ValidationLevel, KnownValues } from './types';
-import { makeValidations, Validations } from './utils';
-import { remixPattern } from './title';
-import { validateArtistsString } from './artist';
+import {ValidationLevel, KnownValues} from './types';
+import {makeValidations, Validations} from './utils';
+import {remixPattern} from './title';
+import {validateArtistsString} from './artist';
 
 const validationType = makeValidations({
   TITLE_HAS_REMIXER: {
@@ -12,7 +12,7 @@ const validationType = makeValidations({
   },
 });
 
-type Options = { knownArtists: KnownValues };
+type Options = {knownArtists: KnownValues};
 
 /**
  * Remixer validation will validate the following rules:
@@ -23,8 +23,8 @@ type Options = { knownArtists: KnownValues };
  * 2. MIXED: Validate the artists
  */
 function remixer(track: Track, options?: Options) {
-  const remixer = track.remixer || '';
-  const title = track.title || '';
+  const remixer = track.remixer ?? '';
+  const title = track.title ?? '';
 
   const validations = new Validations();
 
@@ -38,7 +38,7 @@ function remixer(track: Track, options?: Options) {
   }
 
   if (options === undefined) {
-    options = { knownArtists: { clean: [], normal: {} } };
+    options = {knownArtists: {clean: [], normal: {}}};
   }
 
   // 2. Validate artist names
@@ -49,4 +49,4 @@ function remixer(track: Track, options?: Options) {
 
 remixer.validatesFields = ['remixer', 'title'];
 
-export { remixer };
+export {remixer};

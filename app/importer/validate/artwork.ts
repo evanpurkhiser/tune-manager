@@ -1,7 +1,7 @@
-import { Artwork } from 'app/importer/types';
+import {Artwork} from 'app/importer/types';
 
-import { ValidationLevel } from './types';
-import { makeValidations, Validations } from './utils';
+import {ValidationLevel} from './types';
+import {makeValidations, Validations} from './utils';
 
 const validationType = makeValidations({
   NOT_SQUARE: {
@@ -30,7 +30,7 @@ function individualArtwork(artwork: Artwork) {
     return validations;
   }
 
-  const { height, width } = artwork.dimensions;
+  const {height, width} = artwork.dimensions;
 
   if (height !== width) {
     validations.add(validationType.NOT_SQUARE);
@@ -52,4 +52,4 @@ function artwork() {
   return new Validations();
 }
 
-export { artwork, individualArtwork };
+export {artwork, individualArtwork};

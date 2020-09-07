@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
+import {connect} from 'react-redux';
+import React, {Component} from 'react';
 
 import * as actions from 'app/importer/store/actions';
-import { keyMapper } from 'app/importer/util/keyboard';
+import {keyMapper} from 'app/importer/util/keyboard';
 
 import * as Discogs from './Discogs';
 
@@ -21,12 +21,17 @@ class Importer extends Component {
   }
 
   releaseSelected(release) {
-    this.setState({ selectedRelease: release, showMapper: true });
+    this.setState({selectedRelease: release, showMapper: true});
   }
 
   onImport(tracks, artwork = []) {
     this.props.dispatch(actions.trackUpdate(tracks));
-    this.props.dispatch(actions.addArtwork(tracks.map(t => t.id), artwork));
+    this.props.dispatch(
+      actions.addArtwork(
+        tracks.map(t => t.id),
+        artwork
+      )
+    );
     this.props.onComplete();
   }
 
@@ -45,7 +50,7 @@ class Importer extends Component {
         <Discogs.Mapper
           mappingTracks={this.props.tracks}
           onImport={this.onImport}
-          onCancel={_ => this.setState({ showMapper: false })}
+          onCancel={_ => this.setState({showMapper: false})}
           release={this.state.selectedRelease}
         />
       </div>
@@ -74,7 +79,7 @@ const LinkedImporter = connect(mapImporterProps)(Importer);
 class ImportButton extends Component {
   constructor() {
     super();
-    this.state = { active: false };
+    this.state = {active: false};
 
     this.keyMapper = keyMapper({
       escape: _ => this.toggleActive(false),
@@ -84,7 +89,7 @@ class ImportButton extends Component {
   }
 
   toggleActive(state = null) {
-    this.setState({ active: state === null ? !this.state.active : state });
+    this.setState({active: state === null ? !this.state.active : state});
   }
 
   render() {
@@ -105,4 +110,4 @@ class ImportButton extends Component {
   }
 }
 
-export { ImportButton, Importer };
+export {ImportButton, Importer};

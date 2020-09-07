@@ -1,13 +1,13 @@
-import React from "react";
-import styled from "@emotion/styled";
-import css from "@emotion/css";
-import nearley from "nearley";
+import React from 'react';
+import styled from '@emotion/styled';
+import css from '@emotion/css';
+import nearley from 'nearley';
 
-import { SearchToken } from "app/catalog/types";
+import {SearchToken} from 'app/catalog/types';
 
-import grammar from "./grammar.ne";
-import lexer from "./lexer";
-import Tag from "./Tag";
+import grammar from './grammar.ne';
+import lexer from './lexer';
+import Tag from './Tag';
 
 type Props = {};
 
@@ -18,16 +18,16 @@ type State = {
 
 class Search extends React.Component<Props, State> {
   state: State = {
-    content: "",
-    data: []
+    content: '',
+    data: [],
   };
 
   componentDidMount() {
-    document.addEventListener("selectionchange", this.handleSelection);
+    document.addEventListener('selectionchange', this.handleSelection);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("selectionchange", this.handleSelection);
+    document.removeEventListener('selectionchange', this.handleSelection);
   }
 
   handleSelection = (e: Event) => {
@@ -37,13 +37,13 @@ class Search extends React.Component<Props, State> {
   handleInputUpdate = (e: React.FormEvent<HTMLDivElement>) => {
     e.preventDefault();
 
-    this.setState({ content: (e.target as HTMLDivElement).textContent! });
+    this.setState({content: (e.target as HTMLDivElement).textContent!});
 
     console.log(window.getSelection());
   };
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    this.setState({ content: e.target.value });
+    this.setState({content: e.target.value});
 
   handleKeyUp = () => {};
 
@@ -52,7 +52,7 @@ class Search extends React.Component<Props, State> {
   }
 
   get parsedContent() {
-    const searchParser = new nearley.Parser(grammar, { lexer });
+    const searchParser = new nearley.Parser(grammar, {lexer});
     searchParser.feed(this.state.content);
     return searchParser.results[0] as SearchToken[];
   }
@@ -60,11 +60,11 @@ class Search extends React.Component<Props, State> {
   renderTags = () =>
     this.parsedContent.map(token => {
       console.log(token);
-      if (token.type === "freeText") {
+      if (token.type === 'freeText') {
         return <Tag label={token.value} type="freeText" />;
       }
 
-      if (token.type === "filter") {
+      if (token.type === 'filter') {
         return (
           <Tag
             label={`${token.key.type}:`}
@@ -102,14 +102,14 @@ const emptyStateStyle = css`
   &:before {
     position: absolute;
     padding: 0 0.5rem;
-    font: 500 0.6875rem "Roboto Mono";
+    font: 500 0.6875rem 'Roboto Mono';
     line-height: 1.5rem;
-    content: "Search 2864 tracks across 23 genres";
+    content: 'Search 2864 tracks across 23 genres';
     color: #888;
   }
 `;
 
-const Input = styled("div")<{ empty: boolean }>`
+const Input = styled('div')<{empty: boolean}>`
   display: grid;
   grid-auto-columns: max-content;
   grid-auto-flow: column;

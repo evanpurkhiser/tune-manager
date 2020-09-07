@@ -1,15 +1,15 @@
-import moo from "moo";
+import moo from 'moo';
 
-import { Filter } from "app/catalog/types";
+import {Filter} from 'app/catalog/types';
 
 const word = {
   match: /[^\s\n:]+:?/,
-  type: moo.keywords({ filter: Object.values(Filter).map(k => `${k}:`) })
+  type: moo.keywords({filter: Object.values(Filter).map(k => `${k}:`)}),
 };
 
 const space = {
   match: /\s+/,
-  lineBreaks: true
+  lineBreaks: true,
 };
 
 // Our lexer generates word and space tokens when in it's `main` state. A
@@ -20,13 +20,13 @@ const space = {
 // words and spaces. Any match here will return to the main state.
 
 const lexer = moo.states({
-  main: { word, space },
+  main: {word, space},
   keyValue: {
-    value: { match: /"(?:\\["\\]|[^\n"\\])*"/, pop: 1 },
-    boolean: { match: /(?:1|0)/, pop: 1 },
-    word: { ...word, pop: 1 },
-    space: { ...space, pop: 1 }
-  }
+    value: {match: /"(?:\\["\\]|[^\n"\\])*"/, pop: 1},
+    boolean: {match: /(?:1|0)/, pop: 1},
+    word: {...word, pop: 1},
+    space: {...space, pop: 1},
+  },
 });
 
 // NOTE: There is currently no way to push state with moo when a keyword is
@@ -39,12 +39,12 @@ const nextFn = lexer.next;
 lexer.next = () => {
   const rv = nextFn.apply(lexer);
 
-  if (rv && rv.type === "filter") {
+  if (rv && rv.type === 'filter') {
     // TODO(ts): This method is missing from the type definitions. We can
     // remove the any cast when [0] is merged.
     //
     // [0]: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43477
-    (lexer as any).pushState("keyValue");
+    (lexer as any).pushState('keyValue');
   }
 
   return rv;

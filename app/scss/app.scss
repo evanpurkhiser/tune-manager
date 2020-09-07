@@ -1,12 +1,12 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
-@import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700");
 
-$fa-font-path: '~font-awesome/fonts/';
-@import '~font-awesome/scss/_variables';
-@import '~font-awesome/scss/_path';
+$fa-font-path: "~font-awesome/fonts/";
+@import "~font-awesome/scss/_variables";
+@import "~font-awesome/scss/_path";
 
-@import '_mixins';
-@import '_placeholders';
+@import "_mixins";
+@import "_placeholders";
 
 input::placeholder {
   color: #ccc;
@@ -26,7 +26,7 @@ button {
 
 .button-busy:before {
   @extend %loader;
-  content: '';
+  content: "";
   display: inline-block;
   height: 7px;
   width: 7px;
@@ -34,10 +34,10 @@ button {
   margin-right: 4px;
 }
 
-@import '_header';
-@import '_grouping';
-@import '_fields';
-@import '_artwork';
-@import '_typeahead';
-@import '_importer';
-@import '_validation';
+@import "_header";
+@import "_grouping";
+@import "_fields";
+@import "_artwork";
+@import "_typeahead";
+@import "_importer";
+@import "_validation";

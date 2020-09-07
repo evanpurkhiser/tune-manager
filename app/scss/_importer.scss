@@ -28,7 +28,7 @@
   flex-direction: column;
 
   input {
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Open Sans", sans-serif;
     border-radius: 3px;
     border: 1px solid #ddd;
     padding: 8px 10px;
@@ -67,7 +67,7 @@
   }
 
   &.querying .result-list:after {
-    content: '';
+    content: "";
     display: block;
     position: absolute;
     top: 0;
@@ -78,7 +78,7 @@
   }
 
   &.querying:after {
-    content: '';
+    content: "";
     position: absolute;
     @extend %loader;
     top: 19px;
@@ -162,7 +162,7 @@
   }
 
   span:not(:last-child):after {
-    content: ' – ';
+    content: " – ";
     color: #d0d5d8;
   }
 }
@@ -258,7 +258,7 @@
     }
 
     &:after {
-      content: '';
+      content: "";
       flex-grow: 1;
       border-bottom: 1px solid #d2d6d8;
       margin-left: 5px;
@@ -275,7 +275,7 @@
     font-size: 8px;
 
     &:before {
-      content: '↳ ';
+      content: "↳ ";
     }
   }
 

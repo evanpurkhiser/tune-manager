@@ -39,6 +39,7 @@ RUN yarn build
 COPY . /app/
 
 CMD ["python", "/app/tune_manager/main.py", \
+     "--port=80", \
      "--library-path=/library", \
      "--staging-path=/staging", \
      "--storage-path=/storage"]

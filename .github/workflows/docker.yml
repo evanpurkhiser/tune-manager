@@ -8,10 +8,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build and push Docker images
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: evanpurkhiser/tune-manager
-          tags: latest
+      - name: Build
+        run: docker build --tag=evanpurkhiser/tune-manager:latest .
+      - name: Publish
+        run: |
+          docker login --username=evanpurkhiser --password-stdin <<< "${{ secrets.DOCKER_HUB_TOKEN }}"
+          docker push evanpurkhiser/tune-manager:latest

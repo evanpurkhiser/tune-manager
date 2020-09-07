@@ -5,6 +5,8 @@ RUN apk add --update \
       musl-dev \
       zlib-dev \
       jpeg-dev \
+      openssl-dev \
+      libffi-dev \
       ffmpeg-dev \
       yarn \
       libkeyfinder-dev \
@@ -16,7 +18,7 @@ WORKDIR /app
 # Setup python dependencies
 RUN pip3 install poetry
 COPY poetry.lock pyproject.toml /app/
-RUN poetry config settings.virtualenvs.create false
+RUN poetry config virtualenvs.create false
 RUN poetry install --no-interaction
 
 # Setup frontend dependencies

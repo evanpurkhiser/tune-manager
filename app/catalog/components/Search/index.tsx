@@ -45,7 +45,7 @@ class Search extends React.Component<Props, State> {
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     this.setState({ content: e.target.value });
 
-  handleKeyUp = (e: React.KeyboardEvent) => {};
+  handleKeyUp = () => {};
 
   get content() {
     return this.state.content;

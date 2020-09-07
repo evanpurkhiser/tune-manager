@@ -27,7 +27,7 @@
 
 .empty-artwork.loading:after {
   @extend %loader;
-  content: "";
+  content: '';
   opacity: 0.5;
   position: relative;
   top: 5px;
@@ -186,7 +186,7 @@
     }
 
     &:after {
-      content: "Upload";
+      content: 'Upload';
       text-transform: uppercase;
       font-size: 8px;
       color: #ccc;
@@ -206,7 +206,7 @@
     @extend %uploaderLabelSelected;
   }
 
-  input[type="file"] {
+  input[type='file'] {
     display: none;
   }
 }

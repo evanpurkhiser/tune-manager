@@ -14,7 +14,7 @@
     background: transparent;
     padding: 0;
 
-    &[type="text"] {
+    &[type='text'] {
       width: 100%;
     }
 
@@ -48,7 +48,7 @@
   }
 
   &:after {
-    content: "";
+    content: '';
     display: block;
     height: 0;
     width: calc(100% - 12px);
@@ -88,7 +88,7 @@ $field-sizes: (
   disc: 45px,
   bpm: 50px,
   key: 35px,
-  actions: 32px
+  actions: 32px,
 );
 
 @each $name, $width in $field-sizes {
@@ -101,7 +101,7 @@ $field-sizes: (
   flex-grow: 1;
 }
 
-$centered-fields: ("artwork", "year", "track", "disc", "bpm", "key");
+$centered-fields: ('artwork', 'year', 'track', 'disc', 'bpm', 'key');
 
 @each $field in $centered-fields {
   .#{$field},
@@ -129,7 +129,7 @@ $centered-fields: ("artwork", "year", "track", "disc", "bpm", "key");
   position: relative;
 
   &.computing:after {
-    content: "";
+    content: '';
     position: absolute;
     top: 8px;
     left: 9px;

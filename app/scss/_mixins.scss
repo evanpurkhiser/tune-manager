@@ -1,6 +1,6 @@
 @mixin fontawesome($code) {
   font-family: FontAwesome;
-  content: "#{$code}";
+  content: '#{$code}';
 }
 
 @mixin checkered-background {

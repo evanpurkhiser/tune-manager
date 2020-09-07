@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "@emotion/styled";
-import camelize from "camelize";
+import React from 'react';
+import styled from '@emotion/styled';
+import camelize from 'camelize';
 
-import Search from "app/catalog/components/Search";
-import TrackItem from "app/catalog/components/Track";
-import { Track } from "app/importer/types";
+import Search from 'app/catalog/components/Search';
+import TrackItem from 'app/catalog/components/Track';
+import {Track} from 'app/importer/types';
 
 type State = {
   tracks: Track[];
@@ -12,13 +12,13 @@ type State = {
 
 class TrackList extends React.Component<{}, State> {
   state: State = {
-    tracks: []
+    tracks: [],
   };
 
   async componentDidMount() {
-    const resp = await fetch("/api/catalog/query");
+    const resp = await fetch('/api/catalog/query');
     const tracks = camelize(await resp.json());
-    this.setState({ tracks });
+    this.setState({tracks});
   }
 
   render() {
@@ -32,7 +32,7 @@ class TrackList extends React.Component<{}, State> {
   }
 }
 
-const Container = styled("div")`
+const Container = styled('div')`
   max-width: 900px;
   margin: 0 auto;
 `;
@@ -51,12 +51,12 @@ const Catalog = _ => (
   </React.Fragment>
 );
 
-const Header = styled("header")`
+const Header = styled('header')`
   max-width: 1000px;
   margin: 2rem auto 0;
 `;
 
-const Title = styled("h1")`
+const Title = styled('h1')`
   display: grid;
   grid-template-columns: max-content max-content;
   align-items: baseline;

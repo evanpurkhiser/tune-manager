@@ -1,24 +1,24 @@
-import "app/scss/app.scss";
+import 'app/scss/app.scss';
 
-import React from "react";
-import * as sortable from "react-sortable-hoc";
-import { Provider, connect } from "react-redux";
-import classNames from "classnames";
-import * as lodash from "lodash";
-import camelize from "camelize";
+import React from 'react';
+import * as sortable from 'react-sortable-hoc';
+import {Provider, connect} from 'react-redux';
+import classNames from 'classnames';
+import * as lodash from 'lodash';
+import camelize from 'camelize';
 
-import { ImportButton } from "app/importer/components/Importer";
-import { SaveButton, SaveStatus } from "app/importer/components/Save";
-import * as Field from "app/importer/components/Fields";
-import * as actions from "app/importer/store/actions";
-import globalKeys from "app/importer/globalKeys";
-import store from "app/importer/store";
-import FieldHeadings from "app/importer/components/FieldHeadings";
+import {ImportButton} from 'app/importer/components/Importer';
+import {SaveButton, SaveStatus} from 'app/importer/components/Save';
+import * as Field from 'app/importer/components/Fields';
+import * as actions from 'app/importer/store/actions';
+import globalKeys from 'app/importer/globalKeys';
+import store from 'app/importer/store';
+import FieldHeadings from 'app/importer/components/FieldHeadings';
 
 let TrackItem = p => {
   const fieldProps = {
     track: p.track,
-    dispatch: p.dispatch
+    dispatch: p.dispatch,
   };
 
   return (
@@ -27,9 +27,7 @@ let TrackItem = p => {
         <input
           type="checkbox"
           tabIndex="-1"
-          onChange={e =>
-            p.dispatch(actions.toggleSelect(e.target.checked, [p.id]))
-          }
+          onChange={e => p.dispatch(actions.toggleSelect(e.target.checked, [p.id]))}
           checked={p.selected}
         />
       </div>
@@ -61,12 +59,12 @@ const mapTrackState = (s, props) => ({
   artwork: s.artwork,
   selected: s.selectedTracks.includes(props.id),
   processes: s.processes[props.id] || processesDefault,
-  knownValues: s.knownValues
+  knownValues: s.knownValues,
 });
 
 TrackItem = connect(mapTrackState)(TrackItem);
 
-const PathParts = ({ parts }) => (
+const PathParts = ({parts}) => (
   <ol className="path-parts">
     {parts.map(p => (
       <li key={p}>{p}</li>
@@ -82,11 +80,11 @@ let TrackGroup = p => {
     p.dispatch(actions.toggleSelect(toggle, p.tracks));
   };
 
-  const pathParts = p.pathParts[0] === "." ? [] : p.pathParts;
+  const pathParts = p.pathParts[0] === '.' ? [] : p.pathParts;
 
   const classes = classNames({
-    "listing-name": true,
-    "root-listing": pathParts.length === 0
+    'listing-name': true,
+    'root-listing': pathParts.length === 0,
   });
 
   const GroupHeading = sortable.SortableHandle(_ => (
@@ -115,7 +113,7 @@ let TrackGroup = p => {
 };
 
 const mapTrackGroupingState = (s, props) => ({
-  allSelected: lodash.difference(props.tracks, s.selectedTracks).length === 0
+  allSelected: lodash.difference(props.tracks, s.selectedTracks).length === 0,
 });
 
 TrackGroup = connect(mapTrackGroupingState)(TrackGroup);
@@ -132,7 +130,7 @@ let TrackGroups = props => (
   </ol>
 );
 
-const mapEditorState = ({ trackTree }) => ({ trackTree });
+const mapEditorState = ({trackTree}) => ({trackTree});
 
 TrackGroups = connect(mapEditorState)(TrackGroups);
 TrackGroups = sortable.SortableContainer(TrackGroups);
@@ -142,27 +140,25 @@ TrackGroups = sortable.SortableContainer(TrackGroups);
  */
 class Importer extends React.Component {
   componentDidMount() {
-    const protocol = location.protocol === "https:" ? "wss" : "ws";
+    const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
 
     // Start events listener
-    this.socket = new WebSocket(
-      `${protocol}://${window.location.host}/api/events`
-    );
+    this.socket = new WebSocket(`${protocol}://${window.location.host}/api/events`);
     this.socket.onmessage = m => store.dispatch(camelize(JSON.parse(m.data)));
 
     // Load known values
-    fetch("/api/known-values")
+    fetch('/api/known-values')
       .then(r => r.json())
       .then(knowns => {
         store.dispatch(actions.replaceKnowns(camelize(knowns)));
       });
 
-    document.body.addEventListener("keydown", globalKeys);
+    document.body.addEventListener('keydown', globalKeys);
   }
 
   componentWillUnmount() {
     this.socket.close();
-    document.body.removeEventListener("keydown", globalKeys);
+    document.body.removeEventListener('keydown', globalKeys);
   }
 
   render() {
@@ -198,7 +194,7 @@ class Importer extends React.Component {
 const mapImporterState = s => ({
   allSelected:
     Object.keys(s.tracks).length > 0 &&
-    Object.keys(s.tracks).length === s.selectedTracks.length
+    Object.keys(s.tracks).length === s.selectedTracks.length,
 });
 
 const ConnectedImporter = connect(mapImporterState)(Importer);

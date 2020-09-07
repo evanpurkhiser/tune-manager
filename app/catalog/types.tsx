@@ -2,15 +2,15 @@
 // should they be added here.
 
 export enum Filter {
-  Id = "id",
-  Title = "title",
-  Artist = "artist",
-  Album = "album",
-  Release = "release",
-  Publisher = "publisher",
-  Genre = "genre",
-  Key = "key",
-  Artwork = "artwork"
+  Id = 'id',
+  Title = 'title',
+  Artist = 'artist',
+  Album = 'album',
+  Release = 'release',
+  Publisher = 'publisher',
+  Genre = 'genre',
+  Key = 'key',
+  Artwork = 'artwork',
 }
 
 type SearchValue = {
@@ -20,9 +20,9 @@ type SearchValue = {
 
 export type SearchToken =
   | {
-      type: "filter";
+      type: 'filter';
       offset: number;
-      key: { type: Filter; offset: number };
+      key: {type: Filter; offset: number};
       value: SearchValue;
     }
-  | ({ type: "freeText" | "blankSpace" } & SearchValue);
+  | ({type: 'freeText' | 'blankSpace'} & SearchValue);

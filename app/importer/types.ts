@@ -20,7 +20,7 @@ export type Track = {
 
 export type Artwork = {
   url: string;
-  size: Blob["size"];
-  type: Blob["type"];
-  dimensions: { height: number; width: number };
+  size: Blob['size'];
+  type: Blob['type'];
+  dimensions: {height: number; width: number};
 };

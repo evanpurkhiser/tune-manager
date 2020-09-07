@@ -14,16 +14,16 @@
   $colors: (
     warning: (
       #fef2e2,
-      #ffad7a
+      #ffad7a,
     ),
     error: (
       #ffe4e8,
-      #f37777
+      #f37777,
     ),
     valid: (
       #d2fbe6,
-      #6bd4a5
-    )
+      #6bd4a5,
+    ),
   );
 
   @each $type, $color in $colors {
@@ -54,16 +54,16 @@
     }
 
     &.error:before {
-      content: "\f06a";
+      content: '\f06a';
     }
 
     &.valid:before {
-      content: "\f058";
+      content: '\f058';
     }
 
     &.warning:before {
       margin-left: -1px;
-      content: "\f071";
+      content: '\f071';
     }
   }
 }

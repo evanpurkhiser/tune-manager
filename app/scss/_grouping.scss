@@ -15,13 +15,13 @@
 
 .listing-name {
   cursor: pointer;
-  font-family: "Open Sans Condensed", sans-serif;
+  font-family: 'Open Sans Condensed', sans-serif;
   margin: 14px 6px;
   font-size: 13px;
   display: inline-block;
 
   &.root-listing:after {
-    content: "import root";
+    content: 'import root';
     color: #dfe4e6;
   }
 
@@ -74,7 +74,7 @@ ol.path-parts li {
   display: inline-block;
 
   &:not(:last-child):after {
-    content: "—";
+    content: '—';
     padding: 0 6px;
     color: #dfe4e6;
   }
@@ -83,7 +83,7 @@ ol.path-parts li {
 .track-listing,
 .field-heading,
 .field input {
-  font-family: "Open Sans Condensed", sans-serif;
+  font-family: 'Open Sans Condensed', sans-serif;
   font-size: 12px;
   line-height: 24px;
   color: #757c80;

@@ -8,6 +8,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Pull latest image
+        run: docker pull evanpurkhiser/tune-manager:latest
       - name: Build
         run: docker build --tag=evanpurkhiser/tune-manager:latest .
       - name: Publish

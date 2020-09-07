@@ -1,2 +1,4 @@
 *.css
 db
+.venv
+*.egg-info

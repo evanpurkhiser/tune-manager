@@ -59,8 +59,6 @@ async def artwork(request, key):
     if key not in app.processor.artwork:
         return response.json({"message": "invalid artwork ID"}, status=404)
 
-    print("getting artwork")
-
     art = app.processor.artwork[key]
 
     return response.raw(art.data, content_type=art.mime)

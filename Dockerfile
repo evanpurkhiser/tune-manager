@@ -8,6 +8,7 @@ RUN apk add --update \
       jpeg-dev \
       openssl-dev \
       libffi-dev \
+      ffmpeg \
       ffmpeg-dev \
       yarn \
       libkeyfinder-dev \

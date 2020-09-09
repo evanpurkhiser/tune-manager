@@ -24,7 +24,7 @@ async def events(request, ws):
 
 
 @blueprint.websocket("/static")
-async def statics(request):
+async def statics(request, ws):
     await request.app.processor.open_connection(ws)
 
 

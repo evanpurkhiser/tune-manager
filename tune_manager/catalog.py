@@ -1,4 +1,5 @@
 import asyncio
+from asyncio.exceptions import CancelledError
 import hashlib
 import os
 import logging
@@ -56,9 +57,12 @@ class MetadataIndexer(object):
                 log.warn(f"Failed to update {short_path}: {e}")
 
     async def reindex(self):
-        await self.loop.run_in_executor(None, self.reindex_sync)
+        try:
+            await self.loop.run_in_executor(None, self.reindex_sync)
+        except CancelledError:
+            pass
 
-    async def watch_collection(self):
+    async def watch_library(self):
         """
         Watch all files for changes in the collection.
         """
@@ -68,17 +72,23 @@ class MetadataIndexer(object):
         # The watchdog observer can take some time to setup as it has to add
         # inode watchers to all files. Set it up in a threaded executor.
         def prepare_watcher():
-            watcher = watchdog.observers.Observer()
-            watcher.schedule(handler, self.library_path, recursive=True)
+            observer = watchdog.observers.Observer()
+            observer.schedule(handler, self.library_path, recursive=True)
 
-            return watcher
+            return observer
 
-        watcher = await self.loop.run_in_executor(None, prepare_watcher)
+        try:
+            observer = await self.loop.run_in_executor(None, prepare_watcher)
+        except CancelledError:
+            pass
 
         async def file_dispatcher():
-            watcher.start()
+            observer.start()
             while True:
-                await asyncio.sleep(1)
+                try:
+                    await asyncio.sleep(1)
+                except CancelledError:
+                    break
 
         self.loop.create_task(file_dispatcher())
 

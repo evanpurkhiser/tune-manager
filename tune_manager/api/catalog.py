@@ -13,7 +13,7 @@ def index_collection(app, loop):
     app.indexer = catalog.MetadataIndexer(
         app.config.LIBRARY_PATH, app.config.ARTWORK_PATH, app.db_session, loop
     )
-    loop.create_task(app.indexer.watch_collection())
+    loop.create_task(app.indexer.watch_library())
     loop.create_task(app.indexer.reindex())
 
 

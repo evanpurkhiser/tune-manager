@@ -1,6 +1,8 @@
 import argparse
+import asyncio
 import os
 import os.path
+import logging
 
 from sanic import Sanic, response
 from sanic_cors import CORS
@@ -24,6 +26,9 @@ args = parser.parse_args()
 app = Sanic(__name__)
 CORS(app)
 
+# Quiet down logger
+logging.getLogger("sanic_cors").level = logging.DEBUG
+
 # Configuration
 storage_path = os.path.abspath(args.storage_path)
 db_path = os.path.join(storage_path, "database.db")
@@ -42,7 +47,9 @@ app.config.from_object(settings)
 app.config.update(args_config)
 
 # Setup the database and assign it on the app object
-app.db_session = db.init(create_engine(app.config.DATABASE_PATH))
+app.db_session = db.init(
+    create_engine(app.config.DATABASE_PATH, connect_args={"check_same_thread": False})
+)
 
 app.blueprint(importer.blueprint, url_prefix="/api")
 app.blueprint(catalog.blueprint, url_prefix="/api/catalog")
@@ -59,6 +66,17 @@ async def serve_statics(request, path=""):
         if os.path.isfile(file_path)
         else response.file(os.path.join(statics_path, "index.html"))
     )
+
+
+@app.listener("after_server_stop")
+async def shutdown_tasks(app, loop):
+    this_task = asyncio.current_task()
+    tasks = [t for t in asyncio.all_tasks() if t is not this_task]
+
+    for task in tasks:
+        task.cancel()
+
+    await asyncio.gather(*tasks)
 
 
 def main():

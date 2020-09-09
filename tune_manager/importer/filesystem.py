@@ -1,4 +1,5 @@
 import asyncio
+from asyncio.exceptions import CancelledError
 import concurrent.futures
 import enum
 import hashlib
@@ -32,6 +33,17 @@ def file_id(path):
     sum of the file path without the file extension.
     """
     return hashlib.md5(os.path.splitext(path)[0].encode("utf-8")).hexdigest()
+
+
+def group_events(events):
+    def key_on_type(k):
+        return k["type"]
+
+    events.sort(key=key_on_type)
+
+    for event_type, items in itertools.groupby(events, key=key_on_type):
+        items = [e["item"] for e in items]
+        yield {"type": event_type, "items": items}
 
 
 class EventType(enum.Enum):
@@ -144,7 +156,10 @@ class TrackProcessor(object):
         async def file_dispatcher():
             observer.start()
             while True:
-                await asyncio.sleep(1)
+                try:
+                    await asyncio.sleep(1)
+                except CancelledError:
+                    break
 
         # kickoff coroutines
         self.loop.create_task(file_dispatcher())
@@ -156,30 +171,36 @@ class TrackProcessor(object):
 
         try:
             while True:
-                await ws.recv()
+                try:
+                    await ws.recv()
+                except CancelledError:
+                    break
         except Exception:
             self.connections.remove(ws)
 
     async def dispatcher(self):
         while True:
-            # Batch messages together over this period of time
-            await asyncio.sleep(self.batch_period / 1000)
-            events = []
+            try:
+                # Batch messages together over this period of time
+                await asyncio.sleep(self.batch_period / 1000)
+                batch = []
 
-            if self.events.empty():
-                continue
+                if self.events.empty():
+                    continue
 
-            while not self.events.empty():
-                events.append(await self.events.get())
+                while not self.events.empty():
+                    batch.append(await self.events.get())
 
-            # Nothing to dispatch without any connections
-            if not self.connections:
-                continue
+                # Nothing to dispatch without any connections
+                if not self.connections:
+                    continue
 
-            for event in self.group_events(events):
-                data = json.dumps(event)
-                for ws in self.connections:
-                    asyncio.create_task(ws.send(data))
+                for event in group_events(batch):
+                    data = json.dumps(event)
+                    for ws in self.connections:
+                        asyncio.create_task(ws.send(data))
+            except CancelledError:
+                break
 
     async def file_event(self, event):
         """
@@ -194,16 +215,6 @@ class TrackProcessor(object):
             return
 
         commands[event.event_type](event.src_path)
-
-    def group_events(self, events):
-        def key_on_type(k):
-            return k["type"]
-
-        events.sort(key=key_on_type)
-
-        for event_type, items in itertools.groupby(events, key=key_on_type):
-            items = [e["item"] for e in items]
-            yield {"type": event_type, "items": items}
 
     def send_event(self, event_type, identifier, **kwargs):
         item = {"id": identifier}

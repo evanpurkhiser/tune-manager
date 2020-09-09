@@ -97,3 +97,7 @@ ol.path-parts li {
 .track-listing:last-child {
   border-bottom: none;
 }
+
+.track-listing.is-saving {
+  opacity: 0.75;
+}

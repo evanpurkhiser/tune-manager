@@ -47,10 +47,10 @@ async def save(request):
     artwork = [Artwork(f.name, f.type, f.body, None) for f in artwork]
     app.processor.cache_art(artwork)
 
-    data = json.loads(request.form.get("data"))
+    data = json.loads(request.files.get("data").body.decode("utf-8"))
     app.processor.save_all(data["tracks"], {"migrate_path": app.config.LIBRARY_PATH})
 
-    return response.text("")
+    return response.json(dict())
 
 
 @blueprint.route("/artwork/<key>")

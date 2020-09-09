@@ -105,7 +105,8 @@ function* autoFix(payload) {
  */
 function* saveTracks(payload) {
   const state = yield select();
-  const tracks = state.selectedTracks.map(id => ({...state.tracks[id]}));
+  const savingTrackIds = state.selectedTracks;
+  const tracks = savingTrackIds.map(id => ({...state.tracks[id]}));
   const data = new FormData();
 
   tracks.forEach(t => (t.artwork = t.artwork[t.artworkSelected] || null));
@@ -130,7 +131,7 @@ function* saveTracks(payload) {
   data.append('data', file);
 
   yield fetch(SAVE_URL, {method: 'POST', body: data});
-  yield put(action.saveProcessing(tracks.length));
+  yield put(action.saveProcessing());
 }
 
 export default function* appSaga() {

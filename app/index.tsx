@@ -1,15 +1,15 @@
-import "babel-polyfill";
-import * as Sentry from "@sentry/browser";
-import { Global, css } from "@emotion/core";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import React from "react";
-import ReactDOM from "react-dom";
+import 'babel-polyfill';
+import * as Sentry from '@sentry/browser';
+import {Global, css} from '@emotion/core';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import Importer from "app/importer";
-import Catalog from "app/catalog";
+import Importer from 'app/importer';
+import Catalog from 'app/catalog';
 
 Sentry.init({
-  dsn: "https://208c1692ec594314acbc4e63a3fd775e@sentry.io/1805605"
+  dsn: 'https://208c1692ec594314acbc4e63a3fd775e@sentry.io/1805605',
 });
 
 const globalCss = css`
@@ -38,7 +38,7 @@ const globalCss = css`
   #root,
   .app {
     margin: 0;
-    font-family: "Roboto", sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-weight: 500;
     color: #34373a;
     height: 100%;
@@ -53,4 +53,4 @@ const AppRouter = _ => (
   </Router>
 );
 
-ReactDOM.render(<AppRouter />, document.getElementById("root"));
+ReactDOM.render(<AppRouter />, document.getElementById('root'));

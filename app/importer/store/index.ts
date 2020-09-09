@@ -208,6 +208,11 @@ function reducer(oldState = initialState, action: actions.Actions) {
 
       state.saveProcess = {...state.saveProcess};
       state.saveProcess.targetTracks = tracks;
+
+      state.tracks = {...state.tracks};
+      action.items.map(i => i.id).forEach(k => delete state.tracks[k]);
+      state.trackTree = computeTrackTree(state.tracks);
+
       break;
     }
 

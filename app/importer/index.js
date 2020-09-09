@@ -21,8 +21,10 @@ let TrackItem = p => {
     dispatch: p.dispatch,
   };
 
+  const classes = classNames('track-listing', {'is-saving': p.isSaving});
+
   return (
-    <li className="track-listing" data-trackid={p.id}>
+    <li className={classes} data-trackid={p.id}>
       <div className="field listing-check">
         <input
           type="checkbox"
@@ -59,6 +61,7 @@ const mapTrackState = (s, props) => ({
   artwork: s.artwork,
   selected: s.selectedTracks.includes(props.id),
   processes: s.processes[props.id] || processesDefault,
+  isSaving: s.saveProcess.targetTracks.includes(props.id),
   knownValues: s.knownValues,
 });
 

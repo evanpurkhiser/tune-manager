@@ -65,9 +65,8 @@ export const autoFixFields = (items: {[id: string]: Partial<Track>}) => ({
   items,
 });
 
-export const saveProcessing = (total: number) => ({
+export const saveProcessing = () => ({
   type: SAVE_PROCESSING,
-  total,
 });
 
 export const toggleSelectAll = (toggle: boolean) => ({

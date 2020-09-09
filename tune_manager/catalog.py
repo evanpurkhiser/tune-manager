@@ -100,7 +100,12 @@ class MetadataIndexer(object):
         changed metadata, the path and file checksum will no longer match, thus
         the track will be added as a *new* item in the catalog.
         """
-        media = mediafile.MediaFile(path)
+        try:
+            media = mediafile.MediaFile(path)
+        except ValueError as e:
+            log.warn(f"File {path} could not be read with error {e}")
+            return
+
         track = mediafile_to_track(media, self.library_path)
 
         # Update artwork cache
@@ -130,14 +135,16 @@ class CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
         self.indexer = indexer
 
     async def dispatch(self, event):
+        if event.src_path and os.path.isdir(event.src_path):
+            return
         super().dispatch(event)
-        self.indexer.db_session.commit()
+        try:
+            self.indexer.db_session.commit()
+        except sqlalchemy.exc.IntegrityError:
+            log.warn("Integrity error produced when handling file event")
 
     def on_created(self, event):
-        media = mediafile.MediaFile(event.src_path)
-        track = mediafile_to_track(media, self.indexer.library_path)
-
-        self.indexer.db_session.add(track)
+        self.indexer.add_or_update(event.src_path)
 
     def on_modified(self, event):
         self.indexer.add_or_update(event.src_path)
@@ -153,6 +160,14 @@ class CatalogWatchHandler(watchdog.events.FileSystemEventHandler):
         )
 
         track.file_path = dst
+
+    def on_deleted(self, event):
+        library_path = self.indexer.library_path
+
+        self.indexer.db_session.query(db.Track).filter(
+            db.Track.file_path == file.track_path(event.src_path, library_path)
+        ).delete()
+        self.indexer.db_session.commit()
 
 
 def mediafile_to_track(media, library_path):

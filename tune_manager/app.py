@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--host", default="0.0.0.0")
 parser.add_argument("--port", default="8080")
 parser.add_argument("--workers", type=int, default=1)
-parser.add_argument("--debug", action="store_true")
+parser.add_argument("--reload", action="store_true")
 parser.add_argument("--statics", default="dist/")
 parser.add_argument("--storage-path", default="db/")
 parser.add_argument("--library-path", required=True)
@@ -26,8 +26,6 @@ args = parser.parse_args()
 app = Sanic(__name__)
 CORS(app)
 
-# Quiet down logger
-logging.getLogger("sanic_cors").level = logging.DEBUG
 
 # Configuration
 storage_path = os.path.abspath(args.storage_path)
@@ -80,4 +78,6 @@ async def shutdown_tasks(app, loop):
 
 
 def main():
-    app.run(host=args.host, port=args.port, workers=args.workers, debug=args.debug)
+    app.run(
+        host=args.host, port=args.port, workers=args.workers, auto_reload=args.reload
+    )

@@ -1,3 +1,4 @@
+import shutil
 import mutagen
 import mutagen.id3 as ID3
 import os
@@ -60,5 +61,5 @@ def convert_track(path):
 
     remap_id3tags(temp_file.name)
 
-    os.rename(temp_file.name, new_path)
+    shutil.move(temp_file.name, new_path)
     os.remove(path)

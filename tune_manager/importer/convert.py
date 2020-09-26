@@ -54,7 +54,7 @@ def convert_track(path):
     command = ["ffmpeg", "-i", path] + options + ["--", temp_file.name]
 
     process = subprocess.Popen(command)
-    process.communicate(timeout=10)
+    process.communicate(timeout=30)
 
     if process.returncode != 0:
         raise Exception("Failed to convert file: {}".format(path))

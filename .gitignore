@@ -2,3 +2,11 @@
 db
 .venv
 *.egg-info
+__pycache__
+node_modules/
+
+# app
+dist/
+library
+storage
+staging

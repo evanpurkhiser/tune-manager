@@ -191,7 +191,8 @@ def mediafile_to_track(media, library_path):
     # Columns are gathered as a direct mapping from attributes in the MediaFile
     # object to the columns in the track model.
     for k in (k for k in dir(media) if hasattr(track, k)):
-        setattr(track, k, str(getattr(media, k)))
+        item = getattr(media, k)
+        setattr(track, k, None if item is None else str(item))
 
     track.mtime = int(os.path.getmtime(path))
     track.file_path = file.track_path(path, library_path)

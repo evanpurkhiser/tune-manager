@@ -82,7 +82,7 @@ class Search extends React.Component<Props, State> {
 
     return (
       <React.Fragment>
-        <input value={this.content} onChange={this.handleChange} />
+        {/* <input value={this.content} onChange={this.handleChange} /> */}
 
         <Input
           empty={!this.content}

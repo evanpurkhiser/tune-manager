@@ -38,8 +38,7 @@ const globalCss = css`
   #root,
   .app {
     margin: 0;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
+    font-family: 'Roboto Condensed', sans-serif;
     color: #34373a;
     height: 100%;
   }

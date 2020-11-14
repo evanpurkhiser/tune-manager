@@ -6,35 +6,35 @@ import Search from 'app/catalog/components/Search';
 import TrackItem from 'app/catalog/components/Track';
 import {Track} from 'app/importer/types';
 
-type State = {
-  tracks: Track[];
-};
+const TrackList = () => {
+  const [tracks, setTracks] = React.useState<Track[]>([]);
 
-class TrackList extends React.Component<{}, State> {
-  state: State = {
-    tracks: [],
-  };
-
-  async componentDidMount() {
+  const loadTracks = async () => {
     const resp = await fetch('/api/catalog/query');
     const tracks = camelize(await resp.json());
-    this.setState({tracks});
-  }
+    setTracks(tracks);
+  };
 
-  render() {
-    return (
-      <Container>
-        {this.state.tracks.map(t => (
-          <TrackItem {...t} key={t.id} />
-        ))}
-      </Container>
-    );
-  }
-}
+  React.useEffect(() => {
+    loadTracks();
+  }, []);
+
+  return (
+    <Container>
+      {tracks.map(t => (
+        <TrackItem track={t} key={t.id} />
+      ))}
+    </Container>
+  );
+};
 
 const Container = styled('div')`
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 `;
 
 const Catalog = _ => (
@@ -47,13 +47,19 @@ const Catalog = _ => (
       <Search />
     </Header>
 
-    <TrackList />
+    <Content>
+      <TrackList />
+    </Content>
   </React.Fragment>
 );
 
+const Content = styled('div')`
+  background: #f5f5f5;
+`;
+
 const Header = styled('header')`
   max-width: 1000px;
-  margin: 2rem auto 0;
+  margin: 2rem auto 2rem;
 `;
 
 const Title = styled('h1')`
@@ -62,7 +68,7 @@ const Title = styled('h1')`
   align-items: baseline;
   grid-gap: 0.5rem;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 400;
   margin: 2rem 0;
   color: #000;
 

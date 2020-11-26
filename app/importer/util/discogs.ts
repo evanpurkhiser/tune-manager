@@ -1,11 +1,12 @@
 import {cloneDeep, groupBy, mapValues} from 'lodash';
-import format from 'string-format';
 import md5 from 'md5';
+import format from 'string-format';
 
-import * as validate from 'app/importer/validate';
-import {formatTrackNumbers} from './format';
-import {remixPattern} from './artistMatch';
 import {Track} from 'app/importer/types';
+import * as validate from 'app/importer/validate';
+
+import {remixPattern} from './artistMatch';
+import {formatTrackNumbers} from './format';
 
 type DiscogsArtist = {
   name: string;
@@ -69,9 +70,7 @@ function buildArtistString(artistsList: DiscogsArtist[]) {
   });
 
   const lastArtist = artists.pop();
-  const artist = artists.map(a => {
-    return a.name + (a.join === ',' ? ', ' : ` ${a.join} `);
-  });
+  const artist = artists.map(a => a.name + (a.join === ',' ? ', ' : ` ${a.join} `));
 
   if (lastArtist !== undefined) {
     artist.push(lastArtist.name);
@@ -152,4 +151,4 @@ function mapTracks(release: DiscogsRelease) {
   return mappedTracks;
 }
 
-export {SEARCH_URL, url, mapTracks};
+export {mapTracks, SEARCH_URL, url};

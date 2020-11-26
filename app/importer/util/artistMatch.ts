@@ -24,4 +24,4 @@ function splitArtists(artistString: string) {
   return artistString.split(splitOn).filter(x => x);
 }
 
-export {splitArtists, splitOn, strictSplitOn, remixPattern};
+export {remixPattern, splitArtists, splitOn, strictSplitOn};

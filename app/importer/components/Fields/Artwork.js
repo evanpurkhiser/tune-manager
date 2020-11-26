@@ -4,9 +4,9 @@ import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 
 import * as action from 'app/importer/store/actions';
-import * as validateArt from 'app/importer/validate/artwork';
 import {buildImageObject} from 'app/importer/util/image';
 import {KeyboardNavigatable} from 'app/importer/util/keyboard';
+import * as validateArt from 'app/importer/validate/artwork';
 
 const MIME_MAPPING = {
   'image/png': 'PNG',

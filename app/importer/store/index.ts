@@ -1,13 +1,14 @@
-import lodash from 'lodash';
-import path from 'path';
-import {applyMiddleware, compose, createStore} from 'redux';
 import {arrayMove} from 'react-sortable-hoc';
-import createSagaMiddleware from 'redux-saga';
+import lodash from 'lodash';
 import md5 from 'md5';
+import {applyMiddleware, compose, createStore} from 'redux';
+import createSagaMiddleware from 'redux-saga';
 import {v4 as uuid} from 'uuid';
 
+import path from 'path';
+
+import {ApiKnowns, Store, Track} from 'app/importer/types';
 import {formatTrackNumbers} from 'app/importer/util/format';
-import {Store, ApiKnowns, Track} from 'app/importer/types';
 
 import * as actions from './actions';
 import appSaga from './sagas';

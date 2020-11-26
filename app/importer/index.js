@@ -1,19 +1,19 @@
 import 'app/scss/app.scss';
 
 import React from 'react';
+import {connect, Provider} from 'react-redux';
 import * as sortable from 'react-sortable-hoc';
-import {Provider, connect} from 'react-redux';
+import camelize from 'camelize';
 import classNames from 'classnames';
 import * as lodash from 'lodash';
-import camelize from 'camelize';
 
+import FieldHeadings from 'app/importer/components/FieldHeadings';
+import * as Field from 'app/importer/components/Fields';
 import {ImportButton} from 'app/importer/components/Importer';
 import {SaveButton, SaveStatus} from 'app/importer/components/Save';
-import * as Field from 'app/importer/components/Fields';
-import * as actions from 'app/importer/store/actions';
 import globalKeys from 'app/importer/globalKeys';
 import store from 'app/importer/store';
-import FieldHeadings from 'app/importer/components/FieldHeadings';
+import * as actions from 'app/importer/store/actions';
 
 let TrackItem = p => {
   const fieldProps = {

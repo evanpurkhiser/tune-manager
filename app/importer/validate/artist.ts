@@ -1,8 +1,8 @@
 import {Track} from 'app/importer/types';
 import {splitArtists, splitOn, strictSplitOn} from 'app/importer/util/artistMatch';
 
-import {ValidationLevel, ValidationAutoFix, KnownValues} from './types';
-import {validateFromKnowns, makeValidations, Validations} from './utils';
+import {KnownValues, ValidationAutoFix, ValidationLevel} from './types';
+import {makeValidations, validateFromKnowns, Validations} from './utils';
 
 const validationType = makeValidations({
   EMPTY: {

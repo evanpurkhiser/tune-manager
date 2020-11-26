@@ -1,14 +1,12 @@
-export {Validations, autoFixTypes} from './utils';
-
-export {artwork} from './artwork';
-export {artist} from './artist';
-export {title} from './title';
-export {remixer} from './remixer';
 export {album} from './album';
+export {artist} from './artist';
+export {artwork} from './artwork';
+export {bpm} from './bpm';
+export {genre} from './genre';
 export {publisher} from './publisher';
 export {release} from './release';
+export {remixer} from './remixer';
+export {title} from './title';
+export {disc, track} from './track';
+export {autoFixTypes, Validations} from './utils';
 export {year} from './year';
-export {genre} from './genre';
-export {bpm} from './bpm';
-
-export {track, disc} from './track';

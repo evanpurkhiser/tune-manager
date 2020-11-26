@@ -1,7 +1,7 @@
-import * as lodash from 'lodash';
 import React, {Component} from 'react';
 import classNames from 'classnames';
 import Fuse from 'fuse.js';
+import * as lodash from 'lodash';
 import PropTypes from 'prop-types';
 
 import {keyMapper} from 'app/importer/util/keyboard';

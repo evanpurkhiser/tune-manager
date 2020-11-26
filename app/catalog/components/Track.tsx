@@ -1,17 +1,18 @@
 import React from 'react';
-import styled from '@emotion/styled';
 import {css} from '@emotion/core';
+import styled from '@emotion/styled';
 
 import Artwork from 'app/catalog/components/Artwork';
 import {Track} from 'app/catalog/types';
-import {KEY_COLORS} from './Key';
-import ArtistText from './text/ArtistText';
-import GenreText from './text/GenreText';
-import PublisherText from './text/PublisherText';
+
 import AlbumText from './text/AlbumText';
-import ReleaseText from './text/ReleaseText';
-import Placeholder from './text/Placeholder';
+import ArtistText from './text/ArtistText';
 import BpmText from './text/BpmText';
+import GenreText from './text/GenreText';
+import Placeholder from './text/Placeholder';
+import PublisherText from './text/PublisherText';
+import ReleaseText from './text/ReleaseText';
+import {KEY_COLORS} from './Key';
 
 type Props = {
   track: Track;

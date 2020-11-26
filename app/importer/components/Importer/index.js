@@ -1,7 +1,7 @@
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import React, {Component} from 'react';
 
 import * as actions from 'app/importer/store/actions';
 import {keyMapper} from 'app/importer/util/keyboard';

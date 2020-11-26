@@ -1,8 +1,8 @@
+import {Track} from 'app/importer/types';
 import {formatTrackNumbers} from 'app/importer/util/format';
 
+import {ValidationAutoFix, ValidationLevel} from './types';
 import {makeValidations, Validations} from './utils';
-import {ValidationLevel, ValidationAutoFix} from './types';
-import {Track} from 'app/importer/types';
 
 const numberPattern = /^([0-9]{1,3})\/([0-9]{1,3})$/;
 
@@ -147,4 +147,4 @@ function disc(track: Track) {
 
 disc.validatesFields = ['track', 'disc', 'album'] as const;
 
-export {track, disc};
+export {disc, track};

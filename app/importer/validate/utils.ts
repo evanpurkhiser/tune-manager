@@ -1,12 +1,12 @@
-import * as similarity from 'string-similarity';
 import format from 'string-format';
+import * as similarity from 'string-similarity';
 
 import {
-  ValidationLevel,
-  Validation,
-  ValidationAutoFix,
   KnownValidations,
   KnownValues,
+  Validation,
+  ValidationAutoFix,
+  ValidationLevel,
 } from './types';
 
 /**

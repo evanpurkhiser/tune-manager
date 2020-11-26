@@ -1,12 +1,12 @@
-import * as lodash from 'lodash';
+import React, {Component} from 'react';
 import camelize from 'camelize';
 import classNames from 'classnames';
+import * as lodash from 'lodash';
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
 
+import ScrollLockList from 'app/importer/components/ScrollLockList';
 import * as discogs from 'app/importer/util/discogs';
 import {buildImageObject} from 'app/importer/util/image';
-import ScrollLockList from 'app/importer/components/ScrollLockList';
 
 const mappableTrackShape = PropTypes.shape({
   id: PropTypes.string.isRequired,
@@ -420,4 +420,4 @@ Mapper.defaultProps = {
   mappingTracks: [],
 };
 
-export {Search, Mapper, mappableTrackShape};
+export {mappableTrackShape, Mapper, Search};

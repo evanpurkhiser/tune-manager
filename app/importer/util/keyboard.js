@@ -1,7 +1,7 @@
-import * as lodash from 'lodash';
-import keycomb from 'keycomb';
-import PropTypes from 'prop-types';
 import React from 'react';
+import keycomb from 'keycomb';
+import * as lodash from 'lodash';
+import PropTypes from 'prop-types';
 
 /**
  * actionHandler is a function factory that given a map will produce a keyboard
@@ -90,4 +90,4 @@ KeyboardNavigatable.propTypes = {
   extraKeys: PropTypes.object,
 };
 
-export {keyMapper, KeyboardNavigatable};
+export {KeyboardNavigatable, keyMapper};

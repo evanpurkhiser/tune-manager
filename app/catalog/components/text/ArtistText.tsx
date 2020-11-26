@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 import {strictSplitOn} from 'app/importer/util/artistMatch';
+
 import {tagHover} from './tagStyles';
 
 type Props = {

@@ -1,6 +1,6 @@
 import {Track} from 'app/importer/types';
 
-import {ValidationLevel, ValidationAutoFix} from './types';
+import {ValidationAutoFix, ValidationLevel} from './types';
 import {makeValidations, Validations} from './utils';
 
 const yearPattern = /^[0-9]{4}$/;

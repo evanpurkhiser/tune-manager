@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from '@emotion/styled';
 import css from '@emotion/css';
+import styled from '@emotion/styled';
 import nearley from 'nearley';
 
 import {SearchToken} from 'app/catalog/types';

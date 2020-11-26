@@ -1,8 +1,8 @@
 import {Track} from 'app/importer/types';
 import {remixPattern} from 'app/importer/util/artistMatch';
 
+import {ValidationAutoFix, ValidationLevel} from './types';
 import {makeValidations, Validations} from './utils';
-import {ValidationLevel, ValidationAutoFix} from './types';
 
 const validationType = makeValidations({
   EMPTY: {
@@ -155,4 +155,4 @@ function title(track: Track) {
 
 title.validatesFields = ['title', 'remixer'];
 
-export {title, remixPattern};
+export {remixPattern, title};

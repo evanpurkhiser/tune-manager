@@ -14,7 +14,7 @@
     "@babel/preset-typescript": "^7.7.2",
     "@emotion/core": "^10.0.10",
     "@emotion/styled": "^10.0.11",
-    "@evanpurkhiser/eslint-config": "^0.8.2",
+    "@evanpurkhiser/eslint-config": "^0.9.1",
     "@sentry/browser": "^5.7.1",
     "@types/lodash": "^4.14.144",
     "@types/md5": "^2.1.33",

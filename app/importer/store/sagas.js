@@ -1,11 +1,12 @@
-import {all, flush, fork, put, select, delay, takeEvery} from 'redux-saga/effects';
-import {buffers, channel, END} from 'redux-saga';
-import format from 'string-format';
 import lodash from 'lodash';
+import {buffers, channel, END} from 'redux-saga';
+import {all, delay, flush, fork, put, select, takeEvery} from 'redux-saga/effects';
+import format from 'string-format';
+
+import {blobForImage, buildImageObject} from '../util/image';
+import * as validate from '../validate';
 
 import * as action from './actions';
-import * as validate from '../validate';
-import {blobForImage, buildImageObject} from '../util/image';
 
 const ARTWORK_URL = '/api/artwork/{}';
 const SAVE_URL = '/api/save';

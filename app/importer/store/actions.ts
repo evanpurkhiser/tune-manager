@@ -1,4 +1,4 @@
-import {Store, TrackID, Artwork, Track, ApiKnowns, ProcessKey} from '../types';
+import {ApiKnowns, Artwork, ProcessKey, Store, Track, TrackID} from '../types';
 
 // Websocket API events
 export const TRACK_DETAILS = 'TRACK_DETAILS' as const;

@@ -163,7 +163,7 @@ function reducer(oldState = initialState, action: actions.Actions) {
       const currIndex = Number(track.artworkSelected);
 
       // Remove artwork and offset the artworkSelected index if necessary
-      track.artwork = [...track.artwork];
+      track.artwork = [...(track.artwork ?? [])];
       track.artwork.splice(index, 1);
       track.artworkSelected =
         currIndex === index ? null : currIndex <= index ? currIndex : currIndex - 1;

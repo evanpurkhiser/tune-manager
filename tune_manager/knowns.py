@@ -52,7 +52,7 @@ class KnownValues(object):
         artists = [t.artist for t in tracks]
         artists += [t.remixer for t in tracks]
 
-        artists = [individual_artists.split(a) for a in artists]
+        artists = [individual_artists.split(a) for a in artists if a is not None]
         artists = list(itertools.chain(*artists))
         artists = [a.strip() for a in artists]
 

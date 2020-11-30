@@ -34,7 +34,7 @@ class KnownValues(object):
 
         tracks = self.session.query(db.Track).group_by(getattr(db.Track, field)).all()
 
-        self.cache[field] = [getattr(t, field) for t in tracks if t is not None]
+        self.cache[field] = list(filter(None, [getattr(t, field) for t in tracks]))
 
         return self.cache[field]
 

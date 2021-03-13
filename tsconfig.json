@@ -1,37 +1,28 @@
 {
   "compilerOptions": {
-    "allowJs": false,
-    "alwaysStrict": false,
-    "declaration": false,
-    "declarationMap": false,
-    "downlevelIteration": true,
-    "inlineSources": true,
-    "importHelpers": true,
-    "lib": ["esnext", "dom"],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "noEmitHelpers": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": false,
-    "noImplicitReturns": true,
-    "noImplicitUseStrict": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "pretty": true,
-    "sourceMap": true,
-    "strict": true,
-    "target": "es5",
-    "strictBindCallApply": false,
     "experimentalDecorators": true,
-
+    "alwaysStrict": false,
+    "noImplicitAny": false,
+    "target": "ES2018",
+    "module": "commonjs",
     "esModuleInterop": true,
-    "jsx": "react",
-    "baseUrl": ".",
-    "outDir": "dist",
+    "lib": ["dom", "ESNext"],
+    "allowJs": false,
+    "jsx": "react-jsxdev",
+    "sourceMap": true,
+    "inlineSources": true,
+    "outDir": "./dist",
+    "strict": true,
+    "rootDir": "./",
+    "baseUrl": "./",
     "paths": {
       "app/*": ["app/*"]
-    }
+    },
+    "plugins": [
+      {
+        "name": "typescript-styled-plugin"
+      }
+    ]
   },
-  "include": ["app"]
+  "include": ["./app"]
 }

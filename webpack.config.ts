@@ -1,20 +1,11 @@
 /* eslint-env node */
-const path = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import webpack from 'webpack';
+
+import path from 'path';
 
 const IS_PROD = process.argv.find(a => a.includes('mode=production')) !== undefined;
-
-const plugins = [
-  new HtmlWebpackPlugin({template: 'app/index.html'}),
-  new ForkTsCheckerWebpackPlugin(),
-  new webpack.DefinePlugin({
-    IS_PROD,
-    VERSION: JSON.stringify(process.env.VERSION || 'dev'),
-  }),
-  IS_PROD ? null : new webpack.HotModuleReplacementPlugin(),
-];
 
 const babelPlugins = [
   ['@babel/plugin-proposal-decorators', {legacy: true}],
@@ -25,7 +16,7 @@ const babelPlugins = [
   IS_PROD ? null : ['react-hot-loader/babel'],
 ];
 
-module.exports = {
+const config: webpack.Configuration = {
   entry: {app: './app/index.tsx'},
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -35,8 +26,11 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {app: path.resolve(__dirname, 'app')},
+    fallback: {
+      path: 'path-browserify',
+    },
   },
-  devtool: IS_PROD ? 'source-map' : 'cheap-module-eval-source-map',
+  devtool: IS_PROD ? 'source-map' : 'eval-cheap-module-source-map',
   devServer: {
     port: 9090,
     hot: true,
@@ -78,5 +72,15 @@ module.exports = {
       },
     ],
   },
-  plugins: plugins.filter(x => x !== null),
+  plugins: [
+    new HtmlWebpackPlugin({template: 'app/index.html'}),
+    new ForkTsCheckerWebpackPlugin(),
+    new webpack.DefinePlugin({
+      IS_PROD: JSON.stringify(IS_PROD),
+      VERSION: JSON.stringify(process.env.VERSION || 'dev'),
+    }),
+    ...(IS_PROD ? [] : [new webpack.HotModuleReplacementPlugin()]),
+  ],
 };
+
+export default config;

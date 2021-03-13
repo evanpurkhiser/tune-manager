@@ -46,8 +46,6 @@ COPY webpack.config.js tsconfig.json /app/
 COPY app /app/app/
 RUN yarn build
 
-# Setup 
-
 CMD ["tunemanager", \
      "--port=80", \
      "--library-path=/library", \

@@ -1,5 +1,5 @@
 import React from 'react';
-import css from '@emotion/css';
+import {css} from '@emotion/css';
 import styled from '@emotion/styled';
 import nearley from 'nearley';
 

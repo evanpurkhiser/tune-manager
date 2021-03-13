@@ -1,4 +1,4 @@
-import {css} from '@emotion/core';
+import {css} from '@emotion/css';
 
 export const tagHover = (color: string) => css`
   position: relative;

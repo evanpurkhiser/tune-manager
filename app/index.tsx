@@ -3,7 +3,7 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
-import {css, Global} from '@emotion/core';
+import {css, Global} from '@emotion/react';
 import * as Sentry from '@sentry/browser';
 
 import Catalog from 'app/catalog';

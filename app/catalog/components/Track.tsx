@@ -1,5 +1,5 @@
 import React from 'react';
-import {css} from '@emotion/core';
+import {css} from '@emotion/css';
 import styled from '@emotion/styled';
 
 import Artwork from 'app/catalog/components/Artwork';

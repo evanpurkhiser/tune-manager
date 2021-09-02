@@ -34,6 +34,7 @@ const config: webpack.Configuration = {
   devServer: {
     port: 9090,
     hot: true,
+    https: true,
     historyApiFallback: true,
     proxy: {
       '/api': 'http://localhost:8080',

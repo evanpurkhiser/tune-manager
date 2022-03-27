@@ -43,7 +43,7 @@ COPY webpack.config.ts tsconfig.json /app/
 COPY app /app/app/
 RUN yarn build
 
-CMD ["tunemanager", \
+CMD ["pdm", "run", "tunemanager", \
      "--port=80", \
      "--library-path=/library", \
      "--staging-path=/staging", \

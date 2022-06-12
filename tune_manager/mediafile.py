@@ -49,12 +49,12 @@ class SizeField(TextField):
 
     class Size(object):
         @classmethod
-        def unpack(self, value, **kwargs):
+        def unpack(cls, value, **kwargs):
             """
             Construct a Size object by unpacking the values from a string
             """
             if not value:
-                return self(value, **kwargs)
+                return cls(value, **kwargs)
 
             # Ensure a list of exactly two integers
             try:
@@ -63,7 +63,7 @@ class SizeField(TextField):
             except ValueError:
                 values = []
 
-            return self(value, *values, **kwargs)
+            return cls(value, *values, **kwargs)
 
         def __init__(self, raw, number=0, total=0, writeback=None):
             self.__dict__["writeback"] = writeback

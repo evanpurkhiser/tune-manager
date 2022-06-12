@@ -179,6 +179,9 @@ def mediafile_to_track(media, library_path):
     with open(path, "rb") as track_file:
         file_hash = hashlib.md5(track_file.read()).hexdigest()
 
+    if not media.mg_file.tags:
+        raise Exception("File has no tags")
+
     # Compute artwork hash
     artwork = media.mg_file.tags.getall("APIC")
     art_hash = None

@@ -2,3 +2,4 @@
 db
 .venv
 *.egg-info
+__pypackages__

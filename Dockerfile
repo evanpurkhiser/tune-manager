@@ -41,10 +41,8 @@ RUN pdm install
 # Build javascript app
 COPY webpack.config.ts tsconfig.json /app/
 COPY app /app/app/
+COPY dockerStart.sh /app/
+
 RUN yarn build
 
-CMD ["pdm", "run", "tunemanager", \
-     "--port=80", \
-     "--library-path=/library", \
-     "--staging-path=/staging", \
-     "--storage-path=/storage"]
+CMD ["./dockerStart.sh"]

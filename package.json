@@ -50,7 +50,7 @@
     "moo": "^0.5.1",
     "nearley": "^2.16.0",
     "nearley-loader": "^2.0.0",
-    "node-sass": "^5.0.0",
+    "node-sass": "^7.0.0",
     "path-browserify": "^1.0.1",
     "prettier": "^2.1.1",
     "pretty-bytes": "^5.1.0",

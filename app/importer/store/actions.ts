@@ -96,7 +96,7 @@ export const numberSelected = () => ({
 export const modifyField = (
   focusedTrackID: TrackID,
   field: keyof Track,
-  value: string
+  value: string,
 ) => ({
   type: MODIFY_FIELD,
   focusedTrackID,

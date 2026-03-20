@@ -2,9 +2,7 @@
 includes = []
 
 [tool.pdm.dev-dependencies]
-dev = [
-    "black<21.0,>=20.8b1",
-]
+dev = ["black<21.0,>=20.8b1"]
 
 [build-system]
 requires = ["pdm-pep517"]
@@ -15,20 +13,20 @@ name = "tunemanager"
 version = "0.0.1"
 description = "Tools to manage my music collection"
 dependencies = [
-    "sqlalchemy<2.0,>=1.2",
-    "mutagen<2.0,>=1.42",
-    "requests<3.0,>=2.21",
-    "sanic<21.0.0,>=20.6.3",
-    "sanic-cors<1.0.0,>=0.9.7",
-    "beautifulsoup4<5.0,>=4.7",
-    "keyfinder<2.0,>=1.1",
-    "sentry-sdk<2.0.0,>=1.0.0",
-    "pillow~=8.3",
-    "watchdog~=2.1",
+  "sqlalchemy<2.0,>=1.2",
+  "mutagen<2.0,>=1.42",
+  "requests<3.0,>=2.21",
+  "sanic<21.0.0,>=20.6.3",
+  "sanic-cors<1.0.0,>=0.9.7",
+  "beautifulsoup4<5.0,>=4.7",
+  "keyfinder<2.0,>=1.1",
+  "sentry-sdk<2.0.0,>=1.0.0",
+  "pillow~=8.3",
+  "watchdog~=2.1",
 ]
 requires-python = ">=3.9"
 dynamic = ["classifiers", "classifiers"]
-license = {text = "MIT"}
+license = { text = "MIT" }
 
 [project.urls]
 homepage = ""

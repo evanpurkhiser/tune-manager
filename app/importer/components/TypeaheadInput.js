@@ -49,7 +49,7 @@ const Match = p => {
     matchParts.push(
       <span key={i} className="matched-part">
         {part}
-      </span>
+      </span>,
     );
     matchParts.push(value.slice(indice[1] + 1, next[0]));
   }

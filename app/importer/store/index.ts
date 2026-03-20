@@ -230,7 +230,7 @@ function cleanNulls(track: Track) {
 function onSelectedTracks(
   state: Store,
   focusedTrackID: string,
-  fn: (trackId: string) => void
+  fn: (trackId: string) => void,
 ) {
   lodash.union(state.selectedTracks, [focusedTrackID]).forEach(fn);
 }
@@ -283,7 +283,7 @@ function computeTrackNumbers(state: Store) {
       id: trackId,
       track: formatTrackNumbers(j + 1, tracks.length),
       disc: formatTrackNumbers(i + 1, trackTree.length),
-    }))
+    })),
   );
 
   return lodash.flatten(list);
@@ -294,7 +294,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const middleware = compose(
   applyMiddleware(sagaMiddleware),
-  window[devTools] ? window[devTools]() : lodash.identity
+  window[devTools] ? window[devTools]() : lodash.identity,
 );
 
 const store = createStore(reducer, middleware);

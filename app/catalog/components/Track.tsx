@@ -89,7 +89,9 @@ const Container = styled('div')`
   font-size: 0.75rem;
   border-radius: 4px;
   display: grid;
-  grid-template-columns: 57px 3fr minmax(128px, 1fr) 76px 48px 64px minmax(90px, 1fr) 64px 64px;
+  grid-template-columns:
+    57px 3fr minmax(128px, 1fr) 76px 48px 64px minmax(90px, 1fr)
+    64px 64px;
   grid-template-rows: 30px 26px;
   gap: 1px;
   grid-template-areas:

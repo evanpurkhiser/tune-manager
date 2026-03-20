@@ -20,8 +20,11 @@ button {
   border: none;
   font-size: 0.6rem;
   padding: 4px 6px;
-  transition: color 200ms ease-in-out, background 200ms ease-in-out,
-    box-shadow 200ms ease-in-out, border-color 200ms ease-in-out;
+  transition:
+    color 200ms ease-in-out,
+    background 200ms ease-in-out,
+    box-shadow 200ms ease-in-out,
+    border-color 200ms ease-in-out;
 }
 
 .button-busy:before {

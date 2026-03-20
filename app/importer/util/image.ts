@@ -22,7 +22,7 @@ export function buildImageObject(imageBlob: Blob) {
           size: imageBlob.size,
           type: imageBlob.type,
           dimensions: {height: image.height, width: image.width},
-        }))
+        })),
   );
 
   image.src = objectURL;

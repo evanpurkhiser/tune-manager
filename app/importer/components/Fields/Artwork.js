@@ -89,10 +89,12 @@ ArtworkUploader.propTypes = {
  * ArtworkPopover renders a list of artwork items and a artwork uploader.
  */
 const ArtworkPopover = p => {
-  const fireAction = (action, ...params) => e => {
-    e.stopPropagation();
-    action(...params);
-  };
+  const fireAction =
+    (action, ...params) =>
+    e => {
+      e.stopPropagation();
+      action(...params);
+    };
 
   const items = p.artwork
     .filter(x => x)

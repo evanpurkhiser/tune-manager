@@ -122,7 +122,7 @@ class Search extends Component {
           results: camelize(json.results),
           isQuerying: false,
           queryFailed: false,
-        })
+        }),
       );
 
     request.catch(e =>
@@ -130,7 +130,7 @@ class Search extends Component {
         results: [],
         isQuerying: false,
         queryFailed: e.name !== 'AbortError',
-      })
+      }),
     );
   }
 

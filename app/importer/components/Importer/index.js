@@ -29,8 +29,8 @@ class Importer extends Component {
     this.props.dispatch(
       actions.addArtwork(
         tracks.map(t => t.id),
-        artwork
-      )
+        artwork,
+      ),
     );
     this.props.onComplete();
   }

@@ -98,7 +98,7 @@ const typeMapping = {
 function validateOneArtist(
   artist: string,
   validations: Validations,
-  knowns: KnownValues
+  knowns: KnownValues,
 ) {
   const similarValidations = validateFromKnowns(artist, {
     knowns,
@@ -147,7 +147,7 @@ type Options = {knownArtists: KnownValues};
 function validateArtistsString(
   artistsString: string,
   options: Options,
-  validations: Validations
+  validations: Validations,
 ) {
   const {knownArtists} = options;
 

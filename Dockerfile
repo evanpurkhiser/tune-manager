@@ -1,7 +1,20 @@
+FROM node:24-alpine AS frontend-build
+
+WORKDIR /app
+
+RUN corepack enable && corepack prepare yarn@1.22.22 --activate
+
+COPY package.json yarn.lock /app/
+RUN yarn install --frozen-lockfile
+
+COPY webpack.config.ts tsconfig.json /app/
+COPY app /app/app/
+
+RUN yarn build
+
 FROM python:3.9-alpine3.12
 
 RUN apk add --update \
-      curl \
       build-base \
       musl-dev \
       zlib-dev \
@@ -10,7 +23,6 @@ RUN apk add --update \
       libffi-dev \
       ffmpeg \
       ffmpeg-dev \
-      yarn \
       libkeyfinder-dev \
     && rm -rf /var/cache/apk/*
 
@@ -25,10 +37,6 @@ ENV PYTHONPATH=/usr/local/lib/python3.9/site-packages/pdm/pep582
 COPY pdm.lock pyproject.toml /app/
 RUN pdm install
 
-# Setup frontend dependencies
-COPY package.json yarn.lock /app/
-RUN yarn install
-
 # Setup volumes for database, 
 VOLUME /library
 VOLUME /staging
@@ -38,11 +46,8 @@ VOLUME /storage
 COPY tune_manager /app/tune_manager/
 RUN pdm install
 
-# Build javascript app
-COPY webpack.config.ts tsconfig.json /app/
-COPY app /app/app/
+# Add frontend build
+COPY --from=frontend-build /app/dist /app/dist
 COPY dockerStart.sh /app/
-
-RUN yarn build
 
 CMD ["./dockerStart.sh"]

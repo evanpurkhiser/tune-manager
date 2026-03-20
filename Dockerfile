@@ -8,7 +8,7 @@ ENV PYTHON=/usr/bin/python3
 RUN corepack enable && corepack prepare yarn@1.22.22 --activate
 
 COPY package.json yarn.lock /app/
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --production=true
 
 COPY webpack.config.ts tsconfig.json /app/
 COPY app /app/app/

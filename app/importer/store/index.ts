@@ -1,4 +1,5 @@
 import {arrayMove} from 'react-sortable-hoc';
+
 import lodash from 'lodash';
 import md5 from 'md5';
 import {applyMiddleware, compose, createStore} from 'redux';

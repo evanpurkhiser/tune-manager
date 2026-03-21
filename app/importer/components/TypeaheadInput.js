@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+
 import classNames from 'classnames';
 import Fuse from 'fuse.js';
 import * as lodash from 'lodash';

@@ -1,8 +1,7 @@
-import 'app/scss/app.scss';
-
 import React from 'react';
 import {connect, Provider} from 'react-redux';
 import * as sortable from 'react-sortable-hoc';
+
 import camelize from 'camelize';
 import classNames from 'classnames';
 import * as lodash from 'lodash';
@@ -14,6 +13,7 @@ import {SaveButton, SaveStatus} from 'app/importer/components/Save';
 import globalKeys from 'app/importer/globalKeys';
 import store from 'app/importer/store';
 import * as actions from 'app/importer/store/actions';
+import 'app/scss/app.scss';
 
 let TrackItem = p => {
   const fieldProps = {

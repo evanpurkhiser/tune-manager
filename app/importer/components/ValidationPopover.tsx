@@ -1,6 +1,7 @@
 import React from 'react';
-import {FaCheckCircle, FaExclamationCircle, FaExclamationTriangle} from 'react-icons/fa';
+
 import styled from '@emotion/styled';
+import {FaCheckCircle, FaExclamationCircle, FaExclamationTriangle} from 'react-icons/fa';
 
 import {ValidationLevel} from 'app/importer/validate/types';
 import * as validate from 'app/importer/validate/utils';

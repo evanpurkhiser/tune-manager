@@ -4,5 +4,9 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
   extends: ['@evanpurkhiser'],
-  rules: {'prettier/prettier': 'off'},
+  rules: {
+    'prettier/prettier': 'off',
+    'simple-import-sort/imports': 'off',
+    'simple-import-sort/exports': 'off',
+  },
 };

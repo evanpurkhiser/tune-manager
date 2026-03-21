@@ -40,7 +40,7 @@ const SEARCH_URL = 'https://api.discogs.com/database/search?type=release&q={quer
 /**
  * Construct a discogs API request URL.
  */
-function url(url: string, ...args: Parameters<typeof format>[1][]) {
+function url(url: string, ...args: Array<Parameters<typeof format>[1]>) {
   const queryURL = encodeURIComponent(format(url, ...args));
 
   return `${PROXY_URL}?url=${queryURL}`;
@@ -101,7 +101,7 @@ function mapTracks(release: DiscogsRelease) {
 
   // Tracks are grouped into heading keys
   let currentHeading = '';
-  let currentTrackGroup: Partial<Track>[] = [];
+  let currentTrackGroup: Array<Partial<Track>> = [];
   const mappedTracks = [{name: '', tracks: currentTrackGroup}];
 
   for (const t of tracks) {

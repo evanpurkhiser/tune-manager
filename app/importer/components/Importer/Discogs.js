@@ -107,7 +107,7 @@ class Search extends Component {
       return;
     }
 
-    this.activeRequest = new AbortController(); // eslint-disable-line no-undef
+    this.activeRequest = new AbortController(); // oxlint-disable-line no-undef
 
     const query = encodeURIComponent(value);
     const url = discogs.url(discogs.SEARCH_URL, {query});

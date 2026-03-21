@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "build": "webpack --mode=production",
-    "start": "webpack serve --mode=development"
+    "start": "webpack serve --mode=development",
+    "lint": "oxlint app/**/*.js app/**/*.jsx app/**/*.ts app/**/*.tsx webpack.config.ts",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check ."
   },
   "dependencies": {
     "@babel/core": "^7.15.0",
@@ -19,7 +22,6 @@
     "@emotion/css": "^11.1.3",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.1.5",
-    "@evanpurkhiser/eslint-config": "^0.9.1",
     "@sentry/browser": "^6.2.2",
     "@types/lodash": "^4.14.144",
     "@types/md5": "^2.1.33",
@@ -42,7 +44,6 @@
     "camelize": "^1.0.0",
     "classnames": "^2.2.5",
     "css-loader": "^5.1.2",
-    "eslint": "^7.8.1",
     "file-loader": "^6.1.0",
     "font-awesome": "^4.7.0",
     "fork-ts-checker-webpack-plugin": "^6.1.1",
@@ -79,8 +80,9 @@
     "webpack-cli": "^4.5.0"
   },
   "devDependencies": {
-    "@evanpurkhiser/oxc-config": "^0.4.0",
+    "@evanpurkhiser/oxc-config": "^0.5.0",
     "oxfmt": "^0.41.0",
+    "oxlint": "^1.56.0",
     "webpack-dev-server": "^3.11.2"
   },
   "volta": {

@@ -21,6 +21,7 @@ const config: webpack.Configuration = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[hash].js',
+    hashFunction: 'sha256',
     publicPath: '/',
   },
   resolve: {
@@ -69,7 +70,10 @@ const config: webpack.Configuration = {
       },
       {
         test: /\.(eot|woff|woff2|ttf|svg|png|jpe?g|gif)(\?\S*)?$/,
-        use: 'file-loader',
+        type: 'asset/resource',
+        generator: {
+          filename: '[name][ext][query]',
+        },
       },
     ],
   },

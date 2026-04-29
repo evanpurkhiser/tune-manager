@@ -1,4 +1,4 @@
-import {Track} from 'app/importer/types';
+import type {Track} from 'app/importer/types';
 import {remixPattern} from 'app/importer/util/artistMatch';
 
 import {ValidationAutoFix, ValidationLevel} from './types';
@@ -134,7 +134,7 @@ function title(track: Track) {
   }
 
   // 5a. Valid remixer if we can match (<artist>.*).
-  const safeRemixer = remixer.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const safeRemixer = remixer.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const specificRemixer = new RegExp(`.*\\(${safeRemixer}.*\\)`);
 
   if (title.match(specificRemixer) !== null) {

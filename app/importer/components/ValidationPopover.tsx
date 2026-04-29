@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import {FaCheckCircle, FaExclamationCircle, FaExclamationTriangle} from 'react-icons/fa';
 
 import {ValidationLevel} from 'app/importer/validate/types';
-import * as validate from 'app/importer/validate/utils';
+import type * as validate from 'app/importer/validate/utils';
 
 import Popover from './Popover';
 

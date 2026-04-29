@@ -4,7 +4,7 @@ import {css} from '@emotion/css';
 import styled from '@emotion/styled';
 import nearley from 'nearley';
 
-import {SearchToken} from 'app/catalog/types';
+import type {SearchToken} from 'app/catalog/types';
 
 import grammar from './grammar.ne';
 import lexer from './lexer';
@@ -82,7 +82,7 @@ class Search extends React.Component<Props, State> {
     console.log(this.parsedContent);
 
     return (
-      <React.Fragment>
+      <>
         {/* <input value={this.content} onChange={this.handleChange} /> */}
 
         <Input
@@ -94,7 +94,7 @@ class Search extends React.Component<Props, State> {
         >
           {this.renderTags()}
         </Input>
-      </React.Fragment>
+      </>
     );
   }
 }

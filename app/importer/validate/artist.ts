@@ -1,7 +1,8 @@
-import {Track} from 'app/importer/types';
+import type {Track} from 'app/importer/types';
 import {splitArtists, splitOn, strictSplitOn} from 'app/importer/util/artistMatch';
 
-import {KnownValues, ValidationAutoFix, ValidationLevel} from './types';
+import type {KnownValues} from './types';
+import {ValidationAutoFix, ValidationLevel} from './types';
 import {makeValidations, validateFromKnowns, Validations} from './utils';
 
 const validationType = makeValidations({
@@ -68,7 +69,7 @@ function fixConnectors(artistsString: string) {
 
   for (const item of connectorTransforms) {
     const [pattern, replace] = item;
-    str = str.replace(new RegExp(` ${pattern} `, 'gi'), ` ${replace} `);
+    str = str.replaceAll(new RegExp(` ${pattern} `, 'gi'), ` ${replace} `);
   }
 
   return str;

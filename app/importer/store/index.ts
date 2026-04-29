@@ -6,9 +6,9 @@ import {applyMiddleware, compose, createStore} from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import {v4 as uuid} from 'uuid';
 
-import path from 'path';
+import path from 'node:path';
 
-import {ApiKnowns, Store, Track} from 'app/importer/types';
+import type {ApiKnowns, Store, Track} from 'app/importer/types';
 import {formatTrackNumbers} from 'app/importer/util/format';
 
 import * as actions from './actions';

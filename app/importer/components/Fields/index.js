@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 import classNames from 'classnames';
 
-import * as path from 'path';
+import * as path from 'node:path';
 
 import TypeaheadInput from 'app/importer/components/TypeaheadInput';
 import ValidationPopover from 'app/importer/components/ValidationPopover';

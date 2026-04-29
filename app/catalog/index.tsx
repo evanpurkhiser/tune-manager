@@ -5,7 +5,7 @@ import camelize from 'camelize';
 
 import Search from 'app/catalog/components/Search';
 import TrackItem from 'app/catalog/components/Track';
-import {Track} from 'app/importer/types';
+import type {Track} from 'app/importer/types';
 
 const TrackList = () => {
   const [tracks, setTracks] = React.useState<Track[]>([]);
@@ -39,7 +39,7 @@ const Container = styled('div')`
 `;
 
 const Catalog = _ => (
-  <React.Fragment>
+  <>
     <Header>
       <Title>
         Tune Manager <small>v0.1</small>
@@ -51,7 +51,7 @@ const Catalog = _ => (
     <Content>
       <TrackList />
     </Content>
-  </React.Fragment>
+  </>
 );
 
 const Content = styled('div')`

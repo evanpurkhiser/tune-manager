@@ -19,12 +19,9 @@ const ArtistText = ({artist}: Props) => {
     .split(strictSplitOn)
     .map((artist, i) => <Artist key={i}>{artist}</Artist>);
 
-  const el = artists
-    .map((el, i) => [el, separators[i]])
-    .flat()
-    .filter(v => v !== undefined);
+  const el = artists.flatMap((el, i) => [el, separators[i]]).filter(v => v !== undefined);
 
-  return <React.Fragment>{el}</React.Fragment>;
+  return <>{el}</>;
 };
 
 const Artist = styled('span')`

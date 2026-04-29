@@ -1,4 +1,4 @@
-import {Artwork} from 'app/importer/types';
+import type {Artwork} from 'app/importer/types';
 
 /**
  * Cache objectURL -> BLOB mappings

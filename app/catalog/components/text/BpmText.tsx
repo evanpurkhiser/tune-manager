@@ -9,11 +9,7 @@ type Props = {
 const BpmText = ({bpm}: Props) => {
   const bpmNum = Number(bpm);
 
-  return (
-    <React.Fragment>
-      {isNaN(bpmNum) ? bpm : <Bpm>{bpmNum.toFixed(2)}</Bpm>}
-    </React.Fragment>
-  );
+  return <>{isNaN(bpmNum) ? bpm : <Bpm>{bpmNum.toFixed(2)}</Bpm>}</>;
 };
 
 const Bpm = styled('span')`

@@ -1,6 +1,7 @@
-import {Track} from 'app/importer/types';
+import type {Track} from 'app/importer/types';
 
-import {KnownValues, ValidationLevel} from './types';
+import type {KnownValues} from './types';
+import {ValidationLevel} from './types';
 import {makeValidations, validateFromKnowns, Validations} from './utils';
 
 const validationType = makeValidations({

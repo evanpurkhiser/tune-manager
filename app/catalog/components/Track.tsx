@@ -4,7 +4,7 @@ import {css} from '@emotion/css';
 import styled from '@emotion/styled';
 
 import Artwork from 'app/catalog/components/Artwork';
-import {Track} from 'app/catalog/types';
+import type {Track} from 'app/catalog/types';
 
 import {KEY_COLORS} from './Key';
 import AlbumText from './text/AlbumText';

@@ -1,4 +1,4 @@
-import {KnownValues} from './validate/types';
+import type {KnownValues} from './validate/types';
 
 export type Track = {
   id: string;

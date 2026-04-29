@@ -3,7 +3,7 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
 
-import path from 'path';
+import path from 'node:path';
 
 const IS_PROD = process.argv.find(a => a.includes('mode=production')) !== undefined;
 

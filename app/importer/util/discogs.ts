@@ -2,7 +2,7 @@ import {cloneDeep, groupBy, mapValues} from 'lodash';
 import md5 from 'md5';
 import format from 'string-format';
 
-import {Track} from 'app/importer/types';
+import type {Track} from 'app/importer/types';
 import * as validate from 'app/importer/validate';
 
 import {remixPattern} from './artistMatch';
@@ -130,7 +130,7 @@ function mapTracks(release: DiscogsRelease) {
 
     // Add disc and tracks /if/ we have multiple tracks.
     const positionMatch = t.position.match(positionRegex);
-    if (positionMatch !== null && parseInt(totalTracks[1], 10) > 1) {
+    if (positionMatch !== null && Number.parseInt(totalTracks[1], 10) > 1) {
       const discNum = positionMatch[1] || '1';
       const trackNum = positionMatch[2];
 

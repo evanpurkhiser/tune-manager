@@ -1,4 +1,4 @@
-import {Artwork} from 'app/importer/types';
+import type {Artwork} from 'app/importer/types';
 
 import {ValidationLevel} from './types';
 import {makeValidations, Validations} from './utils';

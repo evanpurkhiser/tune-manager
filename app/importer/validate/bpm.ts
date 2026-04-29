@@ -1,4 +1,4 @@
-import {Track} from 'app/importer/types';
+import type {Track} from 'app/importer/types';
 
 import {ValidationAutoFix, ValidationLevel} from './types';
 import {makeValidations, Validations} from './utils';

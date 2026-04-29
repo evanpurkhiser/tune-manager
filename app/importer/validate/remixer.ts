@@ -1,8 +1,9 @@
-import {Track} from 'app/importer/types';
+import type {Track} from 'app/importer/types';
 
 import {validateArtistsString} from './artist';
 import {remixPattern} from './title';
-import {KnownValues, ValidationLevel} from './types';
+import type {KnownValues} from './types';
+import {ValidationLevel} from './types';
 import {makeValidations, Validations} from './utils';
 
 const validationType = makeValidations({

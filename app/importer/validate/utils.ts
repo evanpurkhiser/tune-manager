@@ -1,13 +1,8 @@
 import format from 'string-format';
 import * as similarity from 'string-similarity';
 
-import {
-  KnownValidations,
-  KnownValues,
-  Validation,
-  ValidationAutoFix,
-  ValidationLevel,
-} from './types';
+import type {KnownValidations, KnownValues, Validation} from './types';
+import {ValidationAutoFix, ValidationLevel} from './types';
 
 /**
  * @deprecated REPLCAE WITH ENUM

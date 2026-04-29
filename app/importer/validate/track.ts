@@ -1,4 +1,4 @@
-import {Track} from 'app/importer/types';
+import type {Track} from 'app/importer/types';
 import {formatTrackNumbers} from 'app/importer/util/format';
 
 import {ValidationAutoFix, ValidationLevel} from './types';

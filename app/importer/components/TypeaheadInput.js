@@ -71,7 +71,7 @@ Match.propTypes = {
 const MatchesPopover = p => (
   <ul className="typeahead-popover">
     {p.matches.map((m, i) => (
-      <Match key={i} match={m} isFocused={i === p.focused} />
+      <Match key={m.value} match={m} isFocused={i === p.focused} />
     ))}
   </ul>
 );

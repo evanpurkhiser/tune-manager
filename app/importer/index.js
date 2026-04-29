@@ -46,7 +46,7 @@ let TrackItem = p => {
       <Field.Genre {...fieldProps} knownValues={p.knownValues} />
       <Field.TrackNumber {...fieldProps} />
       <Field.DiscNumber {...fieldProps} />
-      <Field.BPM {...fieldProps} />
+      <Field.Bpm {...fieldProps} />
       <Field.Key {...fieldProps} processes={p.processes} />
 
       <div className="field actions" />
@@ -173,7 +173,7 @@ class Importer extends React.Component {
           <nav>
             <SaveButton />
             <ImportButton />
-            <button className="action-config" />
+            <button type="button" className="action-config" />
             <SaveStatus />
           </nav>
           <FieldHeadings

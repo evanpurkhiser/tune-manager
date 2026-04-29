@@ -240,10 +240,10 @@ ImportTrackMapping.defaultProps = {
 
 const ImportActions = p => (
   <div className="import-actions">
-    <button className="accept" onClick={p.onImport}>
+    <button type="button" className="accept" onClick={p.onImport}>
       Import Tracks
     </button>
-    <button className="return" onClick={p.onCancel}>
+    <button type="button" className="return" onClick={p.onCancel}>
       Back to search
     </button>
     <div className="stats">
@@ -377,7 +377,7 @@ class Mapper extends Component {
 
     return tracks.map((g, index) => {
       const heading = (
-        <li key={index} onClick={_ => this.onToggleHeading(index)} className="heading">
+        <li key={g.name} onClick={_ => this.onToggleHeading(index)} className="heading">
           {g.name}
         </li>
       );

@@ -8,7 +8,11 @@ const mapSaveButton = s => ({
 });
 
 const SaveButton = connect(mapSaveButton)(p => (
-  <button className="action-save" onClick={_ => p.dispatch(action.saveTracks())}>
+  <button
+    type="button"
+    className="action-save"
+    onClick={_ => p.dispatch(action.saveTracks())}
+  >
     Save Tracks
   </button>
 ));

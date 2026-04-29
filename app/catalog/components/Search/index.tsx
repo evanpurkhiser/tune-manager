@@ -59,15 +59,18 @@ class Search extends React.Component<Props, State> {
   }
 
   renderTags = () =>
-    this.parsedContent.map(token => {
+    this.parsedContent.map((token, i) => {
       console.log(token);
       if (token.type === 'freeText') {
-        return <Tag label={token.value} type="freeText" />;
+        // oxlint-disable-next-line react/no-array-index-key -- parser tokens are positional
+        return <Tag key={i} label={token.value} type="freeText" />;
       }
 
       if (token.type === 'filter') {
         return (
           <Tag
+            // oxlint-disable-next-line react/no-array-index-key -- parser tokens are positional
+            key={i}
             label={`${token.key.type}:`}
             value={token.value?.value}
             type={token.key.type}

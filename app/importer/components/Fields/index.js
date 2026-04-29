@@ -176,7 +176,7 @@ export const TrackNumber = p => <Field {...p} name="track" validator={validate.t
 
 export const DiscNumber = p => <Field {...p} name="disc" validator={validate.disc} />;
 
-export const BPM = p => <Field {...p} name="bpm" validator={validate.bpm} />;
+export const Bpm = p => <Field {...p} name="bpm" validator={validate.bpm} />;
 
 export const Key = p => {
   const isComputing = p.processes.includes('KEY_COMPUTING');

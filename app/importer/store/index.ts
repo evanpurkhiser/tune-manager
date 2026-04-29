@@ -79,7 +79,7 @@ function reducer(oldState = initialState, action: actions.Actions) {
         }
 
         // Remove the completed process for this track
-        const processes = [...state.processes[track.id]] ?? [];
+        const processes = [...state.processes[track.id]];
         processes.splice(processes.indexOf(completedProcess), 1);
         state.processes[track.id] = processes;
 

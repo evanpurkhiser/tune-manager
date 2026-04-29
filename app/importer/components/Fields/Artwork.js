@@ -106,7 +106,7 @@ const ArtworkPopover = p => {
         onRemove={fireAction(p.onRemove, i)}
         onMaximize={fireAction(p.onMaximize, i)}
         artwork={a}
-        key={i}
+        key={a.url}
       />
     ));
 

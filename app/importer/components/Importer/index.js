@@ -104,7 +104,11 @@ class ImportButton extends Component {
 
     return (
       <div className={classes} onKeyDown={this.keyMapper}>
-        <button className="action-import" onClick={_ => this.toggleActive()} />
+        <button
+          type="button"
+          className="action-import"
+          onClick={_ => this.toggleActive()}
+        />
         {importer}
       </div>
     );

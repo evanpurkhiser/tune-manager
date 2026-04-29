@@ -6,7 +6,8 @@ import {applyMiddleware, compose, createStore} from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import {v4 as uuid} from 'uuid';
 
-import path from 'node:path';
+// oxlint-disable-next-line unicorn/prefer-node-protocol -- bundled by webpack with path-browserify
+import path from 'path';
 
 import type {ApiKnowns, Store, Track} from 'app/importer/types';
 import {formatTrackNumbers} from 'app/importer/util/format';

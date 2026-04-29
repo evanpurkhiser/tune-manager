@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 
 import classNames from 'classnames';
 
-import * as path from 'node:path';
+// oxlint-disable-next-line unicorn/prefer-node-protocol -- bundled by webpack with path-browserify
+import * as path from 'path';
 
 import TypeaheadInput from 'app/importer/components/TypeaheadInput';
 import ValidationPopover from 'app/importer/components/ValidationPopover';

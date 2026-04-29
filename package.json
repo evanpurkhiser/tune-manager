@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack --mode=production",
     "start": "webpack serve --mode=development",
-    "lint": "oxlint app/**/*.js app/**/*.jsx app/**/*.ts app/**/*.tsx webpack.config.ts",
+    "lint": "oxlint app/ webpack.config.ts",
     "format": "oxfmt .",
     "format:check": "oxfmt --check ."
   },
@@ -80,9 +80,9 @@
     "webpack-cli": "^4.10.0"
   },
   "devDependencies": {
-    "@evanpurkhiser/oxc-config": "^0.5.0",
-    "oxfmt": "^0.41.0",
-    "oxlint": "^1.56.0",
+    "@evanpurkhiser/oxc-config": "^0.8.0",
+    "oxfmt": "^0.47.0",
+    "oxlint": "^1.62.0",
     "webpack-dev-server": "^3.11.2"
   },
   "resolutions": {
